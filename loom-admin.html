@@ -268,9 +268,10 @@ textarea.inp{resize:vertical;min-height:60px}
           <div class="atitle" style="color:var(--red)">Account management</div>
           <div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text4);margin-bottom:10px;line-height:1.6">Issue penalties, restrictions, bans, and permanent deletions. Actions are logged and may be shared with Altura Internal Security.</div>
           <div style="display:flex;gap:6px;margin-bottom:10px">
-            <input type="text" id="acct-search" class="inp" placeholder="Search by name or user ID…" style="font-size:12px">
+            <input type="text" id="acct-search" class="inp" placeholder="Search by name or user ID…" style="font-size:12px" onkeydown="if(event.key==='Enter')searchAccounts()">
             <button onclick="searchAccounts()" class="btn btn-ghost btn-sm" style="flex-shrink:0">Search</button>
           </div>
+          <div style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);margin-bottom:6px">Posts indexed: <span id="acct-post-count">syncing…</span></div>
           <div id="acct-results" style="margin-bottom:12px"></div>
           <div id="penalty-form" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
             <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Issue penalty</div>
@@ -616,6 +617,7 @@ function updateAdmStats(){
   const a24=document.getElementById('a-24h');if(a24)a24.textContent=posts24h;
   const ab=document.getElementById('a-bans');if(ab)ab.textContent=bannedCount;
   const arv=document.getElementById('a-review');if(arv)arv.textContent=reviewCount;
+  const apc=document.getElementById('acct-post-count');if(apc)apc.textContent=livePosts.length+' posts, '+uniqueUsers+' users';
   renderRecentBans();
 }
 function updatePartnerCount(){const el=document.getElementById('a-partners-ct');if(el)el.textContent=Object.values(partners).filter(p=>p&&!p._deleted).length}
@@ -940,13 +942,29 @@ db.get('account-status').map().on(function(status, uid){
 function searchAccounts(){
   var q = (document.getElementById('acct-search').value||'').toLowerCase().trim();
   if(!q){flash('Enter a name or user ID.');return}
+  var postCount = Object.values(posts).filter(function(p){return p&&!p._deleted}).length;
+  if(postCount===0){
+    var el=document.getElementById('acct-results');
+    if(el)el.innerHTML='<div style="font-size:12px;color:var(--text4);padding:8px">No posts loaded yet — Gun.js is still syncing. Wait a moment and try again. Posts loaded: '+postCount+'</div>';
+    return;
+  }
   var results = [];
   var seen = {};
+  // Search posts (finds users by name or ID)
   Object.values(posts).filter(function(p){return p&&!p._deleted}).forEach(function(p){
     if(seen[p.userId])return;
     if((p.author||'').toLowerCase().includes(q)||(p.userId||'').toLowerCase().includes(q)){
       seen[p.userId]=true;
       results.push({uid:p.userId, name:p.author||'Anonymous', color:p.color, status:accountStatuses[p.userId]});
+    }
+  });
+  // Also search accountStatuses directly (finds penalised users even with no posts)
+  Object.entries(accountStatuses||{}).forEach(function(entry){
+    var uid=entry[0], s=entry[1];
+    if(seen[uid])return;
+    if(uid.toLowerCase().includes(q)){
+      seen[uid]=true;
+      results.push({uid:uid, name:'[unknown]', color:'var(--text4)', status:s});
     }
   });
   var el = document.getElementById('acct-results');

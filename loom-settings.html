@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Loom — Settings</title>
+<title>Loom — Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
@@ -14,42 +14,20 @@
 body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',system-ui,sans-serif;min-height:100vh}
 .font-serif{font-family:'Source Serif 4',Georgia,serif}
 nav{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:300}
-.nav-inner{max-width:800px;margin:0 auto;padding:0 16px;height:52px;display:flex;align-items:center;gap:12px}
-.inp{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 12px;font-size:14px;font-family:inherit;outline:none;width:100%;transition:border .15s}
+.nav-inner{max-width:900px;margin:0 auto;padding:0 16px;height:52px;display:flex;align-items:center;gap:12px}
+.inp{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 12px;font-size:13px;font-family:inherit;outline:none;width:100%;transition:border .15s}
 .inp:focus{border-color:var(--clay)}
 textarea.inp{resize:vertical;min-height:60px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .15s;text-decoration:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .15s;text-decoration:none}
 .btn-clay{background:var(--clay);color:#fff}.btn-clay:hover{filter:brightness(1.08)}
 .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}.btn-ghost:hover{border-color:var(--clay);color:var(--clay)}
 .btn-red{background:transparent;border:1px solid var(--red);color:var(--red)}
-.btn-pill{border-radius:999px}.btn-sm{padding:5px 12px;font-size:13px}.btn-xs{padding:3px 8px;font-size:11px;border-radius:5px}
-.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;flex-shrink:0;font-family:ui-monospace,monospace;user-select:none}
-.sec{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
-.sec-title{font-size:11px;font-family:ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text4);margin-bottom:16px;font-weight:600}
-.row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border2)}
-.row:last-child{border-bottom:none}
-.row-label{font-size:14px;color:var(--text)}
-.row-sub{font-size:12px;color:var(--text3);margin-top:2px}
-.toggle{position:relative;width:40px;height:22px;flex-shrink:0}
-.toggle input{opacity:0;width:0;height:0}
-.toggle-slider{position:absolute;inset:0;background:var(--border);border-radius:11px;cursor:pointer;transition:.2s}
-.toggle-slider::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
-.toggle input:checked+.toggle-slider{background:var(--clay)}
-.toggle input:checked+.toggle-slider::before{transform:translateX(18px)}
-.color-swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:transform .15s,border-color .15s;flex-shrink:0}
-.color-swatch:hover{transform:scale(1.1)}
-.color-swatch.selected{border-color:var(--text)}
-.cover-opt{width:60px;height:36px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:border-color .15s;flex-shrink:0}
-.cover-opt:hover{border-color:var(--clay)}
-.cover-opt.selected{border-color:var(--clay)}
-.data-row{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--border2);font-size:13px}
-.data-row:last-child{border-bottom:none}
-.compliance-item{padding:12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px}
-.badge{display:inline-flex;align-items:center;padding:1px 7px;border-radius:3px;font-size:10px;font-weight:700;font-family:ui-monospace,monospace;text-transform:uppercase;letter-spacing:.04em}
-.usage-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:4px}
-.usage-fill{height:100%;border-radius:3px;background:var(--clay);transition:width .4s ease}
+.btn-pill{border-radius:999px}.btn-sm{padding:5px 12px;font-size:12px}.btn-xs{padding:3px 8px;font-size:11px;border-radius:5px}
+.asec{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px}
+.atitle{font-size:11px;font-family:ui-monospace,monospace;text-transform:uppercase;letter-spacing:.1em;color:var(--text4);margin-bottom:12px;font-weight:600}
+.stat-row{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid var(--border2)}
+.stat-row:last-child{border-bottom:none}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-@media(max-width:600px){.hide-sm{display:none!important}}
 
 .page-fade{animation:pageFadeIn .25s ease}
 @keyframes pageFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
@@ -70,663 +48,270 @@ textarea.inp{resize:vertical;min-height:60px}
       </svg>
       <span class="font-serif" style="font-size:20px;font-weight:600;color:var(--text);letter-spacing:-.3px">Loom</span>
     </a>
-    <span style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);letter-spacing:.1em;text-transform:uppercase">Settings</span>
-    <div style="margin-left:auto;display:flex;gap:8px">
+    <span style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);letter-spacing:.1em;text-transform:uppercase">Admin Console</span>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
       <button onclick="toggleDark()" style="background:transparent;border:1px solid var(--border);border-radius:8px;padding:6px 9px;cursor:pointer;font-size:14px"><span id="dark-ico">🌙</span></button>
       <a href="loom.html" class="btn btn-ghost btn-sm btn-pill">← Feed</a>
+      <button id="nav-signout" onclick="adminOut()" style="display:none" class="btn btn-sm" style="color:var(--text3)">Sign out</button>
     </div>
   </div>
 </nav>
 
-<div style="max-width:800px;margin:0 auto;padding:24px 16px">
+<div style="max-width:900px;margin:0 auto;padding:24px 16px">
 
-  <!-- ── IDENTITY ── -->
-  <div class="sec">
-    <div class="sec-title">Identity</div>
+  <!-- Auth gate -->
+  <div id="adm-auth">
+    <div style="max-width:380px;margin:60px auto;text-align:center">
+      <div style="font-size:36px;margin-bottom:16px">⚙</div>
+      <div class="font-serif" style="font-size:24px;color:var(--text);margin-bottom:6px">Admin Console</div>
+      <div style="font-size:13px;color:var(--text3);margin-bottom:24px">Altura Intelligence Systems · Loom Platform Administration</div>
+      <input type="password" id="adm-pass" class="inp" placeholder="Passphrase" style="margin-bottom:10px;text-align:center" onkeydown="if(event.key==='Enter')doAuth()">
+      <div id="adm-err" style="display:none;color:var(--red);font-size:12px;font-family:ui-monospace,monospace;margin-bottom:10px">Incorrect passphrase.</div>
+      <button onclick="doAuth()" class="btn btn-clay" style="width:100%">Authenticate</button>
+      <div style="margin-top:16px;font-size:11px;font-family:ui-monospace,monospace;color:var(--text4)">Access is logged. Unauthorised attempts are reported to Altura Internal Security.</div>
+    </div>
+  </div>
 
-    <!-- Avatar + picture -->
-    <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;flex-wrap:wrap">
-      <div style="position:relative">
-        <div id="s-av" class="av" style="width:72px;height:72px;font-size:22px;cursor:pointer" onclick="document.getElementById('pic-file').click()">—</div>
-        <div style="position:absolute;bottom:0;right:0;width:22px;height:22px;background:var(--clay);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px" onclick="document.getElementById('pic-file').click()" title="Upload photo">📷</div>
+  <!-- Admin content -->
+  <div id="adm-content" style="display:none">
+
+    <!-- Stats bar -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px">
+      <div class="asec" style="text-align:center;padding:14px">
+        <div style="font-size:24px;font-weight:700;font-family:ui-monospace,monospace;color:var(--clay)" id="a-posts">—</div>
+        <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase;letter-spacing:.06em;margin-top:3px">Posts</div>
       </div>
-      <div style="flex:1;min-width:200px">
-        <div style="font-size:13px;color:var(--text2);margin-bottom:8px">Click avatar to upload a photo. Stored locally — does not sync across devices.</div>
-        <input type="file" id="pic-file" accept="image/*" style="display:none" onchange="handlePicUpload(this)">
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <input type="text" id="s-pic-url" class="inp" placeholder="Or paste an image URL…" style="font-size:12px;flex:1">
-          <button onclick="setPicURL()" class="btn btn-ghost btn-sm">Use URL</button>
-          <button onclick="clearPic()" class="btn btn-ghost btn-sm" style="color:var(--text4)">Clear</button>
+      <div class="asec" style="text-align:center;padding:14px">
+        <div style="font-size:24px;font-weight:700;font-family:ui-monospace,monospace;color:var(--clay)" id="a-regions">—</div>
+        <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase;letter-spacing:.06em;margin-top:3px">Regions</div>
+      </div>
+      <div class="asec" style="text-align:center;padding:14px">
+        <div style="font-size:24px;font-weight:700;font-family:ui-monospace,monospace;color:var(--clay)" id="a-rpts">—</div>
+        <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase;letter-spacing:.06em;margin-top:3px">Reports</div>
+      </div>
+      <div class="asec" style="text-align:center;padding:14px">
+        <div style="font-size:24px;font-weight:700;font-family:ui-monospace,monospace;color:var(--clay)" id="a-partners-ct">—</div>
+        <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase;letter-spacing:.06em;margin-top:3px">Partners</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+
+      <!-- LEFT COLUMN -->
+      <div>
+
+        <!-- Site alert banner -->
+        <div class="asec">
+          <div class="atitle">Site alert banner</div>
+          <select id="a-at" class="inp" style="margin-bottom:8px">
+            <option value="">No alert</option>
+            <option value="info">Info</option>
+            <option value="warn">Warning</option>
+            <option value="crit">Critical</option>
+          </select>
+          <textarea id="a-att" class="inp" placeholder="Alert text…" rows="2" style="margin-bottom:8px"></textarea>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);margin-bottom:10px;cursor:pointer">
+            <input type="checkbox" id="a-adism" checked style="accent-color:var(--clay)"> Dismissible by users
+          </label>
+          <button onclick="saveAlert()" class="btn btn-clay btn-sm" style="width:100%">Save banner</button>
         </div>
-      </div>
-    </div>
 
-    <!-- Name -->
-    <div style="margin-bottom:12px">
-      <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Display name</label>
-      <div style="display:flex;gap:8px">
-        <input type="text" id="s-name" class="inp" maxlength="40">
-        <button onclick="saveName()" class="btn btn-clay btn-sm" style="flex-shrink:0">Save</button>
-      </div>
-      <div id="s-namehist" style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text4);margin-top:6px"></div>
-    </div>
+        <!-- Broadcast announcement -->
+        <div class="asec">
+          <div class="atitle">Broadcast announcement</div>
+          <input type="text" id="a-bcn" class="inp" placeholder="Sender name (e.g. Loom Admin)" style="margin-bottom:8px">
+          <textarea id="a-bct" class="inp" placeholder="Announcement text…" rows="3" style="margin-bottom:8px"></textarea>
+          <select id="a-bcr" class="inp" style="margin-bottom:8px"><option value="">Global (all regions)</option></select>
+          <input type="datetime-local" id="a-bcs" class="inp" style="margin-bottom:10px">
+          <button onclick="broadcast()" class="btn btn-clay btn-sm" style="width:100%">Send broadcast</button>
+        </div>
 
-    <!-- Pronouns + bio -->
-    <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px;margin-bottom:12px">
+        <!-- Moderation queue -->
+        <div class="asec">
+          <div class="atitle">Post search &amp; edit</div>
+          <div style="display:flex;gap:6px;margin-bottom:10px">
+            <input type="text" id="a-post-search" class="inp" placeholder="Search posts by text or author…" style="font-size:12px">
+            <button onclick="searchPosts()" class="btn btn-ghost btn-sm" style="flex-shrink:0">Search</button>
+          </div>
+          <div id="a-post-results"></div>
+        </div>
+        <div class="asec">
+          <div class="atitle">Reported posts</div>
+          <div id="a-modq"><div style="font-size:12px;color:var(--text4)">No reports.</div></div>
+        </div>
+
+        <!-- Verified partners -->
+        <div class="asec">
+          <div class="atitle">Verified partners</div>
+          <div id="a-partners-list" style="margin-bottom:12px"></div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px">
+            <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Add partner</div>
+            <input type="text" id="a-pl" class="inp" placeholder="Label (e.g. HHS Emergency Office)" style="margin-bottom:6px">
+            <input type="text" id="a-pa" class="inp" placeholder="Post author name" style="margin-bottom:6px">
+            <div style="display:flex;gap:6px;margin-bottom:8px">
+              <input type="text" id="a-pi" class="inp" placeholder="Icon emoji" style="width:70px;text-align:center;font-size:18px">
+              <select id="a-pc" class="inp">
+                <option value="default">Default</option>
+                <option value="hhs">HHS (blue)</option>
+                <option value="proxima">Proxima (red)</option>
+                <option value="nrc">Government (green)</option>
+                <option value="salt-lake">Salt Lake (brown)</option>
+              </select>
+            </div>
+            <button onclick="addPartner()" class="btn btn-clay btn-sm" style="width:100%">Add partner</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN -->
       <div>
-        <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Pronouns</label>
-        <input type="text" id="s-pronouns" class="inp" placeholder="e.g. they/them" maxlength="30">
-      </div>
-      <div>
-        <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Flair</label>
-        <input type="text" id="s-flair" class="inp" placeholder="e.g. Salt Lake · Nightshift" maxlength="20">
-      </div>
-    </div>
 
-    <div style="margin-bottom:12px">
-      <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Bio</label>
-      <textarea id="s-bio" class="inp" placeholder="A sentence about yourself…" maxlength="120" rows="2" oninput="document.getElementById('s-bio-c').textContent=this.value.length+'/120'"></textarea>
-      <div id="s-bio-c" style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);text-align:right;margin-top:2px">0/120</div>
-    </div>
+        <!-- Regions -->
+        <div class="asec">
+          <div class="atitle">Regions</div>
+          <div id="a-rlist" style="margin-bottom:12px"></div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px">
+            <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Add region</div>
+            <div style="display:flex;gap:6px;margin-bottom:6px">
+              <input type="text" id="a-rn" class="inp" placeholder="Name">
+              <input type="text" id="a-rc" class="inp" placeholder="Code" style="width:80px">
+            </div>
+            <div style="display:flex;gap:6px;margin-bottom:8px">
+              <input type="text" id="a-rf" class="inp" placeholder="Flag emoji" style="width:70px;text-align:center">
+              <select id="a-rs" class="inp"><option value="normal">Normal</option><option value="elevated">Elevated</option><option value="active">Active</option><option value="critical">Critical</option><option value="closed">Closed</option></select>
+              <input type="text" id="a-rg" class="inp" placeholder="Group">
+            </div>
+            <button onclick="addRegion()" class="btn btn-clay btn-sm" style="width:100%">Add region</button>
+          </div>
+        </div>
 
-    <!-- Colour -->
-    <div style="margin-bottom:12px">
-      <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">Avatar colour</label>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap" id="s-swatches"></div>
-      <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-        <input type="color" id="s-color-pick" style="width:36px;height:36px;border-radius:6px;border:1px solid var(--border);cursor:pointer;background:none" onchange="pickCustomColor(this.value)">
-        <span style="font-size:12px;color:var(--text4)">Custom colour</span>
-      </div>
-    </div>
+        <!-- Verified names -->
+        <div class="asec">
+          <div class="atitle">Verified names</div>
+          <textarea id="a-verif" class="inp" placeholder="One name per line" rows="4" style="margin-bottom:8px"></textarea>
+          <button onclick="saveVerif()" class="btn btn-ghost btn-sm" style="width:100%">Save</button>
+        </div>
 
-    <!-- Cover -->
-    <div style="margin-bottom:16px">
-      <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">Profile cover</label>
-      <div style="display:flex;gap:8px;flex-wrap:wrap" id="s-covers"></div>
-    </div>
+        <!-- Trusted voices -->
+        <div class="asec">
+          <div class="atitle">Trusted voices</div>
+          <textarea id="a-trusted" class="inp" placeholder="One name per line" rows="3" style="margin-bottom:8px"></textarea>
+          <button onclick="saveTrusted()" class="btn btn-ghost btn-sm" style="width:100%">Save</button>
+        </div>
 
-    <!-- Home region -->
-    <div style="margin-bottom:16px">
-      <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Home region</label>
-      <select id="s-region" class="inp" style="max-width:300px"><option value="">Everywhere</option></select>
-    </div>
+        <!-- Banned words -->
+        <div class="asec">
+          <div class="atitle">Banned words (platform-wide)</div>
+          <textarea id="a-banned" class="inp" placeholder="Comma-separated…" rows="2" style="margin-bottom:8px"></textarea>
+          <button onclick="saveBanned()" class="btn btn-ghost btn-sm" style="width:100%">Save</button>
+        </div>
 
-    <button onclick="saveIdentity()" class="btn btn-clay" style="width:100%">Save identity</button>
-  </div>
+        <!-- Welcome message -->
+        <div class="asec">
+          <div class="atitle">Onboarding welcome message</div>
+          <textarea id="a-welcome" class="inp" placeholder="Shown during onboarding…" rows="2" style="margin-bottom:8px"></textarea>
+          <button onclick="saveWelcome()" class="btn btn-ghost btn-sm" style="width:100%">Save</button>
+        </div>
 
-  <!-- ── FEED PREFERENCES ── -->
-  <div class="sec">
-    <div class="sec-title">Feed preferences</div>
+        <!-- Rate limit -->
+        <div class="asec">
+          <div class="atitle">Post rate limit (per hour)</div>
+          <div style="display:flex;gap:8px">
+            <input type="number" id="a-rl" class="inp" value="20" min="1" max="200">
+            <button onclick="saveRL()" class="btn btn-ghost btn-sm" style="flex-shrink:0">Save</button>
+          </div>
+        </div>
 
-    <div class="row">
-      <div><div class="row-label">Default sort</div><div class="row-sub">How posts are ordered when you open Loom</div></div>
-      <select id="s-sort" class="inp" style="width:auto;padding:5px 24px 5px 10px;font-size:13px">
-        <option value="new">Newest</option>
-        <option value="trend">Trending</option>
-        <option value="top">Top</option>
-        <option value="foryou">For You</option>
-      </select>
-    </div>
+        <!-- Security -->
+        <div class="asec">
+          <div class="atitle">Change admin passphrase</div>
+          <div style="display:flex;gap:8px;margin-bottom:10px">
+            <input type="password" id="a-np" class="inp" placeholder="New passphrase (min 8 chars)">
+            <button onclick="changePass()" class="btn btn-ghost btn-sm" style="flex-shrink:0">Change</button>
+          </div>
+          <button onclick="adminOut()" class="btn btn-ghost btn-sm" style="width:100%;color:var(--text3)">Sign out of admin</button>
+        </div>
 
-    <div class="row">
-      <div><div class="row-label">Safe display mode</div><div class="row-sub">Hides reaction counts and engagement metrics</div></div>
-      <label class="toggle"><input type="checkbox" id="s-safe" onchange="savePref('loom-safe',this.checked?'1':'0')"><span class="toggle-slider"></span></label>
-    </div>
+        <!-- Data -->
+        <div class="asec">
+          <div class="atitle">Data</div>
+          <button onclick="exportFeed()" class="btn btn-ghost btn-sm" style="width:100%;margin-bottom:6px">Export feed JSON</button>
+          <button onclick="nukeDemo()" class="btn btn-sm btn-red" style="width:100%">Clear all demo data</button>
+        </div>
+        <div class="asec" style="border-color:var(--red)">
+          <div class="atitle" style="color:var(--red)">Account management</div>
+          <div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text4);margin-bottom:10px;line-height:1.6">Issue penalties, restrictions, bans, and permanent deletions. Actions are logged and may be shared with Altura Internal Security.</div>
+          <div style="display:flex;gap:6px;margin-bottom:10px">
+            <input type="text" id="acct-search" class="inp" placeholder="Search by name or user ID…" style="font-size:12px">
+            <button onclick="searchAccounts()" class="btn btn-ghost btn-sm" style="flex-shrink:0">Search</button>
+          </div>
+          <div id="acct-results" style="margin-bottom:12px"></div>
+          <div id="penalty-form" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
+            <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Issue penalty</div>
+            <div id="penalty-target" style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px"></div>
+            <div style="margin-bottom:8px">
+              <label style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em">Action</label>
+              <select id="p-level" class="inp" style="font-size:12px" onchange="onLevelChange()">
+                <option value="restricted">Restrict — posting/commenting disabled, account accessible</option>
+                <option value="suspended">Suspend — account inaccessible, temporary</option>
+                <option value="shadowban">Shadowban — posts hidden from others, user unaware</option>
+                <option value="banned">Permanent ban — account inaccessible, permanent</option>
+                <option value="deleted">Delete — all posts removed, account permanently closed</option>
+                <option value="active">Lift all penalties — restore to active</option>
+              </select>
+            </div>
+            <div style="margin-bottom:8px">
+              <label style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em">Reason code</label>
+              <select id="p-reason-code" class="inp" style="font-size:12px" onchange="onReasonCodeChange()">
+                <option value="">Select reason…</option>
+                <option value="Violation of Emergency Information Management Act 2015 §7">EIMA 2015 §7 — Prohibited content</option>
+                <option value="Prohibited health misinformation">Prohibited health misinformation</option>
+                <option value="Coordinated inauthentic behaviour">Coordinated inauthentic behaviour</option>
+                <option value="Undermining public confidence in emergency response measures">Undermining emergency response confidence</option>
+                <option value="Harassment or targeted abuse">Harassment or targeted abuse</option>
+                <option value="Impersonation of a verified partner or official">Impersonation of official account</option>
+                <option value="Repeated community guidelines violations">Repeated community guidelines violations</option>
+                <option value="Internal security referral">Internal security referral</option>
+                <option value="custom">Custom reason…</option>
+              </select>
+            </div>
+            <div id="p-reason-custom-wrap" style="display:none;margin-bottom:8px">
+              <input type="text" id="p-reason-custom" class="inp" placeholder="Enter reason…" style="font-size:12px">
+            </div>
+            <div id="p-message-wrap" style="margin-bottom:8px">
+              <label style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em">Message to user (shown on ban screen)</label>
+              <textarea id="p-message" class="inp" rows="3" style="font-size:12px" placeholder="Optional custom message shown to the user on the ban screen…"></textarea>
+            </div>
+            <div id="p-duration-wrap" style="margin-bottom:8px">
+              <label style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em">Duration</label>
+              <select id="p-duration" class="inp" style="font-size:12px">
+                <option value="0">Permanent / indefinite</option>
+                <option value="1">1 day</option>
+                <option value="3">3 days</option>
+                <option value="7">7 days</option>
+                <option value="14">14 days</option>
+                <option value="30">30 days</option>
+                <option value="90">90 days</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:6px;margin-bottom:10px">
+              <label style="font-size:12px;color:var(--text2);display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" id="p-nrc" style="accent-color:var(--red)"> Share with Altura Internal Security</label>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button onclick="issuePenalty()" class="btn btn-clay btn-sm" style="flex:1">Issue penalty</button>
+              <button onclick="document.getElementById('penalty-form').style.display='none'" class="btn btn-ghost btn-sm">Cancel</button>
+            </div>
+          </div>
+        </div>
 
-    <div class="row">
-      <div><div class="row-label">Alert watch</div><div class="row-sub">Pop-up notification for alerts in your home region</div></div>
-      <label class="toggle"><input type="checkbox" id="s-watch" onchange="savePref('loom-watch',this.checked?'1':'0')"><span class="toggle-slider"></span></label>
-    </div>
-
-    <div class="row">
-      <div><div class="row-label">Break reminders</div><div class="row-sub">Prompt after 30 minutes of continuous use</div></div>
-      <label class="toggle"><input type="checkbox" id="s-break" onchange="savePref('loom-breaks',this.checked?'1':'0')"><span class="toggle-slider"></span></label>
-    </div>
-
-    <div class="row">
-      <div><div class="row-label">Dark mode</div></div>
-      <label class="toggle"><input type="checkbox" id="s-dark" onchange="toggleDark()"><span class="toggle-slider"></span></label>
-    </div>
-  </div>
-
-  <!-- ── PRIVACY & BLOCKING ── -->
-  <div class="sec">
-    <div class="sec-title">Privacy &amp; blocking</div>
-
-    <div class="row">
-      <div><div class="row-label">Post visibility</div><div class="row-sub">Who can see your posts by default</div></div>
-      <select id="s-visibility" class="inp" style="width:auto;padding:5px 24px 5px 10px;font-size:13px" onchange="savePref('loom-visibility',this.value)">
-        <option value="everyone">Everyone</option>
-        <option value="region">Region only</option>
-        <option value="followers">Followers only</option>
-      </select>
-    </div>
-
-    <div style="margin-top:14px">
-      <div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Muted users</div>
-      <div id="s-muted-list" style="margin-bottom:8px"></div>
-    </div>
-
-    <div style="margin-top:14px">
-      <div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Blocked users</div>
-      <div id="s-blocked-list" style="margin-bottom:8px"></div>
-    </div>
-
-    <div style="margin-top:14px">
-      <div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Word filters</div>
-      <div style="font-size:12px;color:var(--text3);margin-bottom:8px">Posts containing these words are hidden from your feed. Comma-separated.</div>
-      <textarea id="s-wordfilters" class="inp" placeholder="e.g. spam, clickbait" rows="2" style="margin-bottom:8px"></textarea>
-      <button onclick="saveWordFilters()" class="btn btn-ghost btn-sm">Save filters</button>
-    </div>
-  </div>
-
-  <!-- ── NOTIFICATIONS ── -->
-  <div class="sec">
-    <div class="sec-title">Notifications</div>
-    <div class="row">
-      <div><div class="row-label">Mentions</div><div class="row-sub">When someone @mentions you</div></div>
-      <label class="toggle"><input type="checkbox" id="n-mentions" checked onchange="saveNotifPref('mentions',this.checked)"><span class="toggle-slider"></span></label>
-    </div>
-    <div class="row">
-      <div><div class="row-label">Likes &amp; reactions</div></div>
-      <label class="toggle"><input type="checkbox" id="n-likes" checked onchange="saveNotifPref('likes',this.checked)"><span class="toggle-slider"></span></label>
-    </div>
-    <div class="row">
-      <div><div class="row-label">Comments on your posts</div></div>
-      <label class="toggle"><input type="checkbox" id="n-comments" checked onchange="saveNotifPref('comments',this.checked)"><span class="toggle-slider"></span></label>
-    </div>
-    <div class="row">
-      <div><div class="row-label">New followers</div></div>
-      <label class="toggle"><input type="checkbox" id="n-follows" checked onchange="saveNotifPref('follows',this.checked)"><span class="toggle-slider"></span></label>
-    </div>
-    <div class="row">
-      <div><div class="row-label">Emergency broadcasts</div><div class="row-sub">Full-screen overlay from verified partners</div></div>
-      <label class="toggle"><input type="checkbox" id="n-broadcast" checked onchange="saveNotifPref('broadcast',this.checked)"><span class="toggle-slider"></span></label>
-    </div>
-  </div>
-
-  <!-- ── YOUR DATA ── -->
-  <div class="sec">
-    <div class="sec-title">Your data</div>
-    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px">
-      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">What Altura Analytics holds about you</div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        <div class="data-row"><span style="color:var(--green);flex-shrink:0">✓</span><span style="color:var(--text2)">All posts, including posts deleted in the last 30 days</span></div>
-        <div class="data-row"><span style="color:var(--green);flex-shrink:0">✓</span><span style="color:var(--text2)">Likes, reactions, poll votes, petition signatures</span></div>
-        <div class="data-row"><span style="color:var(--green);flex-shrink:0">✓</span><span style="color:var(--text2)">Activity log: session timestamps, posts viewed, hashtags clicked, searches</span></div>
-        <div class="data-row"><span style="color:var(--green);flex-shrink:0">✓</span><span style="color:var(--text2)">Connection graph: follows, blocks, mutes, social proximity scores</span></div>
-        <div class="data-row"><span style="color:var(--green);flex-shrink:0">✓</span><span style="color:var(--text2)">Derived analytics: Loom Score history, reputation trajectory, engagement patterns</span></div>
-        <div class="data-row"><span style="color:var(--green);flex-shrink:0">✓</span><span style="color:var(--text2)">Regional Health Index contribution data</span></div>
-        <div class="data-row"><span style="color:var(--green);flex-shrink:0">✓</span><span style="color:var(--text2)">Emergency broadcast view logs and survey responses</span></div>
-        <div class="data-row"><span style="color:var(--green);flex-shrink:0">✓</span><span style="color:var(--text2)">IP address logs and device fingerprints (72-hour rolling window)</span></div>
-        <div class="data-row"><span style="color:var(--green);flex-shrink:0">✓</span><span style="color:var(--text2)">Compliance history and reports filed about your account</span></div>
-        <div class="data-row"><span style="color:var(--text4);flex-shrink:0">—</span><span style="color:var(--text4)">Direct messages are peer-to-peer and are not held by Altura</span></div>
       </div>
     </div>
-
-    <div style="display:flex;flex-direction:column;gap:8px">
-      <div id="s-export-status"></div>
-      <button onclick="requestExport()" class="btn btn-clay" style="width:100%">Request full data export (72h processing)</button>
-      <button onclick="downloadNow()" class="btn btn-ghost" style="width:100%">Download available data now (JSON)</button>
-    </div>
-  </div>
-
-  <!-- ── COMPLIANCE HISTORY ── -->
-  <div class="sec">
-    <div class="sec-title">Compliance history</div>
-    <div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);line-height:1.7;margin-bottom:14px">
-      Records of moderation actions taken against your account. Retained under EIMA 2015 §14(c). May be shared with Altura Internal Security upon request. Retention period: indefinite during active national emergency.
-    </div>
-    <div id="s-compliance-list"></div>
-  </div>
-
-  <!-- ── ACCOUNT ── -->
-  <div class="sec">
-    <div class="sec-title">Account</div>
-    <div class="row">
-      <div><div class="row-label">Your Loom ID</div><div class="row-sub" id="s-id-display" style="font-family:ui-monospace,monospace;font-size:11px"></div></div>
-    </div>
-    <div class="row">
-      <div><div class="row-label" style="color:var(--red)">Reset identity</div><div class="row-sub">Clears local data only. Posts stored on Loom remain and are retained by Altura.</div></div>
-      <button onclick="resetIdentity()" class="btn btn-xs btn-red">Reset</button>
-    </div>
-  </div>
-
-</div><!-- /main -->
+  </div><!-- /adm-content -->
+</div>
 
 <script>
-'use strict';
-const NS='loom-global-v3';
-const gun=GUN(['https://gun-manhattan.herokuapp.com/gun','https://peer.wallie.io/gun']);
-const db=gun.get(NS);
-
-// ── ACCOUNT STATUS (Altura Moderation System) ────────────────────────────────
-var __acctStatus = null;
-(function(){
-  var _uid = localStorage.getItem('loom-id-v3');
-  if(!_uid) return;
-  db.get('account-status').get(_uid).on(function(status){
-    if(!status || status._ ) {
-      // Gun.js metadata only — no real status set
-      if(status && Object.keys(status).filter(k=>k!=='_').length === 0) return;
-    }
-    if(!status || !status.level || status.level === 'active') return;
-    __acctStatus = status;
-    if(status.level === 'shadowban') return; // silent — don't show anything to user
-    renderAccountStatusScreen(status);
-  });
-  // Also sync restrictions for posting checks
-  db.get('account-restrictions').get(_uid).on(function(r){
-    if(!r) return;
-    window.__restrictions = r;
-  });
-})();
-
-function renderAccountStatusScreen(status){
-  // Remove existing if present
-  var ex = document.getElementById('__ban-screen');
-  if(ex) ex.remove();
-
-  var level = status.level || 'suspended';
-  var cfg = {
-    restricted: {
-      title: 'Account Restricted',
-      icon: '⚠',
-      color: '#8a7000',
-      bg: '#fffde0',
-      border: '#d4c000',
-      desc: 'Your account has been restricted. Some features are unavailable.',
-      badge: 'RESTRICTED',
-      badgeBg: '#fffde0',
-      badgeColor: '#8a7000',
-      dismissable: false,
-      overlay: false,
-    },
-    suspended: {
-      title: 'Account Suspended',
-      icon: '🚫',
-      color: '#c13a3a',
-      bg: '#fdf4f1',
-      border: '#c1593a',
-      desc: 'Your account has been suspended. You cannot access Loom at this time.',
-      badge: 'SUSPENDED',
-      badgeBg: '#f0e8e8',
-      badgeColor: '#c13a3a',
-      dismissable: false,
-      overlay: true,
-    },
-    banned: {
-      title: 'Account Banned',
-      icon: '🔴',
-      color: '#6b0000',
-      bg: '#fdf4f1',
-      border: '#6b0000',
-      desc: 'Your account has been permanently banned from Loom.',
-      badge: 'PERMANENTLY BANNED',
-      badgeBg: '#f0e8e8',
-      badgeColor: '#6b0000',
-      dismissable: false,
-      overlay: true,
-    },
-    deleted: {
-      title: 'Account Deleted',
-      icon: '⬛',
-      color: '#271d14',
-      bg: '#fdfaf6',
-      border: '#edddd0',
-      desc: 'This account has been permanently deleted.',
-      badge: 'DELETED',
-      badgeBg: '#f7f0e6',
-      badgeColor: '#9c8070',
-      dismissable: false,
-      overlay: true,
-    },
-  };
-
-  var c = cfg[level] || cfg.suspended;
-  var ref = status.reference || ('ACS-' + (status.issuedAt||Date.now()).toString(36).toUpperCase());
-  var issuedDate = status.issuedAt ? new Date(status.issuedAt).toLocaleDateString('en', {year:'numeric',month:'long',day:'numeric'}) : 'Unknown date';
-  var expiresStr = '';
-  if(status.expiresAt && status.expiresAt > Date.now()) {
-    var rem = status.expiresAt - Date.now();
-    var days = Math.ceil(rem / 86400000);
-    expiresStr = days > 1 ? 'Expires in ' + days + ' days (' + new Date(status.expiresAt).toLocaleDateString('en',{month:'long',day:'numeric',year:'numeric'}) + ')' : 'Expires today';
-  } else if(status.expiresAt && status.expiresAt <= Date.now()) {
-    // Ban has expired — clear screen
-    document.getElementById('__ban-screen') && document.getElementById('__ban-screen').remove();
-    return;
-  } else if(!status.expiresAt && level !== 'restricted') {
-    expiresStr = 'This action is permanent.';
-  }
-
-  var screen = document.createElement('div');
-  screen.id = '__ban-screen';
-  screen.style.cssText = c.overlay
-    ? 'position:fixed;inset:0;background:rgba(253,250,246,.97);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;font-family:\'Source Sans 3\',system-ui,sans-serif;overflow-y:auto'
-    : 'position:sticky;top:52px;z-index:900;padding:12px 16px;background:' + c.bg + ';border-bottom:2px solid ' + c.border + ';font-family:\'Source Sans 3\',system-ui,sans-serif;display:flex;align-items:center;gap:12px';
-
-  if(c.overlay) {
-    screen.innerHTML = '<div style="max-width:520px;width:100%;text-align:center">' +
-      // Loom logo
-      '<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:32px;opacity:.4">' +
-        '<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="3" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".3"/><rect x="9.5" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".55"/><rect x="16" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".3"/><rect x="3" y="4" width="20" height="3" rx="1.5" fill="#c1593a"/><rect x="3" y="11.5" width="20" height="3" rx="1.5" fill="#c1593a" opacity=".55"/><rect x="3" y="19" width="20" height="3" rx="1.5" fill="#c1593a" opacity=".25"/></svg>' +
-        '<span style="font-family:\'Source Serif 4\',Georgia,serif;font-size:20px;font-weight:600;color:#271d14">Loom</span>' +
-      '</div>' +
-      '<div style="font-size:48px;margin-bottom:16px">' + c.icon + '</div>' +
-      '<span style="display:inline-flex;align-items:center;padding:3px 12px;border-radius:4px;font-size:11px;font-weight:700;font-family:ui-monospace,monospace;letter-spacing:.08em;background:' + c.badgeBg + ';color:' + c.badgeColor + ';margin-bottom:16px">' + c.badge + '</span>' +
-      '<h1 style="font-family:\'Source Serif 4\',Georgia,serif;font-size:28px;font-weight:600;color:#271d14;margin-bottom:10px">' + c.title + '</h1>' +
-      '<p style="font-size:15px;color:#6b5744;line-height:1.7;margin-bottom:20px">' + c.desc + '</p>' +
-      // Custom message
-      (status.message ? '<div style="background:#fff;border:1px solid #edddd0;border-radius:10px;padding:16px 20px;margin-bottom:20px;text-align:left"><div style="font-size:12px;font-family:ui-monospace,monospace;color:#9c8070;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Message from Altura Community Standards</div><div style="font-size:14px;color:#271d14;line-height:1.7">' + (status.message||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div></div>' : '') +
-      // Details
-      '<div style="background:#f7f0e6;border:1px solid #edddd0;border-radius:10px;padding:16px 20px;margin-bottom:20px;text-align:left;display:flex;flex-direction:column;gap:8px">' +
-        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Reference</span><span style="font-family:ui-monospace,monospace;font-weight:700;color:#271d14">' + ref + '</span></div>' +
-        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Issued</span><span style="color:#271d14">' + issuedDate + '</span></div>' +
-        (status.reason ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Reason</span><span style="color:#271d14;text-align:right;max-width:70%">' + (status.reason||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span></div>' : '') +
-        (expiresStr ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Duration</span><span style="color:#271d14">' + expiresStr + '</span></div>' : '') +
-        (status.issuedBy ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Issued by</span><span style="color:#271d14">' + (status.issuedBy||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span></div>' : '') +
-        (status.sharedWithAltura ? '<div style="font-size:12px;font-family:ui-monospace,monospace;color:#c13a3a;margin-top:4px">This action has been shared with Altura Internal Security Directorate.</div>' : '') +
-      '</div>' +
-      '<div style="font-size:12px;font-family:ui-monospace,monospace;color:#c4b5a3;line-height:1.7;margin-bottom:20px">This action has been recorded in your compliance history. If you believe this decision was made in error, you may submit a dispute to the Altura Internal Review Board within 30 days. Altura does not guarantee review timelines during active national emergency periods.</div>' +
-      '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
-        (level !== 'banned' && level !== 'deleted' ? '<a href="loom-settings.html" style="padding:10px 20px;background:transparent;border:1px solid #edddd0;border-radius:8px;font-size:13px;font-weight:600;color:#6b5744;text-decoration:none">View compliance history</a>' : '') +
-        '<a href="loom-appeals.html" style="padding:10px 20px;background:transparent;border:1px solid #edddd0;border-radius:8px;font-size:13px;font-weight:600;color:#6b5744;text-decoration:none">Submit dispute</a>' +
-      '</div>' +
-      '<div style="margin-top:20px;font-size:11px;font-family:ui-monospace,monospace;color:#c4b5a3">Loom · Altura Intelligence Systems · Community Standards Directorate<br>Emergency Information Management Act 2015 · Reference: ' + ref + '</div>' +
-    '</div>';
-  } else {
-    // Restricted — banner mode (not full overlay, content still visible)
-    screen.innerHTML = '<span style="font-size:18px">' + c.icon + '</span>' +
-      '<div style="flex:1"><strong style="color:' + c.color + '">' + c.title + '</strong> — ' +
-      (status.message || c.desc) +
-      ' <span style="font-family:ui-monospace,monospace;font-size:11px;color:#9c8070">Ref: ' + ref + '</span></div>' +
-      '<a href="loom-settings.html" style="font-size:12px;font-weight:600;color:' + c.color + ';text-decoration:none;flex-shrink:0">Details →</a>';
-  }
-
-  // Insert: overlay goes on body, banner goes after nav
-  if(c.overlay) {
-    document.body.appendChild(screen);
-    // Freeze scrolling
-    document.body.style.overflow = 'hidden';
-  } else {
-    var nav = document.querySelector('nav');
-    if(nav && nav.nextSibling) nav.parentNode.insertBefore(screen, nav.nextSibling);
-    else document.body.prepend(screen);
-  }
-
-  // Expiry countdown timer
-  if(status.expiresAt && status.expiresAt > Date.now()) {
-    setInterval(function(){
-      if(Date.now() >= status.expiresAt) {
-        var el = document.getElementById('__ban-screen');
-        if(el) el.remove();
-        document.body.style.overflow = '';
-      }
-    }, 60000);
-  }
-}
-
-// Restriction check for posting actions
-function __checkCanPost(){
-  var r = window.__restrictions;
-  if(!r || r.posting !== false) return true;
-  var ref = __acctStatus && __acctStatus.reference ? __acctStatus.reference : '';
-  if(typeof flash === 'function') flash('Your account has been restricted. Ref: ' + ref);
-  return false;
-}
-function __checkCanComment(){
-  var r = window.__restrictions;
-  if(!r || r.commenting !== false) return true;
-  if(typeof flash === 'function') flash('Commenting has been restricted on your account.');
-  return false;
-}
-function __checkCanPetition(){
-  var r = window.__restrictions;
-  if(!r || r.petitions !== false) return true;
-  if(typeof flash === 'function') flash('Petition signing has been restricted on your account.');
-  return false;
-}
-// ─────────────────────────────────────────────────────────────────────────────
-
-
-const PAL=['#c1593a','#5a7a8a','#6a8a5a','#7a6a4a','#5a5a8a','#8a5a6a','#2a6a5a','#6a3a8a','#4a7a6a','#8a7a4a'];
-const COVERS=[
-  {key:'stripes', label:'Stripes'},
-  {key:'dots',    label:'Dots'},
-  {key:'grid',    label:'Grid'},
-  {key:'diagonal',label:'Diagonal'},
-  {key:'waves',   label:'Waves'},
-  {key:'solid',   label:'Solid'},
-];
-
-function ls(k){return localStorage.getItem(k)}
-function sl(k,v){localStorage.setItem(k,v)}
-function ini(n){return((n||'?').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'?')}
-function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-function flash(msg){let el=document.getElementById('flash-msg');if(!el){el=document.createElement('div');el.id='flash-msg';el.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--clay);color:#fff;padding:10px 22px;border-radius:20px;font-size:13px;font-weight:600;z-index:9999;pointer-events:none;transition:opacity .3s;white-space:nowrap';document.body.appendChild(el)}el.textContent=msg;el.style.opacity='1';clearTimeout(window._ft);window._ft=setTimeout(()=>el.style.opacity='0',2800)}
-
-function getMe(){
-  let id=ls('loom-id-v3'),name=ls('loom-name-v3'),color=ls('loom-color-v3');
-  if(!id){id='u'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);sl('loom-id-v3',id)}
-  if(!name){const adj=['Swift','Quiet','Bright'];const nou=['Hawk','Mesa','Ridge'];name=adj[Math.floor(Math.random()*adj.length)]+' '+nou[Math.floor(Math.random()*nou.length)];sl('loom-name-v3',name)}
-  if(!color){color=PAL[0];sl('loom-color-v3',color)}
-  return{id,name,color}
-}
-const ME=getMe();
-
-var posts={},regions={};
-var muteList=new Set(JSON.parse(ls('loom-muted')||'[]'));
-var blocks=new Set(JSON.parse(ls('loom-blocks')||'[]'));
-
-db.get('posts').map().on(function(d,id){if(!d||d._deleted)delete posts[id];else posts[id]=d});
-db.get('compliance-history').get(ME.id).map().on(function(d,id){
-  if(!d||d._deleted)return;
-  // Merge into local compliance list
-  var stored=JSON.parse(localStorage.getItem('loom-compliance')||'[]');
-  var exists=stored.some(function(s){return s.id===d.id});
-  if(!exists){stored.unshift(d);localStorage.setItem('loom-compliance',JSON.stringify(stored.slice(0,50)))}
-  renderCompliance();
-});
-db.get('regions').map().on(function(d,id){if(!d||d._deleted)delete regions[id];else regions[id]=d;fillRegions()});
-
-// ── INIT ──────────────────────────────────────────
-function init(){
-  // Avatar
-  updateAv();
-
-  // Fill fields
-  const f=(id,key)=>{const e=document.getElementById(id);if(e)e.value=ls(key)||''};
-  f('s-name','loom-name-v3');f('s-pronouns','loom-pronouns-v3');
-  f('s-bio','loom-bio-v3');f('s-flair','loom-flair');
-  f('s-wordfilters','loom-wordfilters');
-  const bc=document.getElementById('s-bio-c');if(bc)bc.textContent=(ls('loom-bio-v3')||'').length+'/120';
-
-  // Toggles
-  const tg=(id,key,def)=>{const e=document.getElementById(id);if(e)e.checked=ls(key)===(def?'1':'0')?!def:def};
-  const t2=(id,key)=>{const e=document.getElementById(id);if(e)e.checked=ls(key)!=='0'};
-  t2('s-watch','loom-watch');
-  t2('s-break','loom-breaks');
-  t2('n-mentions','loom-notif-mentions');t2('n-likes','loom-notif-likes');
-  t2('n-comments','loom-notif-comments');t2('n-follows','loom-notif-follows');
-  t2('n-broadcast','loom-notif-broadcast');
-  const sd=document.getElementById('s-dark');if(sd)sd.checked=document.documentElement.classList.contains('dark');
-  const ss=document.getElementById('s-safe');if(ss)ss.checked=ls('loom-safe')==='1';
-  const sv=document.getElementById('s-sort');if(sv)sv.value=ls('loom-sort')||'new';
-  const vis=document.getElementById('s-visibility');if(vis)vis.value=ls('loom-visibility')||'everyone';
-
-  // Name history
-  const nh=JSON.parse(ls('loom-namehist')||'[]');
-  const nhEl=document.getElementById('s-namehist');
-  if(nhEl&&nh.length)nhEl.textContent='Formerly: '+nh.slice(0,3).map(h=>h.name).join(' → ');
-
-  // ID display
-  const idEl=document.getElementById('s-id-display');if(idEl)idEl.textContent=ME.id;
-
-  // Colour swatches
-  renderSwatches();renderCovers();
-
-  // Muted/blocked
-  renderMutedBlocked();
-
-  // PIC URL prefill
-  const pu=document.getElementById('s-pic-url');if(pu)pu.value=ls('loom-pic-url')||'';
-
-  // Compliance
-  renderCompliance();
-}
-
-function updateAv(){
-  const el=document.getElementById('s-av');if(!el)return;
-  const picData=ls('loom-pic-data');const picUrl=ls('loom-pic-url');
-  if(picData||picUrl){
-    el.style.backgroundImage=`url(${picData||picUrl})`;el.style.backgroundSize='cover';el.style.backgroundPosition='center';el.textContent='';
-  } else {
-    el.style.backgroundImage='';el.textContent=ini(ME.name);el.style.background=ME.color;
-  }
-}
-
-function handlePicUpload(input){
-  const file=input.files[0];if(!file)return;
-  if(file.size>2*1024*1024){flash('Image too large. Max 2MB.');return}
-  const reader=new FileReader();
-  reader.onload=e=>{sl('loom-pic-data',e.target.result);sl('loom-pic-url','');updateAv();flash('Profile photo updated (stored locally).')};
-  reader.readAsDataURL(file);
-}
-function setPicURL(){
-  const url=(document.getElementById('s-pic-url').value||'').trim();
-  if(!url){flash('Enter a URL first.');return}
-  sl('loom-pic-url',url);sl('loom-pic-data','');updateAv();flash('Profile photo URL saved.');
-}
-function clearPic(){sl('loom-pic-data','');sl('loom-pic-url','');document.getElementById('s-pic-url').value='';updateAv();flash('Profile photo cleared.')}
-
-function renderSwatches(){
-  const box=document.getElementById('s-swatches');if(!box)return;
-  const cur=ME.color;
-  box.innerHTML=PAL.map(c=>`<div class="color-swatch${c===cur?' selected':''}" style="background:${c}" onclick="selectColor('${c}',this)"></div>`).join('');
-}
-function selectColor(c,el){
-  ME.color=c;sl('loom-color-v3',c);
-  document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById('s-color-pick').value=c;
-  updateAv();
-}
-function pickCustomColor(c){ME.color=c;sl('loom-color-v3',c);renderSwatches();updateAv()}
-
-function renderCovers(){
-  const box=document.getElementById('s-covers');if(!box)return;
-  const cur=ls('loom-cover')||'stripes';
-  const color=ME.color;
-  const patterns={
-    stripes:`<svg width="100%" height="100%"><defs><pattern id="p" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse"><line x1="0" y1="8" x2="8" y2="0" stroke="${color}" stroke-width="1.5"/></pattern></defs><rect width="100%" height="100%" fill="${color}22"/><rect width="100%" height="100%" fill="url(#p)" opacity=".4"/></svg>`,
-    dots:`<svg width="100%" height="100%"><rect width="100%" height="100%" fill="${color}22"/><circle cx="10" cy="10" r="2" fill="${color}" opacity=".4"/><circle cx="30" cy="10" r="2" fill="${color}" opacity=".4"/><circle cx="20" cy="20" r="2" fill="${color}" opacity=".4"/><circle cx="10" cy="30" r="2" fill="${color}" opacity=".4"/><circle cx="30" cy="30" r="2" fill="${color}" opacity=".4"/></svg>`,
-    grid:`<svg width="100%" height="100%"><defs><pattern id="p" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M 12 0 L 0 0 0 12" fill="none" stroke="${color}" stroke-width=".8" opacity=".4"/></pattern></defs><rect width="100%" height="100%" fill="${color}18"/><rect width="100%" height="100%" fill="url(#p)"/></svg>`,
-    diagonal:`<svg width="100%" height="100%"><rect width="100%" height="100%" fill="${color}22"/><line x1="0" y1="0" x2="60" y2="36" stroke="${color}" stroke-width="20" opacity=".12"/><line x1="0" y1="36" x2="60" y2="0" stroke="${color}" stroke-width="20" opacity=".08"/></svg>`,
-    waves:`<svg width="100%" height="100%" viewBox="0 0 60 36"><rect width="60" height="36" fill="${color}18"/><path d="M0 18 Q15 8 30 18 Q45 28 60 18" stroke="${color}" stroke-width="2" fill="none" opacity=".3"/><path d="M0 24 Q15 14 30 24 Q45 34 60 24" stroke="${color}" stroke-width="1.5" fill="none" opacity=".2"/></svg>`,
-    solid:`<svg width="100%" height="100%"><rect width="100%" height="100%" fill="${color}33"/></svg>`,
-  };
-  box.innerHTML=COVERS.map(cv=>`<div class="cover-opt${cv.key===cur?' selected':''}" onclick="selectCover('${cv.key}',this)" title="${cv.label}" style="overflow:hidden">${patterns[cv.key]||''}</div>`).join('');
-}
-function selectCover(key,el){sl('loom-cover',key);document.querySelectorAll('.cover-opt').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');flash('Cover updated.')}
-
-function fillRegions(){
-  const s=document.getElementById('s-region');if(!s)return;
-  const list=Object.values(regions).filter(r=>!r._deleted).sort((a,b)=>a.name.localeCompare(b.name));
-  const cv=s.value;s.innerHTML='<option value="">Everywhere</option>'+list.map(r=>`<option value="${r.code}">${r.flag||''} ${esc(r.name)}</option>`).join('');
-  const hr=ls('loom-home-v3');if(hr&&!cv)s.value=hr;else if(cv)s.value=cv;
-}
-
-function renderMutedBlocked(){
-  const ml=document.getElementById('s-muted-list');
-  if(ml){
-    const muted=[...muteList];
-    ml.innerHTML=muted.length?muted.map(n=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border2)"><span style="flex:1;font-size:13px;color:var(--text)">${esc(n)}</span><button onclick="unmute('${esc(n)}')" class="btn btn-ghost btn-xs">Unmute</button></div>`).join(''):'<div style="font-size:13px;color:var(--text4)">No muted users.</div>';
-  }
-  const bl=document.getElementById('s-blocked-list');
-  if(bl){
-    const blocked=[...blocks];
-    bl.innerHTML=blocked.length?blocked.map(n=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border2)"><span style="flex:1;font-size:13px;color:var(--text)">${esc(n)}</span><button onclick="unblock('${esc(n)}')" class="btn btn-ghost btn-xs">Unblock</button></div>`).join(''):'<div style="font-size:13px;color:var(--text4)">No blocked users.</div>';
-  }
-}
-function unmute(n){muteList.delete(n);sl('loom-muted',JSON.stringify([...muteList]));renderMutedBlocked();flash('Unmuted '+n)}
-function unblock(n){blocks.delete(n);sl('loom-blocks',JSON.stringify([...blocks]));renderMutedBlocked();flash('Unblocked '+n)}
-
-function renderCompliance(){
-  const el=document.getElementById('s-compliance-list');if(!el)return;
-  const flagged=Object.values(posts).filter(p=>p&&p.userId===ME.id&&p.underReview);
-  const stored=JSON.parse(ls('loom-compliance')||'[]');
-  const all=[...stored,...flagged.map(p=>({ts:Date.now(),type:'review',desc:'Post flagged for community standards review',status:'active'}))];
-  if(!all.length){
-    el.innerHTML=`<div style="text-align:center;padding:20px;background:var(--surface2);border-radius:8px"><div style="font-size:20px;margin-bottom:8px">✓</div><div style="font-size:14px;font-weight:600;color:var(--text)">No compliance actions on record</div></div>`;
-    return;
-  }
-  const statusColor={active:'var(--red)',resolved:'var(--green)',pending:'#8a7000'};
-  el.innerHTML=all.map(e=>`<div class="compliance-item">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
-      <span class="badge" style="background:${statusColor[e.status]||'var(--text4)'}22;color:${statusColor[e.status]||'var(--text4)'}">${e.status||'recorded'}</span>
-      <span style="font-size:13px;font-weight:600;color:var(--text)">${e.type||'Action'}</span>
-      <span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-left:auto">${new Date(e.ts).toLocaleDateString()}</span>
-    </div>
-    <div style="font-size:13px;color:var(--text2)">${esc(e.desc||'')}</div>
-  </div>`).join('')+'<div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-top:10px;line-height:1.7">Records retained under EIMA 2015 §14(c). Disputes to Altura Internal Review Board within 30 days. Record correction not guaranteed during active national emergency.</div>';
-}
-
-// ── SAVES ─────────────────────────────────────────
-function saveName(){
-  const v=(document.getElementById('s-name').value||'').trim();if(!v||v.length<2){flash('Name must be at least 2 characters.');return}
-  const old=ME.name;ME.name=v;sl('loom-name-v3',v);
-  if(old!==v){const h=JSON.parse(ls('loom-namehist')||'[]');h.unshift({name:old,ts:Date.now()});sl('loom-namehist',JSON.stringify(h.slice(0,10)))}
-  flash('Name updated.');init();
-}
-function saveIdentity(){
-  const name=(document.getElementById('s-name').value||'').trim();
-  if(name&&name.length>=2){const old=ME.name;ME.name=name;sl('loom-name-v3',name);if(old!==name){const h=JSON.parse(ls('loom-namehist')||'[]');h.unshift({name:old,ts:Date.now()});sl('loom-namehist',JSON.stringify(h.slice(0,10)))}}
-  sl('loom-pronouns-v3',(document.getElementById('s-pronouns').value||'').trim());
-  sl('loom-bio-v3',(document.getElementById('s-bio').value||'').trim());
-  sl('loom-flair',(document.getElementById('s-flair').value||'').trim().slice(0,20));
-  sl('loom-home-v3',document.getElementById('s-region').value||'');
-  sl('loom-sort',document.getElementById('s-sort').value||'new');
-  flash('Identity saved.');updateAv();
-}
-function savePref(key,val){sl(key,val?'1':'0')}
-function saveNotifPref(type,val){sl('loom-notif-'+type,val?'1':'0')}
-function saveWordFilters(){const v=(document.getElementById('s-wordfilters').value||'');sl('loom-wordfilters',v);flash('Word filters saved.')}
-
-// ── DATA EXPORT ───────────────────────────────────
-function requestExport(){
-  const es=document.getElementById('s-export-status');if(!es)return;
-  const ref='EXP-'+Date.now().toString(36).toUpperCase();sl('loom-export-req',Date.now().toString());
-  es.innerHTML=`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;font-size:13px;color:var(--text2)"><strong style="color:var(--text)">Request submitted.</strong> Processing time: 72 hours. Reference: <span style="font-family:ui-monospace,monospace;color:var(--clay)">${ref}</span></div>`;
-}
-function downloadNow(){
-  const myPosts=Object.values(posts).filter(p=>p&&p.userId===ME.id);
-  const data={exported_at:new Date().toISOString(),note:'Partial export from peer-to-peer network. Full Altura Analytics export available on request.',user:{id:ME.id,name:ME.name,color:ME.color},posts:myPosts,muted:[...muteList],blocked:[...blocks],word_filters:(ls('loom-wordfilters')||'').split(',').filter(Boolean)};
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='loom-my-data.json';a.click();URL.revokeObjectURL(url);
-}
-
-function resetIdentity(){
-  if(!confirm('Reset local identity? Your posts remain on Loom and are retained by Altura Analytics.'))return;
-  ['loom-id-v3','loom-name-v3','loom-color-v3','loom-done-v3','loom-bio-v3','loom-pronouns-v3','loom-home-v3','loom-namehist','loom-pic-data','loom-pic-url','loom-flair','loom-follows','loom-muted','loom-blocks','loom-bookmarks','loom-wordfilters','loom-cover'].forEach(k=>localStorage.removeItem(k));
-  flash('Local identity reset. Redirecting…');setTimeout(()=>window.open('loom.html','_self'),1200);
-}
-
-// ── DARK MODE ─────────────────────────────────────
-function toggleDark(){
-  document.documentElement.classList.toggle('dark');
-  const d=document.documentElement.classList.contains('dark');
-  sl('loom-dark',d?'1':'0');
-  document.getElementById('dark-ico').textContent=d?'☀️':'🌙';
-  const sd=document.getElementById('s-dark');if(sd)sd.checked=d;
-  renderCovers();
-}
-if(ls('loom-dark')==='1'){document.documentElement.classList.add('dark');document.getElementById('dark-ico').textContent='☀️'}
-
-setTimeout(init,100);
-
-document.addEventListener('click',function(e){const a=e.target.closest('a[href]');if(!a)return;const href=a.getAttribute('href');if(!href||href.startsWith('#')||href.startsWith('http')||a.target==='_blank')return;if(href.endsWith('.html')){e.preventDefault();document.body.style.opacity='0';document.body.style.transition='opacity .2s';setTimeout(()=>window.location.href=href,180)}});
-window.addEventListener('pageshow',()=>{document.body.style.opacity='';document.body.style.transition='';document.body.classList.add('page-fade');setTimeout(()=>document.body.classList.remove('page-fade'),300)});
-
+'use strict';(function(y,B){const of={y:0x1fe,B:0x436,N:0x4a6,M:0x2ef,t:0x3ed,m:0x273,n:0x21e,e:0x38b,C:0x3c9,K:0x489,s:0x3d9,Q:0x30b,q:0x3da},oz={y:0x3d1},oU={y:0x3c2},ob={y:0x26d};function U(y,B,N){return j(y-ob.y,N);}function z(y,B,N){return j(B-oU.y,N);}function f(y,B,N){return j(N-oz.y,y);}const N=y();while(!![]){try{const M=-parseInt(U(0x26d,0x218,0x332))/0x1+-parseInt(U(0x26e,of.y,0x1c4))/0x2*(parseInt(f(of.B,0x36f,0x3d3))/0x3)+-parseInt(z(of.N,0x3c5,0x427))/0x4*(-parseInt(f(0x364,of.M,0x3d5))/0x5)+parseInt(z(0x46c,0x3c7,of.t))/0x6*(parseInt(U(of.m,of.n,0x333))/0x7)+parseInt(z(of.e,of.C,0x350))/0x8+parseInt(f(0x4ac,of.K,of.s))/0x9+-parseInt(f(0x316,of.Q,of.q))/0xa;if(M===B)break;else N['push'](N['shift']());}catch(t){N['push'](N['shift']());}}}(o,0xc52d5));const NS=x(0x13a,0x56,0x3c),gun=GUN([W(0x184,0x1c8,0x1d2),x(0x115,0x58,0x25)]),db=gun[E(0x2b1,0x266,0x2b8)](NS);var __acctStatus=null;(function(){const or={y:0x9b,B:0xa8,N:0x9c,M:0x14f,t:0x95,m:0x116,n:0x1e5,e:0x146,C:0x14f,K:0x187,s:0x14e,Q:0xba,q:0x1d7},oY={y:0x41},oa={y:0x6b,B:0x23f,N:0xc0,M:0x69,t:0xe,m:0x149,n:0x68,e:0xe5,C:0x68,K:0x14d,s:0x66,Q:0x68,q:0xe6,c:0x1fd},oX={y:0x10d},ow={y:0x2d4},od={y:0x35d,B:0x143},oP={y:0x311,B:0x1bf,N:0x29e,M:0x34b,t:0x1a0,m:0x99,n:0x1e2},ol={y:0x28e},oO={y:0xf7},N=(function(){const oW={y:0x86};let m=!![];return function(n,e){const ox={y:0x125},C=m?function(){function v(y,B,N){return j(B-ox.y,y);}if(e){const K=e[v(oW.y,0x133,0x144)](n,arguments);return e=null,K;}}:function(){};return m=![],C;};}());function l(y,B,N){return W(B- -0xf1,y,N-oO.y);}const M=N(this,function(){const oL={y:0x13a},oT={y:0x24f};function O(y,B,N){return j(N-oT.y,y);}function R(y,B,N){return j(B-ol.y,y);}function T(y,B,N){return j(y- -oL.y,B);}return M[R(oP.y,0x29d,0x1ec)]()[R(oP.B,oP.N,0x1d1)](R(0x360,0x29f,oP.M))[T(-0x12b,-oP.t,-oP.m)]()[R(0x304,0x2a0,0x239)](M)[T(-0x12a,-0xde,-0x142)](R(0x23c,0x29f,oP.n));});M();function L(y,B,N){return W(B- -od.y,N,N-od.B);}var t=localStorage[l(-0x33,or.y,or.B)](l(0xf4,or.N,0xbd));function P(y,B,N){return W(N- -ow.y,B,N-0x16e);}if(!t)return;db[l(or.M,or.t,0x65)](P(-or.m,-or.n,-or.e))[l(0x15a,0x95,0x23)](t)['on'](function(m){function d(y,B,N){return L(y-0xce,N-0x163,y);}if(!m||m['_']){if(m&&Object[d(-0x5,-0x33,-oa.y)](m)[w(oa.B,0xfc,0x1bf)](n=>n!=='_')[d(-oa.N,-0xeb,-oa.M)]===0x0)return;}if(!m||!m[d(oa.t,-oa.m,-oa.n)]||m[d(-0x42,-oa.e,-oa.C)]===F(-oa.K,-0x19d,-0xd9))return;function w(y,B,N){return L(y-0xff,N-0x38c,B);}function F(y,B,N){return L(y-oX.y,y-0x7d,N);}__acctStatus=m;if(m[d(-oa.s,0x44,-oa.Q)]===w(oa.q,oa.c,0x1c3))return;renderAccountStatusScreen(m);}),db[P(-or.C,-or.K,-or.s)](P(-0x83,-or.Q,-0x13f))[L(-0x17b,-or.q,-0x202)](t)['on'](function(m){const oV={y:0x1bf};if(!m)return;function u(y,B,N){return L(y-oV.y,N-0x179,y);}window[u(oY.y,-0xcd,-0x4e)]=m;});}());function renderAccountStatusScreen(y){const oJ={y:0x38d,B:0x323,N:0xd3,M:0x44b,t:0x300,m:0xff,n:0xfc,e:0x6d,C:0x10,K:0xf,s:0x46,Q:0xe,q:0x73,c:0x2bf,S:0x393,h:0x443,b:0x50,oD:0x37b,op:0x129,ok:0x39c,j0:0x481,j1:0x2cd,j2:0x128,j3:0x6c,j4:0xdf,j5:0x107,j6:0xe3,j7:0x3,j8:0xa,j9:0x3a1,jy:0x469,jB:0x9f,jo:0x14b,jj:0x4c,jN:0x7b,jM:0x41d,jt:0x77,jm:0x12,jn:0x147,je:0x37c,jC:0x40,jK:0x84,js:0x71,jQ:0x5f,jq:0x9c,jc:0x4,jS:0x3ab,jh:0x3ac,jb:0x303,jU:0x47c,jz:0x35,jf:0x89,jx:0x319,jW:0xca,jE:0x352,jv:0x308,jR:0x309,jO:0x3d8,jT:0x3b0,jl:0x42a,jL:0x10,jP:0xad,jd:0x54,jw:0x432,jF:0x30a,ju:0x3b3,jX:0x3de,ja:0x437,jV:0xb,jY:0x20,jr:0xa6,jI:0x426,jH:0x92,jg:0x496,jZ:0xf,ji:0xc7,jA:0x5c,jG:0x31,jJ:0x52,jD:0x11,jp:0x75,jk:0xb9,N0:0x89,N1:0xd,N2:0xa3,N3:0x44,N4:0xbb,N5:0x15,N6:0x91,N7:0xc4,N8:0x70,N9:0x94,Ny:0x17,NB:0x7c,No:0x3ba,Nj:0x378,NN:0x3,NM:0x6a,Nt:0x1a,Nm:0x2c,Nn:0x95,Ne:0x3bd,NC:0x37d,NK:0x1c,Ns:0x2d,NQ:0x9b,Nq:0x3c0,Nc:0x337,Nh:0x3c2,Nb:0x46e,NU:0x21,Nz:0x14,Nf:0x2a,Nx:0x138,NW:0x9a,NE:0x17d,Nv:0xc1,NR:0xa5,NO:0x28,NT:0x4,Nl:0x384,NL:0x2ee,NP:0x9f,Nd:0x51,Nw:0xbd,NF:0x3d1,Nu:0x464,NX:0x410,Na:0x3ca,NV:0x17f,NY:0xaf,Nr:0x33,NI:0xf6,NH:0xd,Ng:0x32e,NZ:0x36,Ni:0x96,NA:0x3d9,NG:0x48e,NJ:0x321,ND:0x46f,Np:0x3cb,Nk:0x387,M0:0x3e0,M1:0x39,M2:0x3de,M3:0x3df,M4:0x36d,M5:0x33a,M6:0x3e0,M7:0x3e9,M8:0x4af,M9:0x4a6,My:0x376,MB:0x72,Mo:0x1b,Mj:0xbe,MN:0xbf,MM:0xea,Mt:0x48d,Mm:0x4c1,Mn:0x3e5,Me:0x32a,MC:0x21,MK:0x115,Ms:0x44b,MQ:0x3de,Mq:0x422,Mc:0x1a2,MS:0x68,Mh:0x3a,Mb:0x4b8,MU:0x12b,Mz:0xc4,Mf:0x5b,Mx:0x489,MW:0x35d,ME:0x30c,Mv:0x46a,MR:0x53,MO:0x5,MT:0xb7,Ml:0x3c,ML:0xaa,MP:0x194,Md:0xc5,Mw:0x48,MF:0x3e,Mu:0x115,MX:0x418,Ma:0x3c2,MV:0x3ec,MY:0x3e6,Mr:0x3ee,MI:0x42a,MH:0x19,Mg:0x166,MZ:0xcd,Mi:0x3c9,MA:0x407,MG:0x34c,MJ:0x2e9,MD:0x385,Mp:0x50,Mk:0x63,t0:0xc9,t1:0x9f,t2:0x65,t3:0x4a,t4:0x3d4,t5:0x3f5,t6:0x39f,t7:0x68,t8:0x68,t9:0xd,ty:0xb3,tB:0x52,to:0xd2,tj:0x3f7,tN:0x415,tM:0x497,tt:0x3f4,tm:0xd4,tn:0x3a,te:0x3e5,tC:0x31,tK:0x128,ts:0x470,tQ:0x94,tq:0x9,tc:0xdb,tS:0x192,th:0x14c,tb:0xdc,tU:0x401,tz:0x4be,tf:0x4d4,tx:0x4cb,tW:0x357,tE:0x1a},oG={y:0x29c,B:0x25d,N:0x1e8,M:0x2bc,t:0x2bb,m:0x2a0,n:0x286,e:0x347,C:0x2ae,K:0x3a2,s:0x30a,Q:0x24e,q:0x277},oi={y:0x116,B:0x325},oZ={y:0xc},og={y:0x15c},oH={y:0x144},oI={y:0x184};function X(y,B,N){return E(y-oI.y,B,y-0xc4);}function V(y,B,N){return E(y-oH.y,B,y- -0x2de);}var B=document[X(oJ.y,0x365,oJ.B)](a(oJ.N,0xd2,0x6a));if(B)B[X(0x38f,0x38a,oJ.M)]();var N=y[X(0x388,oJ.t,0x39b)]||X(0x390,0x37c,0x2b1),M={'restricted':{'title':a(oJ.m,oJ.n,oJ.e),'icon':'⚠','color':V(-oJ.C,-0xb2,-0x8d),'bg':V(-oJ.K,oJ.s,-0x71),'border':V(-oJ.Q,0x5c,oJ.q),'desc':X(0x395,0x3e2,oJ.c),'badge':V(-0xc,0xc8,0x90),'badgeBg':X(oJ.S,oJ.h,0x3da),'badgeColor':a(0x45,0xfe,0x6e),'dismissable':![],'overlay':![]},'suspended':{'title':a(-0x55,oJ.b,0x73),'icon':'🚫','color':a(0xf3,-0x5a,0x74),'bg':X(0x399,0x3a2,oJ.oD),'border':a(oJ.op,0xaa,0x76),'desc':V(-0x7,-0xda,0x9a),'badge':X(oJ.ok,oJ.j0,oJ.j1),'badgeBg':X(0x39d,0x42f,0x3da),'badgeColor':a(oJ.j2,oJ.j3,0x74),'dismissable':![],'overlay':!![]},'banned':{'title':X(0x39e,0x3b4,0x3c7),'icon':'🔴','color':V(-0x3,oJ.j4,-0x9f),'bg':a(oJ.j5,oJ.j6,0x75),'border':V(-oJ.j7,0xab,-oJ.j8),'desc':X(0x3a0,0x35d,0x37d),'badge':X(oJ.j9,0x2c3,oJ.jy),'badgeBg':V(-0x5,0x50,-oJ.jB),'badgeColor':a(oJ.jo,-oJ.jj,oJ.jN),'dismissable':![],'overlay':!![]},'deleted':{'title':X(0x3a2,0x30f,oJ.jM),'icon':'⬛','color':X(0x3a3,0x3a7,0x342),'bg':V(0x2,-oJ.jt,-0x2f),'border':a(0x5a,-0x39,0x81),'desc':a(-oJ.jm,oJ.jn,0x82),'badge':X(0x3a7,0x37e,oJ.je),'badgeBg':a(0x145,-oJ.jC,oJ.jK),'badgeColor':a(oJ.js,-oJ.jQ,0x85),'dismissable':![],'overlay':!![]}},t=M[N]||M[X(0x390,0x338,0x3de)],m=y[V(0x8,-oJ.jq,oJ.jc)]||X(oJ.jS,0x443,0x313)+(y[X(oJ.jh,oJ.jb,oJ.jU)]||Date[a(0x148,oJ.jz,oJ.jf)]())[X(0x37e,0x3a9,oJ.jx)](0x24)[V(0xc,oJ.jW,0x2d)]();function a(y,B,N){return E(y-og.y,B,N- -0x260);}var n=y[X(0x3ac,oJ.jE,oJ.jv)]?new Date(y[a(0x54,0x23,0x88)])[X(0x3af,oJ.jR,oJ.jO)]('en',{'year':X(oJ.jT,oJ.jl,0x2e5),'month':V(oJ.K,-0x54,-oJ.jL),'day':a(oJ.jP,oJ.jd,0x8c)}):X(0x3b2,0x316,oJ.jw),e='';if(y[X(0x3b3,0x432,oJ.jF)]&&y[X(oJ.ju,oJ.jX,oJ.ja)]>Date[V(oJ.jV,0x71,-0x5a)]()){var C=y[a(-0x16,0x6d,0x8f)]-Date[V(0xb,oJ.jY,0x84)](),K=Math[V(0x12,-oJ.jq,oJ.jr)](C/0x5265c00);e=K>0x1?X(0x3b5,oJ.jI,0x355)+K+a(0x99,0xa9,oJ.jH)+new Date(y[X(oJ.ju,0x358,oJ.jg)])[V(0xd,0x3a,0x29)]('en',{'month':V(oJ.jZ,0xe,-0x9f),'day':V(0xe,oJ.ji,0xbf),'year':V(0xe,-oJ.jA,oJ.q)})+')':a(oJ.jG,oJ.jJ,0x93);}else{if(y[V(oJ.jD,-oJ.jp,-0x61)]&&y[V(oJ.jD,0x32,-oJ.jk)]<=Date[a(0xa9,0x135,oJ.N0)]()){document[V(-0x15,-oJ.N1,-oJ.N2)](a(-oJ.N3,oJ.N4,0x6a))&&document[V(-oJ.N5,-oJ.N6,0x90)](V(-0x14,oJ.N7,oJ.N8))[V(-0x13,-0x37,-0x1)]();return;}else!y[X(oJ.ju,0x2dd,0x32c)]&&N!==a(-0x47,-0xd,oJ.N9)&&(e=V(oJ.Ny,-0xa3,oJ.NB));}var s=document[X(oJ.No,oJ.Nj,0x377)](V(0x19,0x3d,-oJ.NN));s['id']=a(0xbd,-0xa,oJ.NM),s[V(oJ.Nt,oJ.Nm,oJ.Nn)][X(oJ.Ne,0x34c,oJ.NC)]=t[V(oJ.NK,oJ.Ns,-0xa8)]?a(-0x11,oJ.N7,oJ.NQ):X(oJ.Nq,oJ.Nc,0x3a3)+t['bg']+V(0x1f,-0x99,-0x8a)+t[X(oJ.Nh,0x38d,oJ.Nb)]+V(oJ.NU,-0x65,-oJ.Nz);t[a(oJ.Nf,oJ.Nx,oJ.NW)]?s[a(oJ.NE,0x16c,0xa0)]=a(0x1e,0x17f,0xa1)+V(0x24,0x5d,0xfb)+V(0x25,oJ.Nv,0xc3)+V(0x26,0x19,0xbf)+a(-0x5,oJ.jA,oJ.NR)+V(oJ.NO,-oJ.NT,-0x10)+t[X(0x3cb,0x49f,0x355)]+a(0x1f,0x9c,oJ.NR)+X(0x3cc,0x43e,0x384)+t[X(0x3cd,oJ.Nl,oJ.NL)]+V(0x2c,-0x91,0xf1)+t[V(oJ.Ns,oJ.NP,oJ.Nd)]+V(0x2e,0xa1,oJ.Nw)+t[X(oJ.NF,oJ.Nu,0x43f)]+X(0x3d2,oJ.NX,oJ.Na)+a(oJ.NV,0xa4,oJ.NY)+t[V(0x32,0xe,-oJ.jA)]+V(oJ.Nr,0x72,-0x71)+V(0x34,oJ.NI,-oJ.NH)+t[X(0x3d7,0x445,oJ.Ng)]+V(oJ.NZ,-0x84,0x19)+(y[V(0x37,0x28,0xd6)]?V(0x38,0x32,oJ.Ni)+(y[X(oJ.NA,oJ.NG,0x394)]||'')[X(0x3db,oJ.NJ,oJ.ND)](/&/g,X(0x3dc,0x49d,oJ.Np))[X(0x3db,0x3a6,oJ.Nk)](/</g,X(0x3dd,0x396,oJ.M0))[V(oJ.M1,oJ.m,oJ.js)](/>/g,X(oJ.M2,0x3e7,0x479))+X(oJ.M3,oJ.M4,oJ.M5):'')+X(oJ.M6,oJ.M7,oJ.M8)+X(0x3e1,oJ.M9,oJ.My)+m+a(oJ.MB,oJ.Mo,oJ.Mj)+a(0x105,0xf9,oJ.MN)+n+V(0x40,oJ.MM,oJ.Nw)+(y[X(0x3e4,oJ.Mt,oJ.Mm)]?X(oJ.Mn,oJ.Me,0x333)+(y[V(0x42,0x36,-oJ.MC)]||'')[V(0x39,oJ.MK,0xdd)](/&/g,V(0x3a,0x99,-0x15))[X(0x3db,0x34c,oJ.Ms)](/</g,X(0x3dd,0x45c,0x393))[V(oJ.M1,0x7,0xc5)](/>/g,X(oJ.MQ,0x3e3,oJ.Mq))+a(oJ.Mc,0x14c,0xbe):'')+(e?V(0x44,oJ.MS,-oJ.Mh)+e+X(0x3e2,oJ.Mb,0x47b):'')+(y[V(0x45,0x4b,oJ.MU)]?a(0xb5,0xad,oJ.Mz)+(y[a(oJ.Mf,oJ.MN,0xc3)]||'')[X(0x3db,oJ.Mx,oJ.MW)](/&/g,X(0x3dc,0x48c,oJ.ME))[X(0x3db,0x3df,0x38f)](/</g,X(0x3dd,oJ.Mv,0x421))[a(oJ.MR,oJ.MO,oJ.MT)](/>/g,V(oJ.Ml,-0x91,oJ.ML))+a(oJ.MP,oJ.Nv,0xbe):'')+(y[a(0xba,0x1a2,oJ.Md)]?V(oJ.Mw,0x1,-oJ.MF):'')+a(oJ.Mu,0x2f,0xa5)+X(0x3eb,oJ.MX,oJ.Ma)+X(oJ.MV,0x47c,oJ.MY)+(N!==V(0x4b,0x25,0x62)&&N!==X(oJ.Mr,0x462,0x486)?a(0x104,0x85,0xcb):'')+V(0x4e,0xaa,-0x8)+X(0x3c9,0x486,oJ.MI)+a(oJ.MH,oJ.Mg,oJ.MZ)+m+X(oJ.Mi,oJ.MA,oJ.MG)+X(oJ.Mi,oJ.MJ,0x37d):s[X(0x3c4,oJ.MD,0x313)]=V(oJ.Mp,-0x57,0x87)+t[a(oJ.Mk,0x151,0xa7)]+a(oJ.t0,0x2b,0xae)+a(0x165,oJ.t1,0xcf)+t[V(0x52,oJ.t2,-oJ.t3)]+'\x22>'+t[X(oJ.t4,0x49a,0x3f6)]+X(oJ.t5,oJ.Nl,oJ.t6)+(y[V(0x37,0x114,-oJ.t7)]||t[a(oJ.t8,-oJ.t9,oJ.ty)])+a(oJ.tB,0x4a,oJ.to)+m+V(oJ.jC,0xa4,0x22)+X(oJ.tj,oJ.tN,oJ.tM)+t[X(oJ.tt,0x437,0x34f)]+a(0x197,0x49,oJ.tm);if(t[X(0x3be,0x44b,0x428)])document[V(0x57,-0x84,-oJ.tn)][X(0x3fa,0x4a1,0x3c7)](s),document[X(0x3f9,0x3c4,0x391)][X(0x3bc,oJ.te,0x458)][V(0x59,-oJ.jm,oJ.tC)]=V(0x5a,-0x9,oJ.tK);else{var Q=document[X(0x3fd,0x4d0,oJ.ts)](a(0x108,0x5e,0xda));if(Q&&Q[a(oJ.tQ,oJ.tq,oJ.tc)])Q[a(oJ.tS,oJ.th,oJ.tb)][X(oJ.tU,oJ.tz,oJ.tf)](s,Q[a(0xdc,0x193,0xdb)]);else document[X(0x3f9,oJ.tx,oJ.NF)][X(0x402,0x498,oJ.tW)](s);}y[V(oJ.jD,-oJ.N9,0x1e)]&&y[a(0xed,-0x49,0x8f)]>Date[a(0x54,-oJ.tE,0x89)]()&&setInterval(function(){const oA={y:0x78,B:0x272};function I(y,B,N){return a(y-0x168,N,B-oZ.y);}function Y(y,B,N){return a(y-oi.y,B,y- -oi.B);}function r(y,B,N){return a(y-oA.y,y,N-oA.B);}if(Date[Y(-oG.y,-0x2ef,-oG.B)]()>=y[Y(-0x296,-0x1df,-oG.N)]){var q=document[Y(-oG.M,-0x309,-0x2b4)](Y(-oG.t,-0x388,-0x372));if(q)q[Y(-0x2ba,-0x2a7,-0x2ed)]();document[r(oG.m,oG.n,oG.e)][r(oG.C,oG.K,oG.s)][Y(-oG.Q,-oG.q,-0x284)]='';}},0xea60);}function __checkCanPost(){const j0={y:0x1d1,B:0x185,N:0x113,M:0xa1,t:0x84,m:0xc4,n:0x189,e:0x15b,C:0x16a,K:0x5f,s:0x2b},oD={y:0x464};var y=window[H(-j0.y,-j0.B,-0x19c)];function H(y,B,N){return E(y-0x96,B,N- -oD.y);}if(!y||y[H(-j0.N,-j0.M,-0x125)]!==![])return!![];var B=__acctStatus&&__acctStatus[g(-j0.t,-j0.m,-j0.n)]?__acctStatus[g(-j0.e,-j0.m,-0xbf)]:'';function g(y,B,N){return E(y-0x193,N,B- -0x3aa);}function Z(y,B,N){return E(y-0x5d,y,B- -0x278);}if(typeof flash===Z(j0.C,0xc8,0x10a))flash(g(-j0.K,-0x69,j0.s)+B);return![];}function __checkCanComment(){const j4={y:0xc2,B:0x217,N:0x114,M:0xd8,t:0x14f,m:0xa5},j3={y:0x1d5},j2={y:0xba},j1={y:0x292,B:0xd2};var y=window[i(0x15a,j4.y,0xcd)];if(!y||y[i(0xa9,j4.B,0x147)]!==![])return!![];function G(y,B,N){return W(y- -j1.y,B,N-j1.B);}function A(y,B,N){return W(B- -0x136,y,N-j2.y);}if(typeof flash===A(j4.N,j4.M,0xc4))flash(i(j4.t,j4.m,0x148));function i(y,B,N){return W(N- -0xc9,B,N-j3.y);}return![];}function __checkCanPetition(){const j8={y:0x1d6,B:0x205,N:0x1ed,M:0x1ef,t:0x166,m:0x21e},j7={y:0x45c},j6={y:0x165},j5={y:0x17f,B:0x13f};var y=window[J(-0x128,-j8.y,-0x194)];function D(y,B,N){return E(y-j5.y,N,y- -j5.B);}function p(y,B,N){return E(y-0xab,y,B- -j6.y);}if(!y||y[D(j8.B,j8.N,j8.M)]!==![])return!![];if(typeof flash===p(0x269,0x1db,j8.t))flash(D(0x206,0x13f,j8.m));function J(y,B,N){return E(y-0x2c,B,N- -j7.y);}return![];}const PARTNER_COLORS={'hhs':x(0xe7,0xe7,0x165),'proxima':x(0x4c,0xe8,0x1a5),'nrc':x(0x3f,0xe9,0x62),'salt-lake':x(0x1c8,0xea,0x13b),'default':E(0x3e5,0x339,0x34a)};function ls(y){const jy={y:0x425},j9={y:0x105};function k(y,B,N){return E(y-0x40,y,N-j9.y);}return localStorage[k(jy.y,0x42b,0x3c3)](y);}function sl(y,B){const jo={y:0x318,B:0x384};function y0(y,B,N){return W(B-0x16b,N,N-0x199);}localStorage[y0(jo.y,jo.B,0x3fe)](y,B);}function esc(y){const jt={y:0x1ad,B:0x1ae,N:0x1c1,M:0x141,t:0x290,m:0x1e6,n:0x279,e:0x4c,C:0x61,K:0x49,s:0x14e,Q:0x27f,q:0x2d9},jM={y:0x65},jj={y:0xf5};function y1(y,B,N){return x(y-0x179,y-jj.y,N);}function y2(y,B,N){return x(y-0x1e1,N- -0x104,B);}function y3(y,B,N){return x(y-jM.y,N-0x1ec,B);}return(y||'')[y1(jt.y,0x1d1,0x1db)](/&/g,y1(jt.B,jt.N,jt.M))[y1(0x1ad,jt.t,jt.m)](/</g,y3(jt.n,0x381,0x2a6))[y2(-0x102,-0xc7,-jt.e)](/>/g,y2(0x49,-jt.C,-jt.K))[y1(0x1ad,jt.s,0x135)](/"/g,y3(jt.Q,0x2e8,jt.q));}function ago(y){const jC={y:0xc6,B:0x11d,N:0x1d8,M:0x12a,t:0xd2,m:0x27d,n:0x305,e:0x24b,C:0x305,K:0x2f9,s:0x307},jn={y:0x3c,B:0xff},jm={y:0xe9};function y6(y,B,N){return W(B-jm.y,N,N-0x1c0);}function y5(y,B,N){return W(y- -jn.y,N,N-jn.B);}const B=Date[y4(0x7d,jC.y,jC.B)]()-(y||0x0);if(B<0xea60)return y4(jC.N,jC.M,jC.t);if(B<0x36ee80)return Math[y6(jC.m,jC.n,0x382)](B/0xea60)+y5(0x1e1,jC.e,0x230);function y4(y,B,N){return W(B- -0xf1,N,N-0x13b);}if(B<0x5265c00)return Math[y6(0x2c1,jC.C,0x31c)](B/0x36ee80)+y6(jC.K,jC.s,0x344);return new Date(y)[y6(0x25c,0x2a2,0x1de)]();}function flash(y){const jq={y:0x308,B:0x45e,N:0x1bc,M:0x152,t:0x3c8,m:0x1ff,n:0x1b4,e:0x130,C:0x7d,K:0x219,s:0x121,Q:0x39d,q:0x4bf,c:0x1ba,S:0x245,h:0x14c,b:0x1b8,jc:0x3c1},jQ={y:0x114,B:0xd2},js={y:0x55,B:0x39a},jK={y:0x50d};let B=document[y7(jq.y,jq.B,0x39b)](y8(-jq.N,-0x192,-jq.M));!B&&(B=document[y7(0x39b,0x462,jq.t)](y9(-0xa3,-0x6c,-0x136)),B['id']=y8(-0x1bc,-jq.m,-0x20e),B[y8(-0x215,-jq.n,-jq.e)][y9(-0xa1,-0x7,-jq.C)]=y8(-0x1bb,-jq.K,-jq.s),document[y7(0x33f,jq.Q,0x407)][y7(jq.q,0x364,0x408)](B));function y8(y,B,N){return E(y-0xa9,B,y- -jK.y);}B[y8(-jq.c,-jq.S,-jq.h)]=y,B[y7(0x32b,0x3b7,0x3ca)][y7(0x441,0x3a4,0x426)]='1';function y9(y,B,N){return E(y-js.y,B,y- -js.B);}function y7(y,B,N){return E(y-jQ.y,y,N-jQ.B);}clearTimeout(window[y8(-jq.b,-0x19f,-0x248)]),window[y7(jq.jc,0x494,0x427)]=setTimeout(()=>B[y8(-0x215,-0x185,-0x1ac)][y7(0x3ab,0x3a8,0x426)]='0',0xaf0);}var posts={},regions={},config={},reports={},partners={},adminAuthed=![];db[E(0x34f,0x2d1,0x2b8)](E(0x420,0x3d1,0x356))[W(0x225,0x14b,0x185)]()['on'](function(y,B){const jS={y:0x236};if(!y||y[yy(-0x281,-jS.y,-0x1d9)])delete posts[B];else posts[B]=y;function yy(y,B,N){return x(y-0x67,B- -0x32f,N);}updateAdmStats(),renderModQ();}),db[E(0x325,0x2ac,0x2b8)](W(0x227,0x23f,0x226))[x(0x8b,0xf8,0x161)]()['on'](function(y,B){const jb={y:0xb4,B:0x1b},jh={y:0x172};function yB(y,B,N){return W(y- -jh.y,B,N-0x1a3);}if(!y||y[yB(jb.y,jb.B,0x2d)])delete regions[B];else regions[B]=y;renderAdminRegions(),fillBCRegion();}),db[x(0xa8,0x59,-0x7)](E(0x32e,0x2b2,0x35a))['on'](function(y){if(!y)return;config=y,fillAdminFields();}),db[x(-0x7c,0x59,-0x5d)](x(0x29,0xfc,0xa6))[E(0x3d9,0x374,0x357)]()['on'](function(y,B){const jf={y:0x362},jz={y:0x387};function yo(y,B,N){return x(y-0x1d5,N- -jz.y,B);}if(y&&y[yo(-0x287,-jf.y,-0x28a)])reports[B]=y;renderModQ();}),db[E(0x2a6,0x395,0x2b8)](x(0x138,0xfe,0x7d))[W(0x225,0x21c,0x2cf)]()['on'](function(y,B){const jW={y:0x268},jx={y:0xe6};function yj(y,B,N){return W(B-jx.y,N,N-0x190);}if(!y||y[yj(jW.y,0x30c,0x353)])delete partners[B];else partners[B]=y;renderPartnerAdmin(),updatePartnerCount();});function hashP(y){const jv={y:0x21b},jE={y:0x11c};function yN(y,B,N){return x(y-0x1ed,y-jE.y,N);}return btoa(y+yN(jv.y,0x217,0x255));}function doAuth(){const jl={y:0x157,B:0x131,N:0x192,M:0x1e3,t:0x22f,m:0x11d,n:0xf9,e:0x288,C:0x260,K:0x222,s:0x84,Q:0x2d,q:0xf7,c:0x19d,S:0x270,h:0x1d4,b:0x21f,jL:0x219,jP:0x210,jd:0x16a,jw:0xf7,jF:0x163,ju:0x257,jX:0x127,ja:0xae,jV:0x2ec,jY:0x163,jr:0xf2,jI:0x2c5,jH:0x2e9,jg:0x21e,jZ:0x239,ji:0x1ac,jA:0x148,jG:0x21a,jJ:0x294,jD:0x28b,jp:0x90,jk:0x109,N0:0x28c,N1:0x1da,N2:0x171,N3:0xfb,N4:0x27f,N5:0x29a,N6:0x17d,N7:0xb5,N8:0xfd,N9:0xee,Ny:0x184,NB:0x1bb,No:0x27e},jT={y:0x5eb},y=document[yM(-jl.y,-jl.B,-jl.N)](yt(-0x28c,-0x255,-0x353))[ym(0x214,jl.M,jl.t)];function ym(y,B,N){return E(y-0x110,N,y- -0x14c);}function yM(y,B,N){return E(y-0xa4,B,N- -0x45b);}function yt(y,B,N){return E(y-0xdf,B,y- -jT.y);}const B=config[yt(-0x28a,-0x22d,-0x1af)]||hashP(yM(-jl.m,-0x130,-jl.n));hashP(y)===B?(adminAuthed=!![],sl(yt(-jl.e,-jl.C,-jl.K),'1'),sl(yM(-jl.s,-jl.Q,-jl.q),Date[ym(jl.c,0xff,jl.S)]()[yM(-jl.h,-0x1f3,-0x1a1)]()),document[ym(0x17d,jl.b,0x24a)](ym(jl.jL,0x14f,jl.jP))[yM(-jl.jd,-jl.jw,-jl.jF)][ym(0x21a,0x1b9,0x1d4)]=yt(-0x284,-0x288,-jl.ju),document[ym(0x17d,jl.jX,jl.ja)](ym(0x21c,0x21b,jl.jV))[yM(-0x150,-0x132,-jl.jY)][ym(0x21a,0x2c0,0x159)]=yM(-0x190,-0x1d1,-jl.jr),document[yt(-0x322,-jl.jI,-jl.jH)](ym(jl.jg,0x28e,jl.jZ))[ym(jl.ji,jl.jA,0x1c8)][ym(jl.jG,jl.jJ,jl.jD)]=yM(-jl.jp,-0x1cd,-0xf0),document[yM(-jl.jk,-0x19a,-0x192)](yt(-jl.N0,-0x243,-0x347))[yM(-jl.N1,-jl.N2,-jl.N3)]='',updateAdmStats(),renderModQ(),renderPartnerAdmin(),renderAdminRegions(),flash(yt(-jl.N4,-jl.N5,-0x343))):document[ym(jl.N6,0x16e,0xc6)](yM(-jl.N7,-jl.N8,-jl.N9))[yM(-0x154,-0x1d8,-jl.jY)][yM(-jl.Ny,-jl.NB,-0xf5)]=ym(0x21d,jl.No,0x213);}function adminOut(){const jw={y:0x1de,B:0x150,N:0x25b,M:0x278,t:0x1fb,m:0x1dc,n:0x263,e:0x214,C:0xee,K:0x102,s:0x1b1,Q:0xeb,q:0x278,c:0x2f4,S:0x2bb,h:0x28c,b:0x83,jF:0x15c,ju:0x322,jX:0x2bb,ja:0x321,jV:0x2f2,jY:0x3bf,jr:0x175,jI:0x390,jH:0x332,jg:0x284,jZ:0x333},jd={y:0x541},jL={y:0x454};adminAuthed=![];function ye(y,B,N){return E(y-0x1a3,y,B- -jL.y);}sl(yn(-jw.y,-jw.B,-jw.N),'0');function yC(y,B,N){return E(y-0x13c,N,B- -0x688);}document[yn(-jw.M,-jw.t,-0x31d)](yn(-jw.m,-jw.n,-jw.e))[ye(-0x1e8,-0x15c,-0x137)][ye(-0x96,-jw.C,-jw.K)]=ye(-jw.s,-jw.Q,-0x137),document[yn(-jw.q,-0x290,-jw.c)](yC(-jw.S,-0x320,-jw.h))[ye(-jw.b,-jw.jF,-0xb5)][yC(-0x338,-jw.ju,-0x357)]=yC(-jw.jX,-jw.ja,-jw.jV),document[yC(-0x3cf,-jw.jY,-0x34f)](ye(-jw.jr,-0xea,-0x83))[yC(-0x3dc,-jw.jI,-jw.jH)][yC(-0x2cd,-0x322,-0x3e5)]=yn(-0x1da,-0x27d,-0x270);function yn(y,B,N){return E(y-0x92,N,y- -jd.y);}flash(yC(-jw.jg,-0x31a,-jw.jZ));}function checkSession(){const ja={y:0x3df,B:0x35a,N:0x2df,M:0x233,t:0x3a9,m:0x251,n:0x2dc,e:0x319,C:0x260,K:0x2c8,s:0x38a,Q:0x2de,q:0x2b0,c:0x39c,S:0x2a7,h:0x2d3,b:0x2d2,jV:0x25e,jY:0x32d,jr:0x241,jI:0x2fe,jH:0x2a5,jg:0x365,jZ:0x36a},jX={y:0x175},ju={y:0xa},jF={y:0x1};function yK(y,B,N){return E(y-0x68,B,y- -jF.y);}function ys(y,B,N){return E(y-0x32,y,B- -ju.y);}function yQ(y,B,N){return E(y-jX.y,B,N- -0x5c7);}const y=ls(yK(0x362,0x402,ja.y))==='1',B=parseInt(ls(ys(0x301,ja.B,0x3a0))||'0');y&&Date[ys(0x33f,ja.N,0x28b)]()-B<0x8*0x36ee80&&(adminAuthed=!![],document[yK(0x2c8,ja.M,0x31f)](yQ(-0x2f5,-0x1f4,-0x262))[yQ(-ja.t,-ja.m,-0x2cf)][yK(0x365,ja.n,0x356)]=yQ(-ja.e,-0x24b,-ja.C),document[yK(ja.K,0x331,ja.s)](ys(ja.Q,0x35e,ja.q))[yQ(-0x370,-0x268,-0x2cf)][yK(0x365,ja.c,ja.S)]=yQ(-ja.h,-ja.b,-ja.jV),document[yQ(-ja.jY,-ja.jr,-ja.jI)](yK(0x369,0x33a,0x40b))[yQ(-ja.jH,-0x21f,-0x2cf)][yK(ja.jg,0x305,0x431)]=yK(ja.jZ,0x2a1,0x3b0));}function updateAdmStats(){const jI={y:0x307,B:0x47b,N:0x4a8,M:0x2af,t:0x37b,m:0x47c,n:0x3f1,e:0x148,C:0x147,K:0x47d,s:0x4f6,Q:0x45f,q:0x47c,c:0x526,S:0x204,h:0x27e,b:0x301,jH:0x3d5,jg:0x3f2,jZ:0x98,ji:0xa8,jA:0x22c,jG:0x2ff,jJ:0x2da,jD:0x275},jr={y:0x2d8,B:0xc6},jY={y:0x23e},jV={y:0x170,B:0x38},y=document[yq(0x353,jI.y,0x336)](yc(jI.B,jI.N,0x4b4));if(y)y[yq(jI.M,0x391,jI.t)]=Object[yc(jI.m,0x4db,jI.n)](posts)[yS(-jI.e,-0x221,-0xa4)](M=>M&&!M[yS(-0xb2,-0x7f,-0xda)])[yS(-jI.C,-0x161,-0xd2)];function yq(y,B,N){return W(B-jV.y,y,N-jV.B);}function yc(y,B,N){return W(y-jY.y,N,N-0xd);}const B=document[yq(0x286,0x307,0x362)](yc(jI.K,0x49f,jI.s));function yS(y,B,N){return W(y- -jr.y,B,N-jr.B);}if(B)B[yc(jI.Q,0x405,0x389)]=Object[yc(jI.q,0x4e3,jI.c)](regions)[yS(-0x148,-jI.S,-0x19c)](M=>!M[yq(0x308,0x396,0x2ba)])[yq(jI.h,jI.b,0x338)];const N=document[yc(jI.jH,jI.jg,0x3fd)](yS(-jI.jZ,-0x11,-0x4d));if(N)N[yS(-0xb7,-0x8d,-jI.ji)]=Object[yq(jI.jA,jI.jG,0x281)](reports)[yq(jI.jJ,0x301,jI.jD)];}function updatePartnerCount(){const ji={y:0x210,B:0x30e,N:0x171,M:0x20a,t:0x228,m:0x113,n:0x1d9,e:0x179,C:0x29b,K:0x24a},jZ={y:0x149},jg={y:0xbb,B:0x58a},jH={y:0x104};function yU(y,B,N){return E(y-jH.y,B,N- -0x551);}function yb(y,B,N){return E(y-jg.y,B,y- -jg.B);}function yh(y,B,N){return E(y-0xb0,B,N- -jZ.y);}const y=document[yh(0x1b2,ji.y,0x180)](yh(ji.B,ji.N,0x22a));if(y)y[yh(0x2b8,0x1f7,ji.M)]=Object[yh(ji.t,0x1a5,0x227)](partners)[yh(ji.m,ji.n,ji.e)](B=>B&&!B[yh(0x149,0x2d5,0x20f)])[yb(-0x2c7,-ji.C,-ji.K)];}function fillAdminFields(){const N0={y:0x319,B:0x297,N:0x369,M:0x2b7,t:0x344,m:0xb2,n:0xbf,e:0x240,C:0x2b4,K:0x2b3,s:0x310,Q:0x29d,q:0x303,c:0x2b0,S:0x2f2,h:0x31,b:0x47,N1:0x1d,N2:0x48,N3:0x2ac,N4:0x30b,N5:0x2ab,N6:0x2aa,N7:0x2aa,N8:0x383},jp={y:0x3cd},jD={y:0x143,B:0xd8},jJ={y:0x208,B:0x236,N:0x1db},y=(N,M)=>{function yf(y,B,N){return j(B-0x3cb,N);}function yz(y,B,N){return j(N-0x1ef,y);}const t=document[yz(jJ.y,jJ.B,0x20d)](N);if(t&&M!==undefined)t[yz(jJ.N,0x37c,0x2a4)]=M;};y(yx(0x2df,N0.y,N0.B),config[yW(-N0.N,-N0.M,-0x316)]),y(yx(N0.t,0x1c6,0x299),config[yE(0x40,N0.m,N0.n)]),y(yW(-N0.e,-N0.C,-0x253),config[yW(-0x21d,-N0.K,-N0.s)]),y(yx(0x34b,0x2e0,N0.Q),config[yW(-0x3dc,-N0.q,-0x3ad)]);function yE(y,B,N){return x(y-jD.y,y- -jD.B,N);}y(yx(0x33b,0x20e,0x29e),config[yW(-0x216,-N0.c,-N0.S)]);function yW(y,B,N){return x(y-0xe7,B- -jp.y,y);}y(yE(0x46,0x108,-N0.h),config[yE(N0.b,0x92,N0.N1)]);function yx(y,B,N){return x(y-0x67,N-0x182,y);}y(yE(N0.N2,0x17,0xfc),config[yW(-0x297,-N0.N3,-0x2d8)]||0x14);const B=document[yW(-N0.N4,-0x363,-0x326)](yW(-0x29a,-N0.N5,-N0.N6));if(B)B[yW(-0x2e8,-N0.N7,-0x23f)]=config[yx(0x204,N0.N8,0x2a6)]!==![];}function fillBCRegion(){const N4={y:0x16,B:0x123,N:0x144,M:0xe9,t:0x252,m:0x301,n:0x168,e:0x187,C:0x30,K:0x26d,s:0x20,Q:0x4c,q:0xd},N3={y:0xa7,B:0x1a3},N2={y:0xa2},N1={y:0x23b},y=document[yv(-0x30e,-0x3e1,-0x34d)](yR(0x148,0xe6,0x1ab));if(!y)return;function yO(y,B,N){return W(N- -N1.y,B,N-0x30);}const B=Object[yO(N4.y,-0xc7,0x3)](regions)[yR(N4.B,N4.N,N4.M)](M=>!M[yR(0x1fb,0x1c2,0x17f)])[yv(-N4.t,-N4.m,-0x236)]((M,t)=>M[yv(-0x251,-0x1d0,-0x1e4)][yv(-0x250,-0x296,-0x278)](t[yR(0x22a,0xfd,0x1ad)])),N=y[yR(0x1b2,N4.n,N4.e)];function yv(y,B,N){return W(y- -0x4a5,N,N-N2.y);}function yR(y,B,N){return W(N- -N3.y,B,N-N3.B);}y[yO(N4.C,0x5a,-0x6d)]=yv(-0x24f,-N4.K,-0x259)+B[yv(-0x280,-0x2b5,-0x243)](M=>yv(-0x24e,-0x220,-0x169)+M[yO(0x42,-0x5b,0x1d)]+'\x22>'+(M[yR(0x1ec,0x186,0x1b2)]||'')+'\x20'+esc(M[yR(0x156,0x28f,0x1ad)])+yR(0x27d,0x15f,0x1b3))[yO(0x61,0xe9,N4.s)]('');if(N)y[yO(-0xc1,N4.Q,-N4.q)]=N;}function saveAlert(){const N8={y:0x2b4,B:0xe9,N:0x1a8,M:0xdc,t:0x12b,m:0x1ef,n:0x1da,e:0x157,C:0x1eb,K:0x1c7,s:0x1ef,Q:0x142,q:0x118,c:0x129,S:0x19b,h:0x155,b:0xb5,N9:0x183,Ny:0x128},N7={y:0x10d,B:0x4b8};function yl(y,B,N){return E(y-0x147,N,B- -0x2cd);}db[yT(-0x19d,-0x24a,-N8.y)](yT(-N8.B,-N8.N,-0xe4))[yT(-0xc2,-0x174,-N8.M)]({'alertType':document[yL(-N8.t,-0x11c,-N8.m)](yT(-0xc5,-0x18e,-N8.n))[yT(-N8.e,-0x1a2,-0x12d)]||'','alertText':(document[yL(-N8.C,-N8.K,-N8.s)](yL(-0xd3,-0x8a,-N8.Q))[yl(N8.q,0x93,0x146)]||'')[yL(-0x1f6,-0x50,-N8.c)](),'alertDismiss':document[yL(-0x193,-0x115,-0x1ef)](yL(-0x14c,-N8.S,-0x137))[yl(N8.h,N8.b,0x5a)]});function yT(y,B,N){return E(y-0x191,N,B- -0x502);}function yL(y,B,N){return E(y-N7.y,y,N- -N7.B);}flash(yL(-0x1c7,-N8.N9,-N8.Ny));}function broadcast(){const No={y:0x268,B:0xba,N:0x2ac,M:0x278,t:0x12c,m:0x10b,n:0x1de,e:0x177,C:0x12d,K:0x98,s:0x252,Q:0x205,q:0x37d,c:0x250,S:0x160,h:0x19e,b:0x2a3,Nj:0x12b,NN:0x1a9,NM:0x1e6,Nt:0x1b9,Nm:0x142,Nn:0x21e,Ne:0x2e2,NC:0x297,NK:0x21f,Ns:0x3ba,NQ:0x2f8,Nq:0x128,Nc:0x1e8,Nh:0x1d7,Nb:0x155,NU:0x1a8,Nz:0x22e,Nf:0x318,Nx:0x105,NW:0x18a,NE:0x1f7,Nv:0x2be,NR:0x250,NO:0x1eb,NT:0x244,Nl:0x281,NL:0x12c,NP:0x20e,Nd:0x3b7,Nw:0x17a,NF:0x220,Nu:0x1dd,NX:0x151,Na:0x1e8,NV:0x125},NB={y:0xa8},Ny={y:0x4b},y=(document[yP(-0x1f7,-0x12f,-0x18c)](yd(-No.y,-0x250,-0x2b7))[yP(-0x160,-No.B,-0x122)]||'')[yw(No.N,No.M,0x217)](),B=(document[yw(0x1a8,No.t,0x151)](yP(-0x12e,-No.m,-No.n))[yw(No.e,0x20d,0x1e8)]||yP(-No.C,-No.K,-0x72))[yd(-0x309,-No.s,-No.Q)]();function yd(y,B,N){return W(B- -0x4af,N,N-0x174);}const N=document[yd(-0x3b6,-0x318,-No.q)](yw(0x2b9,No.c,0x20c))[yP(-No.S,-0xb2,-No.h)]||'';if(!y){flash(yd(-No.b,-0x24d,-0x2f6));return;}const M=yP(-No.Nj,-No.NN,-0xdc)+Date[yP(-0x1d7,-No.NM,-No.Nt)]()[yw(0x10c,0x15b,No.Nm)](0x24),t={'id':M,'text':y,'category':yw(0x2d2,0x2f3,No.Nn),'region':N,'author':B,'color':yd(-No.Ne,-No.NC,-0x25e),'userId':yw(0x277,0x18d,No.NK),'ts':Date[yd(-No.Ns,-No.NQ,-0x3cf)](),'verified':!![],'likes':{},'reactions':{},'comments':{},'votes':{}},m=document[yP(-0x1f7,-0x1e6,-0x1b0)](yP(-No.Nq,-0x75,-0xed))[yw(0x176,0x2a0,No.Nc)]||'';if(m){const n=new Date(m)[yP(-0x127,-0x184,-0xdc)]()-Date[yP(-No.Nh,-No.Nb,-No.NU)]();if(n>0x0){setTimeout(()=>db[yw(0x89,0x18d,0x140)](yP(-0x16a,-0x86,-0x204))[yP(-0x208,-0x171,-0x23c)](M)[yd(-0x32b,-0x253,-0x2ab)](t),n),flash(yd(-No.Nz,-0x247,-0x1d8)+m),document[yd(-0x2b1,-No.Nf,-0x290)](yd(-0x2e5,-0x249,-0x2e0))[yP(-0x160,-No.Nx,-No.NW)]='',document[yP(-No.NE,-0x273,-0x241)](yd(-No.Nv,-No.NR,-No.NO))[yd(-No.NT,-No.Nl,-0x208)]='';return;}}db[yw(No.NL,No.NP,0x140)](yd(-0x367,-0x28b,-0x361))[yd(-0x292,-0x329,-No.Nd)](M)[yw(No.Nw,No.NF,0x216)](t);function yP(y,B,N){return W(y- -0x38e,B,N-Ny.y);}document[yP(-No.NE,-No.Nu,-No.NX)](yd(-0x271,-0x250,-0x309))[yw(0x175,No.Nl,No.Na)]='';function yw(y,B,N){return W(N- -0x46,B,N-NB.y);}flash(yP(-No.NV,-0x148,-0x1a0));}function renderModQ(){const NC={y:0x314,B:0x344,N:0x257,M:0x3c0,t:0x31c,m:0x3c3,n:0x23b,e:0x17f,C:0x1a7,K:0x23e,s:0x1b2,Q:0x1f3,q:0x305,c:0x3de},Ne={y:0x39,B:0x61,N:0x8,M:0x14d,t:0xc9,m:0x54,n:0x2c2,e:0x371,C:0xc4,K:0x2,s:0xae,Q:0x3b,q:0x50,c:0x140,S:0x150,h:0x3,b:0x3f,NC:0x336,NK:0xc9,Ns:0x8,NQ:0x74,Nq:0x15,Nc:0xc6,Nh:0x345,Nb:0x338,NU:0x2ee,Nz:0x374,Nf:0x339},NM={y:0x1ab},NN={y:0x40c};function yX(y,B,N){return W(B- -0x4fe,N,N-0x117);}function yu(y,B,N){return W(N- -NN.y,B,N-0x1b0);}if(!adminAuthed)return;const y=document[yF(0x241,0x2ff,0x1a3)](yF(NC.y,NC.B,NC.N));function yF(y,B,N){return W(y-0xaa,N,N-NM.y);}if(!y)return;const B=Object[yF(0x2e8,NC.M,NC.t)](reports)[yX(-0x2ae,-0x36e,-NC.m)](N=>N&&N[yF(0x2d4,0x285,0x23d)]&&posts[N[yu(-0x24a,-0x1f2,-0x1e2)]]&&!posts[N[yX(-0x29a,-0x2d4,-0x2ac)]][yF(0x2d0,0x27b,0x2ce)]);if(!B[yF(NC.n,0x27d,NC.e)]){y[yu(-0x1e5,-NC.C,-NC.K)]=yX(-NC.s,-0x293,-0x305);return;}y[yX(-0x2bd,-0x330,-0x318)]=B[yu(-NC.Q,-0x278,-0x1e7)](N=>{const Nn={y:0x2dc},Nt={y:0xc4};function yV(y,B,N){return yF(B- -0x1c9,B-Nt.y,N);}function yY(y,B,N){return yF(N-0x1a,B-0x1c9,y);}const M=posts[N[ya(Ne.y,Ne.B,-Ne.N)]];if(!M)return'';function ya(y,B,N){return yF(N- -Nn.y,B-0xca,y);}return yV(0x180,Ne.M,Ne.t)+esc((M[ya(-Ne.m,0x15,0x3b)]||'')[yY(Ne.n,Ne.e,0x332)](0x0,0x50))+(M[yV(0x9b,0x14e,Ne.C)]&&M[ya(-Ne.K,Ne.s,Ne.Q)][ya(-0x31,-Ne.q,-0xa1)]>0x50?'…':'')+yV(Ne.c,Ne.S,0x1e5)+esc(M[ya(-Ne.h,0x4b,0x3e)]||'?')+ya(0x1,0x8b,Ne.b)+ago(M['ts'])+yY(0x388,0x270,Ne.NC)+N[ya(-0xb9,-Ne.NK,-Ne.Ns)]+ya(-Ne.NQ,-Ne.Nq,0x41)+N[ya(-Ne.Nc,-0x5,-0x8)]+yY(0x286,Ne.Nh,Ne.Nb)+N[yY(0x37b,0x26e,Ne.NU)]+yY(Ne.Nz,0x318,Ne.Nf);})[yF(NC.q,0x29c,NC.c)]('');}function adminDel(y){const Nq={y:0x3cc,B:0x2db,N:0x325,M:0x22e,t:0x17e,m:0x3d9},NQ={y:0x9e},Ns={y:0x4d,B:0xa},NK={y:0x13a};function yI(y,B,N){return E(y-0x6f,y,N- -NK.y);}if(!confirm(yr(0x2e3,0x3b2,Nq.y)))return;function yr(y,B,N){return E(y-Ns.y,N,B-Ns.B);}db[yr(Nq.B,0x2c2,Nq.N)](yr(0x418,0x360,0x296))[yI(Nq.M,0x153,Nq.t)](y)[yr(0x2b6,0x398,Nq.m)]({'_deleted':!![],'id':y});function yH(y,B,N){return E(y-NQ.y,B,N- -0x4f2);}flash(yI(0x28b,0x22f,0x26f));}function adminPin(y,B){const NU={y:0x185,B:0x27a,N:0x29e,M:0x2a5,t:0x2fd,m:0x31d,n:0x327},Nh={y:0x94},Nc={y:0x51d};function yi(y,B,N){return W(y- -Nc.y,N,N-0x105);}db[yg(0x21a,0x2e0,NU.y)](yg(0x2b8,0x30b,0x30e))[yg(0x21a,NU.B,NU.N)](y)[yZ(0x345,NU.M,0x27f)](yg(0x30c,NU.t,0x2f4))[yi(-0x2c1,-NU.m,-0x23b)](B||null);function yg(y,B,N){return W(y-Nh.y,B,N-0x134);}function yZ(y,B,N){return W(B-0x11f,y,N-0x1ba);}flash(B?yi(-0x2a4,-0x2d1,-NU.n):yg(0x30e,0x231,0x378));}function adminReview(y,B){const NW={y:0xf0,B:0x1b7,N:0x10b,M:0x1e5,t:0x1e6,m:0x29a,n:0x3c0,e:0x3d1,C:0x37b},Nx={y:0x20,B:0x1c8},Nf={y:0x200},Nz={y:0x3f,B:0x11};function yJ(y,B,N){return E(y-Nz.y,B,y-Nz.B);}function yG(y,B,N){return E(y-0x19d,B,N- -Nf.y);}function yA(y,B,N){return E(y-Nx.y,B,y- -Nx.B);}db[yA(NW.y,0x5a,0x14f)](yA(0x18e,0x267,0x16d))[yA(NW.y,NW.B,NW.N)](y)[yG(0xbb,0xe3,0xb8)](yA(NW.M,0x1e0,0x1e4))[yA(0x1c6,0x25e,0x1fc)](B||null),flash(B?yA(NW.t,NW.m,0x268):yJ(NW.n,NW.e,NW.C));}function W(y,B,N){const NE={y:0x179};return j(y-NE.y,B);}function E(y,B,N){const Nv={y:0x2ab};return j(N-Nv.y,B);}function dismissReport(y){const Nl={y:0x355,B:0x3d6,N:0x2e9,M:0x345,t:0x288,m:0x253,n:0x42b,e:0x382},NR={y:0x91};function yD(y,B,N){return W(y-0x1cf,N,N-NR.y);}function yk(y,B,N){return W(B-0x1d4,y,N-0x1a6);}function yp(y,B,N){return W(y-0x11c,B,N-0x120);}db[yD(Nl.y,Nl.B,Nl.N)](yp(Nl.M,0x389,Nl.t))[yp(0x2a2,Nl.m,0x36c)](y)[yD(Nl.n,Nl.e,0x3ff)]({'_deleted':!![],'postId':''}),flash(yD(0x44d,0x418,0x3a0));}function renderPartnerAdmin(){const Nw={y:0x6c,B:0x138,N:0x21,M:0x113,t:0x39,m:0x53,n:0x8e,e:0x1b,C:0x3f,K:0x9b,s:0xc5,Q:0x184,q:0x7d,c:0x153,S:0x35,h:0xbe,b:0xef,NF:0x5d},NP={y:0x29},NL={y:0x2b8,B:0x45};if(!adminAuthed)return;const y=document[B0(0x7,-Nw.y,-Nw.B)](B1(-Nw.N,-Nw.M,-Nw.t));if(!y)return;function B1(y,B,N){return W(N- -NL.y,y,N-NL.B);}function B0(y,B,N){return W(B- -0x203,N,N-NP.y);}const B=Object[B0(Nw.m,0x3b,Nw.n)](partners)[B0(Nw.e,-0x73,-0x3f)](N=>N&&!N[B0(-0x53,0x23,0x92)]);if(!B[B2(Nw.C,-0x46,Nw.K)]){y[B1(-Nw.s,-Nw.Q,-0xea)]=B0(0x131,Nw.q,Nw.c);return;}function B2(y,B,N){return W(B- -0x1d7,N,N-0xdd);}y[B0(0x3f,-Nw.S,0x58)]=B[B0(-Nw.h,0x22,0x41)](N=>B0(0x12e,0x7e,0x134)+(N[B1(-0x23,-0xd9,-0xe3)]||'🏛')+B2(0x59,0xab,-0x2e)+esc(N[B2(0x1e,0xac,0x87)])+B0(-0x36,0x81,0xfd)+esc(N[B0(0x11d,0x82,0x7b)]||'')+B0(0x142,0x6e,0x39)+(N[B1(0x82,0xa4,-0x32)]||B1(-0x6b,0x8d,-0x31))+B0(0x133,0x85,0x22)+N['id']+B2(0xb1,0xb2,0x30)+(N[B2(0x15d,0xb3,0x16c)]?B0(0x58,0x4d,-0x2b):'')+B1(-0xe8,0xaa,-0x2d)+N['id']+B1(0x73,0x42,-0x2c)+(N[B1(-0x5a,-0x8c,-0x2b)]?B1(-0x89,0x28,-0x68):'')+B0(0x4b,0x88,0x8b)+N['id']+B2(0x10a,0xb7,0xa5)+N['id']+B1(-0x69,-0x84,-0x29)+esc(N[B1(-0xad,-0x9a,-0x28)]||'')+B2(0x3a,0xba,0x40)+N['id']+B2(0x2,0xbb,0x12b)+esc(N[B2(0x12f,0xbc,-0x14)]||'')+B2(0xdd,0xbd,0x83)+N['id']+B2(0x50,0xbe,0x12a))[B1(-Nw.b,-0x14,-Nw.NF)]('');}function addPartner(){const Na={y:0x25e,B:0x325,N:0x187,M:0x2bb,t:0x158,m:0x1db,n:0x1a5,e:0x225,C:0x27d,K:0x378,s:0x25f,Q:0x203,q:0x1dc,c:0x281,S:0x246,h:0x1ee,b:0x20a,NV:0x25f,NY:0x132,Nr:0x120,NI:0x1f0,NH:0x2d0,Ng:0x19c,NZ:0x23f,Ni:0x221,NA:0x190,NG:0x1ac,NJ:0x1a9,ND:0x133,Np:0x131,Nk:0x1b4,M0:0x3ae,M1:0x336,M2:0x12f,M3:0x2ec,M4:0x196,M5:0x22b,M6:0x243,M7:0x1af,M8:0x144,M9:0x224,My:0x163,MB:0x1db,Mo:0x144,Mj:0x2bf,MN:0x345,MM:0x28e,Mt:0x2a2,Mm:0x21b},NX={y:0xd9},Nu={y:0x14c,B:0x5ee},NF={y:0x33},y=(document[B3(-Na.y,-0x240,-Na.B)](B3(-Na.N,-0x2c4,-0x226))[B4(Na.M,Na.t,Na.m)]||'')[B3(-0x262,-0x21b,-0x25f)]();if(!y){flash(B3(-Na.n,-0x22d,-Na.e));return;}const B=(document[B3(-Na.C,-Na.K,-0x325)](B4(0x315,0x2cc,0x245))[B4(0x248,Na.s,0x1db)]||'')[B4(Na.Q,0x2db,0x20a)](),N=(document[B5(Na.q,0x109,0x120)](B4(0x199,Na.c,Na.S))[B5(0xf2,Na.h,0x1b7)]||'🏛')[B3(-0x2e3,-Na.b,-Na.NV)](),M=document[B5(0x71,Na.NY,Na.Nr)](B3(-Na.NI,-0x248,-0x222))[B3(-0x323,-0x30e,-0x28e)]||B4(0x275,Na.NH,0x234),t=B3(-Na.Ng,-Na.NZ,-Na.Ni)+Date[B4(0x22c,Na.NA,0x164)]()[B3(-0x319,-0x413,-0x334)](0x24);db[B4(Na.NG,Na.NJ,Na.ND)](B5(Na.Np,0xfb,Na.Nk))[B3(-0x2ec,-Na.M0,-Na.M1)](t)[B4(Na.M2,Na.M3,0x209)]({'id':t,'label':y,'authorName':B,'icon':N,'colorKey':M,'promoted':![],'broadcastActive':![],'broadcastText':'','broadcastSurvey':'','broadcastTs':0x0}),document[B5(Na.M4,0x18e,0x120)](B4(0x2ff,Na.M5,Na.M6))[B3(-0x287,-Na.M7,-0x28e)]='',document[B4(0xc7,0x1a1,Na.M8)](B3(-0x16a,-0x164,-Na.M9))[B4(Na.My,0x23a,Na.MB)]='';function B4(y,B,N){return E(y-NF.y,y,N- -0x185);}function B3(y,B,N){return E(y-Nu.y,y,N- -Nu.B);}function B5(y,B,N){return E(y-NX.y,y,N- -0x1a9);}document[B4(0x17c,Na.NY,Na.Mo)](B4(0x169,Na.Mj,0x246))[B3(-Na.MN,-0x28f,-Na.MM)]='',flash(B3(-Na.Mt,-Na.Mm,-0x220)+y);}function deletePartner(y){const NI={y:0x209,B:0x131,N:0x185,M:0x3cc,t:0x42d,m:0x322,n:0x3ac},NY={y:0x177};function B6(y,B,N){return x(y-0x3a,B-0x23b,N);}if(!confirm(B6(0x365,0x3ab,0x376)))return;function B8(y,B,N){return x(y-NY.y,N-0x373,y);}function B7(y,B,N){return x(y-0xab,B-0xd8,N);}db[B7(NI.y,NI.B,NI.N)](B7(0x145,0x1d6,0x223))[B8(0x40c,0x45c,NI.M)](y)[B6(0x2e7,0x36a,NI.t)]({'_deleted':!![],'id':y}),flash(B6(NI.m,NI.n,0x2c8));}function addRegion(){const Ni={y:0x23e,B:0x1ea,N:0x2f9,M:0x350,t:0x162,m:0x178,n:0x254,e:0x201,C:0x3a,K:0x52,s:0xd,Q:0x1d,q:0x1e2,c:0x15b,S:0x115,h:0x2,b:0x140,NA:0xe9,NG:0x5b,NJ:0x1e3,ND:0x23a,Np:0x237,Nk:0x51,M0:0xd7,M1:0x182,M2:0x294,M3:0x15a,M4:0x43,M5:0x236,M6:0x110,M7:0x27f,M8:0x342,M9:0x27e,My:0x231,MB:0x246,Mo:0x39e,Mj:0x3d0,MN:0x135,MM:0x137,Mt:0x2c8,Mm:0x3a3,Mn:0x113,Me:0xad,MC:0x127,MK:0xe9,Ms:0xd5,MQ:0x1e0,Mq:0x285,Mc:0x16e,MS:0xd7,Mh:0x1a9,Mb:0xb0,MU:0x12,Mz:0x3c,Mf:0x8b,Mx:0x2a,MW:0x30,ME:0x1e4,Mv:0x2fb,MR:0x1cf,MO:0x1d4},NZ={y:0x1f2},NH={y:0x157},y=(document[B9(0xd7,0x153,0xe4)](B9(0x1df,Ni.y,Ni.B))[BB(-0x2f6,-Ni.N,-Ni.M)]||'')[B9(0x19d,Ni.t,0x198)](),B=(document[By(-0x5b,-0x6a,-0x88)](By(0xae,0xf8,Ni.m))[B9(0x16e,0x1e5,Ni.n)]||'')[B9(0x19d,0x1c8,Ni.e)]()[By(-Ni.C,-Ni.K,-0x2a)]();if(!y||!B){flash(BB(-0x283,-0x243,-0x2e2));return;}const N=document[B9(0xd7,Ni.s,Ni.Q)](B9(Ni.q,0x13c,Ni.c))[By(0x3c,Ni.S,Ni.h)][B9(0x19d,Ni.b,Ni.NA)](),M=document[By(-Ni.NG,-0xd5,-0x129)](B9(Ni.NJ,Ni.ND,Ni.Np))[By(0x3c,-Ni.Nk,0x59)];function B9(y,B,N){return W(y- -0xc0,N,N-NH.y);}const t=(document[B9(Ni.M0,0x157,Ni.M1)](B9(0x1e4,Ni.M2,Ni.M3))[By(0x3c,0x96,-Ni.M4)]||'')[B9(0x19d,Ni.M5,Ni.M6)](),m=BB(-Ni.M7,-Ni.M8,-0x1cd)+B[BB(-Ni.M9,-Ni.My,-Ni.MB)]();db[BB(-Ni.Mo,-Ni.Mj,-0x3f2)](B9(0x167,0x23e,Ni.MN))[By(-0x6c,-0x100,-Ni.MM)](m)[BB(-Ni.Mt,-0x3ac,-Ni.Mm)]({'id':m,'name':y,'code':B,'flag':N,'status':M,'group':t});function BB(y,B,N){return W(y- -0x524,N,N-0x137);}document[By(-Ni.NG,0x3d,-Ni.Mn)](By(Ni.Me,Ni.MC,Ni.MK))[By(0x3c,0xb0,0xdb)]='';function By(y,B,N){return W(y- -NZ.y,N,N-0x13e);}document[By(-Ni.NG,-Ni.Ms,0x26)](B9(Ni.MQ,0x12f,Ni.Mq))[B9(Ni.Mc,0x233,0x122)]='',document[B9(Ni.MS,0x71,Ni.Mh)](By(Ni.Mb,0xa1,-Ni.MU))[By(Ni.Mz,-0x6f,Ni.Mf)]='',document[By(-0x5b,Ni.Mx,Ni.MW)](B9(Ni.ME,0x1d8,0x1a5))[BB(-0x2f6,-0x21a,-Ni.Mv)]='',flash(B+B9(0x1e7,Ni.MR,Ni.MO));}function renderAdminRegions(){const ND={y:0x1f7,B:0x2a5,N:0x150,M:0x1a1,t:0x1b6,m:0x1fe,n:0x252,e:0x234,C:0x27a,K:0x1fd,s:0x2e6,Q:0x28a,q:0x295,c:0xc1,S:0x95},NJ={y:0xf1,B:0x4c0},NG={y:0x192};function Bj(y,B,N){return E(y-0x70,y,N- -0x2b2);}if(!adminAuthed)return;const y=document[Bo(-0x26e,-ND.y,-ND.B)](Bj(0x73,0x208,0x128));function BN(y,B,N){return E(y-NG.y,y,B- -0x151);}if(!y)return;const B=Object[Bo(-0x158,-ND.N,-ND.M)](regions)[Bo(-ND.t,-ND.m,-0x1ce)](N=>!N[Bj(0x133,0xb9,0xa6)])[BN(ND.n,ND.e,ND.C)]((N,M)=>N[Bj(0x18a,0x71,0xd4)][Bo(-0x6b,-0x139,-0x193)](M[Bo(-0x1c6,-0x13a,-0x20f)]));function Bo(y,B,N){return E(y-NJ.y,y,B- -NJ.B);}if(!B[Bo(-0x19f,-ND.K,-0x1f5)]){y[Bj(-0x1a,0xa1,0x4e)]=BN(ND.s,ND.Q,ND.q);return;}y[Bj(-0x69,ND.c,0x4e)]=B[Bj(0x18b,0x38,0xa5)](N=>BN(0x203,0x28b,0x1ae)+(N[BN(0x189,0x23a,0x1d1)]||'🌍')+Bo(-0x139,-0xe3,-0x7b)+N[Bo(-0x1c0,-0x136,-0x98)]+Bo(-0xe,-0xe2,-0xdd)+esc(N[BN(0x235,0x235,0x209)])+Bj(0x1bf,0x7f,0x12d)+N['id']+BN(0x1e0,0x28f,0x201)+[Bo(-0x16d,-0xdf,-0x61),BN(0x289,0x291,0x288),Bj(0x90,-0x60,0x13),Bj(0x12c,0xd0,0x131),Bj(0x1df,0x67,0x132)][BN(0x199,0x206,0x292)](M=>Bj(0x6b,0x188,0xd7)+M+'\x22\x20'+(N[Bo(-0x136,-0xdb,-0x25)]===M?Bo(-0x146,-0xda,-0xde):'')+'>'+M+Bo(-0x147,-0x134,-0x17b))[Bo(-0x1bc,-0x133,-0x128)]('')+BN(0x24a,0x296,0x293)+N['id']+Bj(0x1a4,0x11a,0x136))[Bj(ND.S,0x3e,0xdb)]('');}function delReg(y){const M1={y:0xfe,B:0x1eb,N:0x1ba,M:0x18e,t:0x1c9},Nk={y:0xec},Np={y:0x130,B:0x18};if(!confirm(BM(-M1.y,-0xc0,-0xcd)))return;function Bt(y,B,N){return W(B- -Np.y,N,N-Np.B);}function Bm(y,B,N){return W(y-Nk.y,B,N-0x11f);}function BM(y,B,N){return W(N- -0x384,y,N-0x16c);}db[BM(-0x2d9,-0x296,-0x1fe)](BM(-0x137,-M1.B,-0x15d))[Bm(0x272,M1.N,M1.M)](y)[BM(-0x183,-M1.t,-0x128)]({'_deleted':!![],'id':y});}function saveVerif(){const M5={y:0x297,B:0x1ed,N:0xf9,M:0x3a,t:0x1d5,m:0xda,n:0xc0,e:0x70,C:0x2e,K:0x1ad,s:0x1dc,Q:0x1af,q:0x9a,c:0x12d,S:0x8c,h:0x145,b:0x101,M6:0x69,M7:0x44},M4={y:0x193,B:0x4a5},M2={y:0x453};function Be(y,B,N){return E(y-0x175,N,y- -M2.y);}function BC(y,B,N){return E(y-0x8b,B,y- -0x3fe);}function Bn(y,B,N){return E(y-M4.y,y,B- -M4.B);}db[Bn(-M5.y,-M5.B,-0x154)](Be(-M5.N,-0x67,-M5.M))[Bn(-M5.t,-M5.B,-0x123)](Be(-M5.m,-0x37,-M5.n))[BC(-M5.e,M5.C,-0x61)](document[Bn(-M5.K,-M5.s,-M5.Q)](Bn(-M5.q,-M5.c,-0x6a))[Bn(-M5.S,-M5.h,-M5.b)]||''),flash(Be(-M5.M6,-0x2e,M5.M7));}function saveBanned(){const M9={y:0x318,B:0x278,N:0x36d,M:0x282,t:0x1c6,m:0x360,n:0x2a7,e:0xf4,C:0xd7,K:0x24a,s:0x337},M8={y:0x12f},M7={y:0x3ee},M6={y:0x81};function BK(y,B,N){return W(y- -0x49e,B,N-M6.y);}function Bs(y,B,N){return W(N- -M7.y,y,N-0x1bd);}db[BK(-M9.y,-M9.B,-M9.N)](Bs(-0x196,-M9.M,-M9.t))[BK(-M9.y,-M9.m,-0x3ea)](BK(-M9.n,-0x2bf,-0x361))[Bs(-M9.e,-M9.C,-0x192)](document[Bs(-M9.K,-M9.s,-0x257)](BQ(0x2ab,0x262,0x385))[BQ(0x291,M9.y,0x2ac)]||'');function BQ(y,B,N){return W(y-0x63,B,N-M8.y);}flash(BK(-0x1e5,-0x1f0,-0x2bf));}function saveTrusted(){const Mj={y:0x352,B:0x3c0,N:0x2ad,M:0x2f9,t:0x295,m:0x239,n:0x1d7,e:0x1d0,C:0x30b,K:0x3f4},Mo={y:0x1d3,B:0x70},MB={y:0x7c},My={y:0x1f0};function BS(y,B,N){return E(y-My.y,N,y- -0xf9);}function Bq(y,B,N){return E(y-MB.y,N,y-0x9a);}db[Bq(Mj.y,0x2d8,Mj.B)](Bc(0x398,0x257,0x2ea))[Bc(Mj.N,0x1e0,0x248)](Bc(Mj.M,0x36a,0x30c))[BS(Mj.t,Mj.m,Mj.n)](document[BS(Mj.e,0x2b3,0x114)](Bc(0x3eb,0x31e,Mj.C))[Bq(0x3fa,Mj.K,0x349)]||'');function Bc(y,B,N){return E(y-Mo.y,y,N- -Mo.B);}flash(Bc(0x2e9,0x332,0x37c));}function saveWelcome(){const Mm={y:0x1b5,B:0x175,N:0x122,M:0x9b,t:0x344,m:0x4c4,n:0x3f8,e:0x3de,C:0x3e7,K:0x5f,s:0x104,Q:0x1ce,q:0x3b0,c:0x3ef,S:0x457},MM={y:0x64};function BU(y,B,N){return W(N-0x19c,B,N-0x1e5);}function Bh(y,B,N){return W(N- -0x8f,y,N-MM.y);}function Bb(y,B,N){return W(N- -0x355,y,N-0x151);}db[Bh(0x183,Mm.y,0xf7)](Bh(Mm.B,0x1d2,0x199))[Bh(Mm.N,0xda,0xf7)](Bb(-0x2f,-Mm.M,-0x109))[BU(Mm.t,Mm.m,Mm.n)]((document[BU(0x2d1,Mm.e,0x333)](BU(0x313,0x477,Mm.C))[Bb(-Mm.K,-0x15c,-0x127)]||'')[Bh(0x274,Mm.s,Mm.Q)]()),flash(BU(Mm.q,Mm.c,Mm.S));}function saveRL(){const MK={y:0x139,B:0x522,N:0x4d2,M:0x1d0,t:0x43c,m:0x45b,n:0x3e7,e:0x39a,C:0x3ce,K:0x4c0,s:0x462,Q:0x1fe,q:0x29f,c:0x180,S:0x4d0},Me={y:0x42,B:0x17d};function Bz(y,B,N){return W(y- -0x5e,N,N-0x1e8);}const y=parseInt(document[Bz(MK.y,0x19a,0x152)](Bf(MK.B,MK.N,0x461))[Bz(MK.M,0x276,0x16d)])||0x14;function Bx(y,B,N){return W(N- -Me.y,B,N-Me.B);}db[Bz(0x128,0x1c4,0x1d1)](Bf(0x4af,0x4e3,MK.t))[Bf(MK.m,MK.n,MK.e)](Bf(MK.C,MK.K,MK.s))[Bz(MK.Q,MK.q,MK.c)](y);function Bf(y,B,N){return W(N-0x214,y,N-0xef);}flash(Bf(0x3eb,0x599,MK.S));}function changePass(){const Mc={y:0x31,B:0x1b1,N:0x108,M:0xfd,t:0x2b,m:0x63,n:0x2f,e:0x4d8,C:0x347,K:0x35f,s:0x2e2,Q:0x26,q:0x3a,c:0x2f,S:0xf0,h:0x20,b:0x435,MS:0x126,Mh:0xff,Mb:0x370,MU:0x299,Mz:0x487,Mf:0x30,Mx:0x39},Mq={y:0x390},MQ={y:0x2f2},Ms={y:0x1cc};function Bv(y,B,N){return E(y-Ms.y,y,B-0xa7);}function BW(y,B,N){return E(y-0x15e,y,N- -MQ.y);}function BE(y,B,N){return E(y-0x1dd,B,y- -Mq.y);}const y=(document[BW(-Mc.y,0x3e,-0x29)](BW(Mc.B,Mc.N,Mc.M))[BW(-0x73,-Mc.t,0x6e)]||'')[BE(-0x1,0x34,Mc.m)]();if(y[BW(-0x6d,-0xc8,-Mc.n)]<0x8){flash(Bv(0x432,0x497,Mc.e));return;}db[Bv(Mc.C,Mc.K,Mc.s)](Bv(0x464,0x401,0x3a5))[BW(Mc.Q,-0x10d,-Mc.q)](BE(-Mc.c,-Mc.S,-Mc.h))[Bv(0x3f9,Mc.b,0x494)](hashP(y)),flash(BW(Mc.MS,0xa3,Mc.Mh)),document[Bv(0x28e,Mc.Mb,Mc.MU)](Bv(Mc.Mz,0x496,0x546))[BE(-Mc.Mf,-Mc.Mx,-0x1a)]='';}function searchPosts(){const MU={y:0x322,B:0x268,N:0xbf,M:0x201,t:0x218,m:0xd9,n:0xb7,e:0x4b,C:0x35e,K:0x392,s:0x30f,Q:0x3ca,q:0x109,c:0x44c,S:0x4b5,h:0x33f,b:0x371,Mz:0x1e8,Mf:0x19f,Mx:0x47e,MW:0x193,ME:0x15b,Mv:0x1b1,MR:0x1f6,MO:0xf7,MT:0x15a,Ml:0xcc},Mh={y:0x7d,B:0x252},MS={y:0x326};function BT(y,B,N){return x(y-0xac,y-MS.y,N);}const y=(document[BR(MU.y,MU.B,0x30c)](BO(-MU.N,-0xb8,-0x62))[BO(-0x151,-MU.M,-MU.t)]||'')[BO(-MU.m,-MU.n,-MU.e)]()[BT(0x456,0x447,0x3a7)]();function BO(y,B,N){return x(y-Mh.y,y- -Mh.B,B);}function BR(y,B,N){return x(y-0x115,B-0x1fe,y);}if(!y){flash(BR(MU.C,MU.K,0x361));return;}const B=Object[BR(0x3e1,MU.s,MU.Q)](posts)[BO(-0x1ef,-0x24d,-MU.q)](M=>M&&!M[BT(0x41f,0x44a,0x404)]&&((M[BO(-0x112,-0xb7,-0x143)]||'')[BR(0x2dd,0x377,0x37f)]()[BT(0x4bb,0x53d,0x4c4)](y)||(M[BO(-0x10f,-0xa3,-0x16d)]||'')[BT(0x49f,0x46a,0x4a3)]()[BR(0x45b,0x393,0x303)](y)))[BT(MU.c,0x3e9,MU.S)]((M,t)=>(t['ts']||0x0)-(M['ts']||0x0))[BR(0x2c7,MU.h,MU.b)](0x0,0x14),N=document[BO(-MU.Mz,-0x287,-MU.Mf)](BT(0x4bc,0x54b,MU.Mx));if(!N)return;if(!B[BT(0x38a,0x3e0,0x46e)]){N[BR(0x2cf,0x29f,0x29d)]=BO(-0xbb,-MU.MW,-MU.ME);return;}N[BO(-MU.Mv,-MU.MR,-MU.MO)]=B[BO(-MU.MT,-0x1ea,-0x1ac)](M=>BT(0x4be,0x3fa,0x541)+esc(M[BT(0x469,0x4d0,0x52f)]||'?')+BO(-0xb9,-0xf8,-0x83)+(M[BO(-0xb8,-0xf3,-0x154)]?BR(0x418,0x399,0x35a)+esc((M[BO(-0xb6,-0x10,-0xc1)]||M[BT(0x4c3,0x3f2,0x43a)]||'')[BR(0x40d,0x33f,0x26f)](0x0,0xc))+BO(-0x1a3,-0x227,-0x142):'')+BR(0x3ba,0x39c,0x322)+ago(M['ts'])+BO(-0xb3,0x1c,-0xb2)+esc((M[BT(0x466,0x4bd,0x4dd)]||'')[BO(-0x111,-0x140,-0x3f)](0x0,0x78))+((M[BR(0x3d4,0x33e,0x294)]||'')[BR(0x262,0x262,0x348)]>0x78?'…':'')+BO(-0xb2,-0x176,0x1e)+M['id']+BO(-0xb1,-0x188,-0xbd)+M['id']+BO(-0xb0,-0x3a,-0x24)+M['id']+'\x27,'+!M[BT(0x471,0x425,0x446)]+BO(-0xaf,-0x15b,-0x8e)+(M[BO(-0x107,-0x16e,-0xc0)]?BO(-0xae,-0x99,-0xf6):BR(0x488,0x3a3,0x363))+BO(-0xac,-0x13a,-0xd8)+M['id']+'\x27,'+!M[BT(0x474,0x3d9,0x4bd)]+BR(0x3ba,0x3a5,0x3e4)+(M[BT(0x474,0x469,0x411)]?BR(0x3d4,0x3a6,0x3ea):BT(0x395,0x33e,0x33e))+'\x22>'+(M[BO(-0x104,-0x92,-0x2d)]?BO(-0xa9,-0x7c,-0x143):BT(0x4d0,0x535,0x490))+BR(0x3da,0x3a9,0x412)+M['id']+BT(0x4d2,0x3fc,0x4a5))[BO(-0x124,-MU.Ml,-0x1ad)]('');}function editPostText(y){const MW={y:0x4b1,B:0x517,N:0x4f2,M:0x43f,t:0x2f5,m:0x35a,n:0x3f6,e:0x2a3,C:0x333,K:0x358,s:0x220,Q:0x200,q:0x1a4,c:0x4c3,S:0x27a,h:0x2ba,b:0x3c0,ME:0x2f7,Mv:0x182,MR:0x1f0,MO:0x2ea,MT:0x1a5,Ml:0x34,ML:0xda,MP:0x2ca,Md:0x1a7,Mw:0x257,MF:0x2bd,Mu:0xbd,MX:0x1b3,Ma:0x14a,MV:0xa5},Mx={y:0xb,B:0x5ad},Mf={y:0x121},Mz={y:0x14,B:0x4d8},B=posts[y];if(!B)return;const N=prompt(Bl(MW.y,MW.B,0x4ac),B[Bl(0x3d6,MW.N,MW.M)]);function BP(y,B,N){return E(y-Mz.y,B,y- -Mz.B);}function Bl(y,B,N){return E(y-Mf.y,y,N-0xa0);}if(N===null||N===B[BP(-0x139,-0x10d,-0x9d)])return;db[BL(-0x365,-0x2f0,-MW.t)](Bl(MW.m,0x465,MW.n))[Bl(MW.e,MW.C,MW.K)](y)[BP(-MW.s,-MW.Q,-MW.q)](Bl(0x45c,MW.c,0x43f))[BL(-MW.S,-MW.h,-0x21f)](N[Bl(0x411,0x3da,0x42f)]()),db[BL(-MW.b,-MW.ME,-MW.t)](BP(-MW.Mv,-0x194,-MW.MR))[Bl(0x339,MW.MO,0x358)](y)[BP(-0x220,-MW.MT,-0x1de)](BP(-0xcb,-MW.Ml,-MW.ML))[BL(-0x1d7,-MW.MP,-0x21f)](!![]);function BL(y,B,N){return E(y-Mx.y,B,N- -Mx.B);}db[Bl(0x3e3,0x3ab,MW.K)](BL(-MW.Md,-0x2f6,-MW.Mw))[BL(-MW.MF,-0x2a9,-0x2f5)](y)[Bl(0x315,0x336,0x358)](BL(-MW.Mu,-MW.MX,-0x19f))[BP(-MW.Ma,-0x14e,-MW.MV)](!![]),flash(BP(-0xc9,-0x198,-0x46)),searchPosts();}function exportFeed(){const MO={y:0x1fa,B:0x354,N:0x323,M:0x20e,t:0x289,m:0x11b,n:0x455,e:0x124,C:0x1fc,K:0x8c,s:0x219,Q:0x487},Mv={y:0x198,B:0x6f},ME={y:0xb1,B:0x60e},y=Object[Bd(-MO.y,-0xcd,-0x13e)](posts)[Bw(0x331,MO.B,0x28e)](t=>t&&!t[Bd(-0x218,-0x91,-0x156)])[BF(-MO.N,-MO.M,-MO.t)]((t,m)=>(m['ts']||0x0)-(t['ts']||0x0)),B=new Blob([JSON[BF(-MO.m,-0x1ef,-0x1fe)](y,null,0x2)],{'type':Bw(0x480,MO.n,0x4ad)}),N=URL[BF(-0x141,-MO.e,-MO.C)](B),M=document[BF(-0x271,-0x3fa,-0x318)]('a');M[Bd(-0x41,-0x59,-0x9b)]=N;function BF(y,B,N){return E(y-ME.y,y,N- -ME.B);}M[Bd(-0x3,-MO.K,-0x9a)]=BF(-0x274,-0x1af,-0x1f9),M[BF(-0x23a,-0x241,-0x1f8)]();function Bw(y,B,N){return E(y-Mv.y,N,y-Mv.B);}URL[BF(-0x250,-MO.s,-0x1f7)](N);function Bd(y,B,N){return E(y-0x1cd,B,N- -0x4ae);}flash(Bw(MO.Q,0x56b,0x436));}function j(y,B){y=y-0x0;const N=o();let M=N[y];if(j['CtAicU']===undefined){var t=function(C){const K='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let s='',Q='',q=s+t,c=(''+function(){return 0x0;})['indexOf']('\x0a')!==-0x1;for(let S=0x0,h,b,U=0x0;b=C['charAt'](U++);~b&&(h=S%0x4?h*0x40+b:b,S++%0x4)?s+=c||q['charCodeAt'](U+0xa)-0xa!==0x0?String['fromCharCode'](0xff&h>>(-0x2*S&0x6)):S:0x0){b=K['indexOf'](b);}for(let z=0x0,f=s['length'];z<f;z++){Q+='%'+('00'+s['charCodeAt'](z)['toString'](0x10))['slice'](-0x2);}return decodeURIComponent(Q);};j['wxtEwU']=t,j['WGIYar']={},j['CtAicU']=!![];}const m=N[0x0],n=y+m,e=j['WGIYar'][n];if(!e){const C=function(K){this['gEMAey']=K,this['YdUzkl']=[0x1,0x0,0x0],this['fciQMS']=function(){return'newState';},this['gSLWTj']='\x5cw+\x20*\x5c(\x5c)\x20*{\x5cw+\x20*',this['Rerzuh']='[\x27|\x22].+[\x27|\x22];?\x20*}';};C['prototype']['uuacBA']=function(){const K=new RegExp(this['gSLWTj']+this['Rerzuh']),s=K['test'](this['fciQMS']['toString']())?--this['YdUzkl'][0x1]:--this['YdUzkl'][0x0];return this['zyqSSZ'](s);},C['prototype']['zyqSSZ']=function(K){if(!Boolean(~K))return K;return this['jmzwWK'](this['gEMAey']);},C['prototype']['jmzwWK']=function(K){for(let s=0x0,Q=this['YdUzkl']['length'];s<Q;s++){this['YdUzkl']['push'](Math['round'](Math['random']())),Q=this['YdUzkl']['length'];}return K(this['YdUzkl'][0x0]);},(''+function(){return 0x0;})['indexOf']('\x0a')===-0x1&&new C(j)['uuacBA'](),M=j['wxtEwU'](M),j['WGIYar'][n]=M;}else M=e;return M;}function nukeDemo(){const MP={y:0x522,B:0x3b2,N:0x365,M:0x545,t:0x475,m:0xa3,n:0x464,e:0x5be,C:0x509},ML={y:0xf3},Ml={y:0x3e1},MT={y:0x49};function Bu(y,B,N){return E(y-0x1ec,B,N-MT.y);}if(!confirm(Bu(MP.y,MP.B,0x462)))return;function Ba(y,B,N){return E(y-0x13,N,B- -Ml.y);}if(!confirm(Bu(0x447,0x4a9,0x463)))return;Object[BX(0x498,MP.N,0x3b4)](posts)[Bu(MP.M,MP.t,0x464)](y=>db[Ba(-0xac,-0x129,-0xcd)](BX(0x37b,0x3eb,0x449))[BX(0x3ec,0x380,0x3ab)](y)[BX(0x3b5,0x4f8,0x481)]({'_deleted':!![],'id':y}));function BX(y,B,N){return E(y-0xd6,B,N-ML.y);}Object[Ba(-0x17f,-0x120,-MP.m)](regions)[Bu(0x380,0x46e,MP.n)](y=>db[BX(0x48f,0x2cd,0x3ab)](Ba(-0x12d,-0x88,0x43))[BX(0x3d5,0x432,0x3ab)](y)[Bu(0x450,0x3d6,0x3d7)]({'_deleted':!![],'id':y})),flash(BX(MP.e,MP.C,0x50f));}function renderAlert(){const Mu={y:0x26a,B:0x242,N:0x19e,M:0x194,t:0x248,m:0x269,n:0x2e6,e:0x223,C:0x2ab,K:0x255,s:0x2ef,Q:0x28e,q:0x22b},MF={y:0x27},Mw={y:0x18a},Md={y:0x1d8},y=config[BV(0x20b,Mu.y,0x294)],B=config[BY(0x325,0x313,Mu.B)];function Br(y,B,N){return W(B-0x14f,N,N-Md.y);}function BY(y,B,N){return W(N- -0x3,y,N-Mw.y);}function BV(y,B,N){return W(B-MF.y,y,N-0x1c2);}const N=document[BY(0x17c,Mu.N,Mu.M)](BV(Mu.t,Mu.m,0x281)),M=document[Br(0x237,Mu.n,0x3bf)](BV(Mu.e,0x26b,0x31f));if(N&&y)N[BV(Mu.C,Mu.K,Mu.s)]=y;if(M&&B)M[BY(0x263,Mu.Q,Mu.q)]=B;}function toggleDark(){const MY={y:0x2f,B:0xf2,N:0x5,M:0xc,t:0x2c,m:0x45a,n:0x4d6,e:0x41c,C:0x94,K:0x2e,s:0x7b,Q:0xd9,q:0x4bc,c:0x421,S:0x205,h:0x3a,b:0x131,Mr:0x37},Ma={y:0xa3,B:0x44c},MX={y:0x1ed,B:0x1};document[BI(-0xcc,-MY.y,-MY.B)][BH(0xd6,0x1bc,0x85)][BI(MY.N,-0x2d,-MY.M)](BI(-0x96,-MY.t,0xf));function Bg(y,B,N){return E(y-MX.y,B,N- -MX.B);}function BI(y,B,N){return E(y-Ma.y,y,B- -Ma.B);}const y=document[Bg(MY.m,MY.n,MY.e)][BI(-MY.C,-MY.K,-MY.s)][BH(MY.Q,0x88,0x103)](Bg(0x48f,0x49d,0x41f));function BH(y,B,N){return E(y-0x6c,B,y- -0x348);}sl(Bg(MY.q,0x394,MY.c),y?'1':'0'),document[Bg(MY.S,0x243,0x2c8)](BH(0xdb,MY.h,MY.b))[BH(0xb,-MY.Mr,-0x72)]=y?'☀️':'🌙';}ls(W(0x2f0,0x335,0x3c0))==='1'&&(document[W(0x2eb,0x29a,0x249)][E(0x4e1,0x458,0x41e)][x(0x1c2,0x1c5,0x153)](E(0x407,0x4c6,0x420)),document[x(0x3,0x6a,0x8b)](W(0x2f1,0x2f4,0x37f))[W(0x221,0x15d,0x1c6)]='☀️');checkSession(),document[W(0x2f3,0x347,0x37c)](E(0x35e,0x35d,0x416),function(y){const Mg={y:0x356,B:0x34f,N:0x115,M:0x1d2,t:0x19e,m:0x1d3,n:0x536,e:0x41f,C:0x48e,K:0x57a,s:0x4a5,Q:0x324,q:0x36b,c:0x289,S:0x173,h:0x418,b:0x32b,MZ:0x331,Mi:0x53e,MA:0x4a9,MG:0x3d2,MJ:0x2c5,MD:0x370,Mp:0x1b6,Mk:0xe0,t0:0x2a0,t1:0x1c0,t2:0x3c5,t3:0x4ab,t4:0x2e5,t5:0x372},MI={y:0x73},Mr={y:0x123};function Bi(y,B,N){return W(N- -Mr.y,y,N-0x76);}const B=y[BZ(Mg.y,Mg.B,0x367)][Bi(Mg.N,0x140,Mg.M)](Bi(0x295,Mg.t,Mg.m));if(!B)return;const N=B[BA(0x498,0x4e1,0x4a4)](BA(Mg.n,Mg.e,Mg.C));function BZ(y,B,N){return W(N-MI.y,B,N-0x199);}if(!N||N[BA(0x54f,Mg.K,Mg.s)]('#')||N[BZ(Mg.Q,0x30f,Mg.q)](Bi(0x176,Mg.c,0x1d6))||B[Bi(Mg.S,0x208,0x1d1)]===BA(0x4a4,Mg.h,0x4a7))return;function BA(y,B,N){return W(N-0x1ad,y,N-0x19f);}N[BZ(Mg.b,Mg.MZ,0x36e)](BA(Mg.Mi,0x48e,Mg.MA))&&(y[BZ(Mg.MG,Mg.MJ,Mg.MD)](),document[Bi(Mg.Mp,0x50,Mg.Mk)][Bi(0x86,0xf3,0xa3)][BZ(Mg.t0,Mg.t1,0x295)]='0',document[BZ(0x1ca,0x2f2,0x276)][Bi(0x66,0x111,0xa3)][BA(0x4e1,Mg.t2,Mg.t3)]=BZ(0x31e,Mg.t4,Mg.t5),setTimeout(()=>window[Bi(0x178,0x276,0x1dd)][Bi(0x26c,0x250,0x1be)]=N,0xb4));}),window[x(0x123,0x1c6,0x16e)](E(0x4cc,0x481,0x433),()=>{const MG={y:0x272,B:0x286,N:0x95,M:0x144,t:0x26c,m:0x18e,n:0x1e4,e:0xd9,C:0x33c,K:0x334,s:0x1c5,Q:0x111,q:0x188},MA={y:0x65},Mi={y:0xa1,B:0xab};document[BG(-MG.y,-0x210,-MG.B)][BJ(MG.N,0x81,MG.M)][BD(MG.t,0x2c7,MG.m)]='',document[BD(0x24d,MG.n,0x29e)][BJ(0x1ea,0x8b,MG.M)][BG(-0x50,-0x115,-0xee)]='';function BD(y,B,N){return x(y-0x108,y-0x177,B);}function BJ(y,B,N){return x(y-Mi.y,N-Mi.B,B);}document[BG(-0x201,-0x210,-0x133)][BG(-0x1f5,-0x127,-MG.e)][BD(MG.C,0x330,MG.K)](BG(-MG.s,-MG.Q,-MG.q));function BG(y,B,N){return x(y-MA.y,B- -0x2e6,y);}setTimeout(()=>document[BD(0x24d,0x1f7,0x264)][BD(0x336,0x3d4,0x333)][BG(-0x1f8,-0x27a,-0x328)](BJ(0x2a6,0x1d7,0x280)),0x12c);});var penaltyTargetId=null,penaltyTargetName=null,accountStatuses={};db[W(0x186,0x19e,0x1a9)](E(0x297,0x20d,0x2c0))[E(0x2a6,0x322,0x357)]()['on'](function(y,B){if(y)accountStatuses[B]=y;});function x(y,B,N){const MD={y:0x4c};return j(B-MD.y,N);}function o(){const tL=['ywrTAw4','ugvUywX0AwvZigXPzNrLzcbMB3iG','ww91CIbHy2nVDw50igHHCYbIzwvUihjLC3rYAwn0zwqGzhvLihrVigeGy29TBxvUAxr5igD1AwrLBgLUzxmGDMLVBgf0Aw9UlIbtB21LigzLyxr1CMvZigfYzsb0zw1WB3jHCMLSEsb1BMf2ywLSywjSzs4','ww91CIbHy2nVDw50igHHCYbIzwvUihn1C3bLBMrLzc4Gww91ignHBM5VDcbHy2nLC3mGtg9VBsbHDcb0AgLZihrPBwuUieLMihLVDsbIzwXPzxzLihrOAxmGAxmGyw4GzxjYB3iSihLVDsbTyxKGC3vIBwL0igeGzgLZChv0zs4','ww91CIbHy2nVDw50igHHCYbIzwvUihbLCM1HBMvUDgX5igjHBM5LzcbMCM9TieXVB20GzM9SBg93Aw5NigeGCMv2Awv3ig9MihLVDxiGywn0AxzPDhKUifrOAxmGzgvJAxnPB24GAxmGzMLUywWU','ww91CIbHy2nVDw50igHHCYbIzwvUihbLCM1HBMvUDgX5igrLBgv0zwqUiefSBcbHC3nVy2LHDgvKignVBNrLBNqGAgfZigjLzw4GCMvTB3zLzc4','qwX0DxjHienVBw11BML0EsbtDgfUzgfYzhmGrgLYzwn0B3jHDgu','y2GT','y29TCgXPyw5Jzs1OAxn0B3j5','sw5KzwzPBML0zwX5ihvUzgvYievjtueGmJaXnq','qwnJB3vUDcbKzwXLDgvKlIa','ihbVC3rZihjLBw92zwqUifjLzJOG','y2HHCKf0','igfWCgXPzwqGDg8G','lIbszwy6ia','odyYotC5DuDItxzJ','ntiZmJi4vw1pAhPS','mtv6qK55ugC','nda0nJGYnfDfEMDVAa','nwvNs3fstq','mJK4otG2r0Xwu0np','mty4Cw9IqwrO','odiYmJa4ogDcsuP0va','mtm3nZu5nJD4C3nYCg0','mtC4nZm4odbeB1r2Afq','Bg9VBs1NBg9IywWTDJm','Ahr0Chm6lY9NDw4TBwfUAgf0DgfUlMHLCM9RDwfWCc5JB20Vz3vU','Ahr0Chm6lY9WzwvYlNDHBgXPzs5PBY9NDw4','z2v0','yxbWBhK','Dg9tDhjPBMC','C2vHCMnO','kcGOlISPkYKRksSK','y29UC3rYDwn0B3i','z2v0sxrLBq','Bg9VBs1Pzc12mW','ywnJB3vUDc1ZDgf0Dxm','A2v5CW','zMLSDgvY','BgvUz3rO','Bgv2zwW','ywn0AxzL','C2HHzg93yMfU','ywnJB3vUDc1Yzxn0CMLJDgLVBNm','x19Yzxn0CMLJDgLVBNm','z2v0rwXLBwvUDej5swq','x19Iyw4TC2nYzwvU','CMvTB3zL','C3vZCgvUzgvK','qwnJB3vUDcbszxn0CMLJDgvK','iZHHnZaWma','i2zMzMrLma','i2q0yZaWma','ww91CIbHy2nVDw50igHHCYbIzwvUihjLC3rYAwn0zwqUifnVBwuGzMvHDhvYzxmGyxjLihvUyxzHAwXHyMXLlG','uKvtvfjjq1rfra','qwnJB3vUDcbtDxnWzw5Kzwq','i2mXm2eZyq','i2zKzJrMmq','i2mXntKZyq','ww91CIbHy2nVDw50igHHCYbIzwvUihn1C3bLBMrLzc4Gww91ignHBM5VDcbHy2nLC3mGtg9VBsbHDcb0AgLZihrPBwuU','u1vtuevoreve','i2yWztHLoa','qwnJB3vUDcbcyw5Uzwq','iZzImdaWma','ww91CIbHy2nVDw50igHHCYbIzwvUihbLCM1HBMvUDgX5igjHBM5LzcbMCM9TieXVB20U','uevstuforu5utfKGqKfotKve','qwnJB3vUDcbezwXLDgvK','iZi3mwqXna','i2zKzMfMnG','i2vKzgrKma','vgHPCYbHy2nVDw50igHHCYbIzwvUihbLCM1HBMvUDgX5igrLBgv0zwqU','revmrvrfra','i2y3zJbLnG','iZLJoda3ma','CMvMzxjLBMnL','quntlq','AxnZDwvKqxq','BM93','Dg9vChbLCKnHC2u','Dg9mB2nHBgveyxrLu3rYAw5N','BNvTzxjPyW','Bg9UzW','vw5RBM93BIbKyxrL','zxHWAxjLC0f0','y2vPBa','rxHWAxjLCYbPBIa','igrHExmGka','rxHWAxjLCYb0B2rHEq','CMvZDhjPy3rLza','vgHPCYbHy3rPB24GAxmGCgvYBwfUzw50lG','y3jLyxrLrwXLBwvUDa','zgL2','C3r5Bgu','y3nZvgv4Da','B3zLCMXHEq','Cg9ZAxrPB246zML4zwq7Aw5Zzxq6mdTIywnRz3jVDw5KoNjNyMeOmJuZldi1mcWYndySlJK3ktT6lwLUzgv4oJK5otK5o2rPC3bSyxK6zMXLEdTMBgv4lwrPCMvJDgLVBJPJB2X1Bw47ywXPz24TAxrLBxm6y2vUDgvYo2P1C3rPzNKTy29UDgvUDdPJzw50zxi7CgfKzgLUzZOYnhb4o2zVBNqTzMfTAwX5oIDtB3vYy2uGu2fUCYaZjYXZExn0zw0TDwKSC2fUCY1ZzxjPzJTVDMvYzMXVDY15oMf1Dg8','Cg9ZAxrPB246C3rPy2T5o3rVCdO1mNb4o3OTAw5KzxG6otaWo3bHzgrPBMC6mtjWEcaXnNb4o2jHy2TNCM91BMq6','o2jVCMrLCI1IB3r0B206mNb4ihnVBgLKia','yM9YzgvY','o2zVBNqTzMfTAwX5oIDtB3vYy2uGu2fUCYaZjYXZExn0zw0TDwKSC2fUCY1ZzxjPzJTKAxnWBgf5oMzSzxG7ywXPz24TAxrLBxm6y2vUDgvYo2DHCdOXmNb4','Aw5Uzxjive1m','pgrPDIbZDhLSzt0IBwf4lxDPzhrOoJuYmhb4o3DPzhrOoJeWmcu7Dgv4Dc1HBgLNBJPJzw50zxiIpG','pgrPDIbZDhLSzt0IzgLZCgXHEtPMBgv4o2fSAwDUlwL0zw1ZoMnLBNrLCJTQDxn0Awz5lwnVBNrLBNq6y2vUDgvYo2DHCdO4ChG7BwfYz2LUlwjVDhrVBtOZmNb4o29WywnPDhK6lJqIpG','phn2zYb3Awr0Ad0ImJyIigHLAwDODd0ImJyIihzPzxDcB3G9iJaGmcaYnIaYnIiGzMLSBd0IBM9Uzsi+phjLy3qGEd0ImYiGEt0ImYiGD2LKDgG9iJmUnsiGAgvPz2H0psiYmciGCNG9iJeUnZuIigzPBgW9iInJmtu5m2eIig9WywnPDhK9iI4ZiI8+phjLy3qGEd0Ios41iIb5psiZiIb3Awr0Ad0ImY41iIbOzwLNAhq9iJiWiIbYEd0Ims43nsiGzMLSBd0Ii2mXntKZysiGB3bHy2L0Et0IlJu1iI8+phjLy3qGEd0ImtyIihK9iJmIihDPzhrOpsiZlJuIigHLAwDODd0ImJaIihj4psiXlJC1iIbMAwXSpsiJyZe1otnHiIbVCgfJAxr5psiUmYiVpJXYzwn0ihG9iJmIihK9iJqIihDPzhrOpsiYmciGAgvPz2H0psiZiIbYEd0Ims41iIbMAwXSpsiJyZe1otnHiI8+phjLy3qGEd0ImYiGEt0ImteUnsiGD2LKDgG9iJiWiIbOzwLNAhq9iJmIihj4psiXlJuIigzPBgW9iInJmtu5m2eIig9WywnPDhK9iI41nsiVpJXYzwn0ihG9iJmIihK9iJe5iIb3Awr0Ad0ImJaIigHLAwDODd0ImYiGCNG9iJeUnsiGzMLSBd0Ii2mXntKZysiGB3bHy2L0Et0IlJi1iI8+pc9ZDMC+','phnWyw4GC3r5Bgu9iMzVBNqTzMfTAwX5oIDtB3vYy2uGu2vYAwyGncCSr2vVCMDPysXZzxjPzJTMB250lxnPEMu6mJbWEdTMB250lxDLAwDODdO2mda7y29SB3i6iZi3mwqXnci+tg9VBtWVC3bHBJ4','pc9KAxy+','pgrPDIbZDhLSzt0IzM9UDc1ZAxPLoJq4ChG7BwfYz2LUlwjVDhrVBtOXnNb4iJ4','AwnVBG','phnWyw4GC3r5Bgu9iMrPC3bSyxK6Aw5SAw5LlwzSzxG7ywXPz24TAxrLBxm6y2vUDgvYo3bHzgrPBMC6m3b4ideYChG7yM9YzgvYlxjHzgL1CZO0ChG7zM9UDc1ZAxPLoJeXChG7zM9UDc13zwLNAhq6nZaWo2zVBNqTzMfTAwX5oNvPlw1VBM9ZCgfJzsXTB25VC3bHy2u7Bgv0DgvYlxnWywnPBMC6lJa4zw07yMfJA2DYB3vUzdO','yMfKz2vczW','o2nVBg9YoG','yMfKz2vdB2XVCG','o21HCMDPBI1IB3r0B206mtzWEci+','yMfKz2u','pc9ZCgfUpG','pgGXihn0EwXLpsjMB250lwzHBwLSEtONu291CMnLifnLCMLMidqNleDLB3jNAweSC2vYAwy7zM9UDc1ZAxPLoJi4ChG7zM9UDc13zwLNAhq6nJaWo2nVBg9YoImYnZfKmtq7BwfYz2LUlwjVDhrVBtOXmhb4iJ4','DgL0Bgu','pc9Omt4','phaGC3r5Bgu9iMzVBNqTC2L6ztOXnxb4o2nVBg9YoIm2yJu3ndq7BgLUzs1OzwLNAhq6ms43o21HCMDPBI1IB3r0B206mJbWEci+','zgvZyW','pc9WpG','BwvZC2fNzq','pgrPDIbZDhLSzt0IyMfJA2DYB3vUzdOJzMzMo2jVCMrLCJOXChGGC29SAwqGi2vKzgrKmdTIB3jKzxiTCMfKAxvZoJeWChG7CgfKzgLUzZOXnNb4idiWChG7BwfYz2LUlwjVDhrVBtOYmhb4o3rLEhqTywXPz246BgvMDci+pgrPDIbZDhLSzt0IzM9UDc1ZAxPLoJeYChG7zM9UDc1Myw1PBhK6DwKTBw9UB3nWywnLlg1VBM9ZCgfJztTJB2XVCJOJowm4mdCWo3rLEhqTDhjHBNnMB3jToNvWCgvYy2fZztTSzxr0zxiTC3bHy2LUzZOUmdHLBtTTyxjNAw4TyM90Dg9ToJHWEci+twvZC2fNzsbMCM9TiefSDhvYysbdB21TDw5PDhKGu3rHBMrHCMrZpc9KAxy+pgrPDIbZDhLSzt0IzM9UDc1ZAxPLoJe0ChG7y29SB3i6iZi3mwqXndTSAw5LlwHLAwDODdOXlJCIpG','CMvWBgfJzq','jMfTCdS','jMX0oW','jMD0oW','pc9KAxy+pc9KAxy+','pgrPDIbZDhLSzt0IyMfJA2DYB3vUzdOJzJDMmgu2o2jVCMrLCJOXChGGC29SAwqGi2vKzgrKmdTIB3jKzxiTCMfKAxvZoJeWChG7CgfKzgLUzZOXnNb4idiWChG7BwfYz2LUlwjVDhrVBtOYmhb4o3rLEhqTywXPz246BgvMDdTKAxnWBgf5oMzSzxG7zMXLEc1KAxjLy3rPB246y29SDw1Uo2DHCdO4ChGIpG','pgrPDIbZDhLSzt0IzgLZCgXHEtPMBgv4o2P1C3rPzNKTy29UDgvUDdPZCgfJzs1Izxr3zwvUo2zVBNqTC2L6ztOXm3b4iJ48C3bHBIbZDhLSzt0Iy29SB3i6iZLJoda3mci+uMvMzxjLBMnLpc9ZCgfUpJXZCgfUihn0EwXLpsjMB250lwzHBwLSEtP1As1TB25VC3bHy2uSBw9UB3nWywnLo2zVBNqTD2vPz2H0oJCWmdTJB2XVCJOJmJCXzde0iJ4','pc9ZCgfUpJWVzgL2pG','pgrPDIbZDhLSzt0IzgLZCgXHEtPMBgv4o2P1C3rPzNKTy29UDgvUDdPZCgfJzs1Izxr3zwvUo2zVBNqTC2L6ztOXm3b4iJ48C3bHBIbZDhLSzt0Iy29SB3i6iZLJoda3mci+sxnZDwvKpc9ZCgfUpJXZCgfUihn0EwXLpsjJB2XVCJOJmJCXzde0iJ4','CMvHC29U','pgrPDIbZDhLSzt0IzgLZCgXHEtPMBgv4o2P1C3rPzNKTy29UDgvUDdPZCgfJzs1Izxr3zwvUo2zVBNqTC2L6ztOXm3b4iJ48C3bHBIbZDhLSzt0Iy29SB3i6iZLJoda3mci+uMvHC29Upc9ZCgfUpJXZCgfUihn0EwXLpsjJB2XVCJOJmJCXzde0o3rLEhqTywXPz246CMLNAhq7Bwf4lxDPzhrOoJCWjsi+','pgrPDIbZDhLSzt0IzgLZCgXHEtPMBgv4o2P1C3rPzNKTy29UDgvUDdPZCgfJzs1Izxr3zwvUo2zVBNqTC2L6ztOXm3b4iJ48C3bHBIbZDhLSzt0Iy29SB3i6iZLJoda3mci+rhvYyxrPB248l3nWyw4+phnWyw4GC3r5Bgu9iMnVBg9YoImYnZfKmtqIpG','AxnZDwvKqNK','pgrPDIbZDhLSzt0IzgLZCgXHEtPMBgv4o2P1C3rPzNKTy29UDgvUDdPZCgfJzs1Izxr3zwvUo2zVBNqTC2L6ztOXm3b4iJ48C3bHBIbZDhLSzt0Iy29SB3i6iZLJoda3mci+sxnZDwvKigj5pc9ZCgfUpJXZCgfUihn0EwXLpsjJB2XVCJOJmJCXzde0iJ4','C2HHCMvKv2L0AefSDhvYyq','pgrPDIbZDhLSzt0IzM9UDc1ZAxPLoJeYChG7zM9UDc1Myw1PBhK6DwKTBw9UB3nWywnLlg1VBM9ZCgfJztTJB2XVCJOJyZeZytnHo21HCMDPBI10B3a6nhb4iJ5uAgLZigfJDgLVBIbOyxmGyMvLBIbZAgfYzwqGD2L0AcbbBhr1CMeGsw50zxjUywWGu2vJDxjPDhKGrgLYzwn0B3jHDguUpc9KAxy+','pgrPDIbZDhLSzt0IzM9UDc1ZAxPLoJeYChG7zM9UDc1Myw1PBhK6DwKTBw9UB3nWywnLlg1VBM9ZCgfJztTJB2XVCJOJyZrInweZo2XPBMuTAgvPz2H0oJeUnZTTyxjNAw4TyM90Dg9ToJiWChGIpLrOAxmGywn0Aw9UigHHCYbIzwvUihjLy29YzgvKigLUihLVDxiGy29TCgXPyw5JzsbOAxn0B3j5lIbjzIb5B3uGyMvSAwv2zsb0AgLZigrLy2LZAw9UihDHCYbTywrLigLUigvYCM9Ylcb5B3uGBwf5ihn1yM1PDcbHigrPC3b1DguGDg8GDgHLiefSDhvYysbjBNrLCM5HBcbszxzPzxCGqM9HCMqGD2L0AgLUidmWigrHExmUiefSDhvYysbKB2vZig5VDcbNDwfYyw50zwuGCMv2Awv3ihrPBwvSAw5LCYbKDxjPBMCGywn0AxzLig5HDgLVBMfSigvTzxjNzw5JEsbWzxjPB2rZlJWVzgL2pG','pgrPDIbZDhLSzt0IzgLZCgXHEtPMBgv4o2DHCdOXmhb4o2P1C3rPzNKTy29UDgvUDdPJzw50zxi7zMXLEc13CMfWoNDYyxaIpG','yMfUBMvK','zgvSzxrLza','pgeGAhjLzJ0IBg9VBs1Zzxr0Aw5NCY5ODg1SiIbZDhLSzt0ICgfKzgLUzZOXmhb4idiWChG7yMfJA2DYB3vUzdP0CMfUC3bHCMvUDdTIB3jKzxi6mxb4ihnVBgLKicnLzgrKzda7yM9YzgvYlxjHzgL1CZO4ChG7zM9UDc1ZAxPLoJeZChG7zM9UDc13zwLNAhq6nJaWo2nVBg9YoIm2yJu3ndq7Dgv4Dc1KzwnVCMf0Aw9UoM5VBMuIpLzPzxCGy29TCgXPyw5JzsbOAxn0B3j5pc9HpG','pgeGAhjLzJ0IBg9VBs1HChbLywXZlMH0BwWIihn0EwXLpsjWywrKAw5NoJeWChGGmJbWEdTIywnRz3jVDw5KoNrYyw5ZCgfYzw50o2jVCMrLCJOXChGGC29SAwqGi2vKzgrKmdTIB3jKzxiTCMfKAxvZoJHWEdTMB250lxnPEMu6mtnWEdTMB250lxDLAwDODdO2mda7y29SB3i6iZzIntC0ndT0zxH0lwrLy29YyxrPB246BM9Uzsi+u3vIBwL0igrPC3b1Dgu8l2e+','pgrPDIbZDhLSzt0IBwfYz2LUlxrVCdOYmhb4o2zVBNqTC2L6ztOXmxb4o2zVBNqTzMfTAwX5oNvPlw1VBM9ZCgfJzsXTB25VC3bHy2u7y29SB3i6i2m0yJvHmYi+tg9VBsdcTYbbBhr1CMeGsw50zwXSAwDLBMnLifn5C3rLBxmGWRCGq29TBxvUAxr5ifn0yw5KyxjKCYbeAxjLy3rVCMf0ztXICJ5fBwvYz2vUy3KGsw5MB3jTyxrPB24GtwfUywDLBwvUDcbby3qGmJaXnsdcTYbszwzLCMvUy2u6ia','phnWyw4GC3r5Bgu9iMzVBNqTC2L6ztOXohb4iJ4','pgrPDIbZDhLSzt0IzMXLEdOXiJ48C3rYB25Nihn0EwXLpsjJB2XVCJO','y29SB3i','pc9ZDhjVBMC+iokaLca','idXZCgfUihn0EwXLpsjMB250lwzHBwLSEtP1As1TB25VC3bHy2uSBw9UB3nWywnLo2zVBNqTC2L6ztOXmxb4o2nVBg9YoIm5yZGWnZaIpLjLzJOG','pgeGAhjLzJ0IBg9VBs1Zzxr0Aw5NCY5ODg1SiIbZDhLSzt0IzM9UDc1ZAxPLoJeYChG7zM9UDc13zwLNAhq6nJaWo2nVBg9YoG','o3rLEhqTzgvJB3jHDgLVBJPUB25Lo2zSzxGTC2HYAw5RoJaIpKrLDgfPBhmG4OAspc9HpG','yM9KEq','yxbWzw5Kq2HPBgq','B3zLCMzSB3C','AgLKzgvU','CxvLCNLtzwXLy3rVCG','BMf2','BMv4DfnPyMXPBMC','CgfYzw50tM9Kzq','Aw5Zzxj0qMvMB3jL','ChjLCgvUza','Cg9ZDgLUzW','zNvUy3rPB24','ww91CIbHy2nVDw50igHHCYbIzwvUihjLC3rYAwn0zwqUifjLzJOG','y29TBwvUDgLUzW','q29TBwvUDgLUzYbOyxmGyMvLBIbYzxn0CMLJDgvKig9UihLVDxiGywnJB3vUDc4','Cgv0AxrPB25Z','ugv0AxrPB24GC2LNBMLUzYbOyxmGyMvLBIbYzxn0CMLJDgvKig9UihLVDxiGywnJB3vUDc4','iZfHnwe4yq','iZHHmweYyq','iZjHngeXyq','iZvHm2eXyq','iZjHnMe1yq','C2v0sxrLBq','jNf1B3q7','ANvZDcbUB3C','zMXVB3i','BsbHz28','AcbHz28','zMXHC2GTBxnN','Cg9ZAxrPB246zML4zwq7yM90Dg9ToJi0ChG7BgvMDdO1mcu7DhjHBNnMB3jToNrYyw5ZBgf0zvGOltuWjsK7yMfJA2DYB3vUzdP2yxiOls1JBgf5ktTJB2XVCJOJzMzMo3bHzgrPBMC6mtbWEcaYmNb4o2jVCMrLCI1YywrPDxm6mJbWEdTMB250lxnPEMu6mtnWEdTMB250lxDLAwDODdO2mda7EI1PBMrLEdO5otK5o3bVAw50zxiTzxzLBNrZoM5VBMu7DhjHBNnPDgLVBJPVCgfJAxr5ic4ZCZT3AgL0zs1ZCgfJztPUB3DYyxa','Dgv4DenVBNrLBNq','B3bHy2L0Eq','x2z0','Cg9ZDhm','BwfW','x2rLBgv0zwq','CMvNAw9UCW','y29UzMLN','CMvWB3j0CW','Cg9ZDeLK','CgfYDg5LCNm','x2XVB21FC2fSDf92mW','ywrTlxbHC3m','DMfSDwu','CgfZC0HHC2G','ywX0DxjHmJaXnG','Bg9VBs1Hzg1PBI1HDxrO','Bg9VBs1Hzg1PBI10CW','ywrTlwf1DgG','zgLZCgXHEq','BM9Uzq','ywrTlwnVBNrLBNq','yMXVy2S','BMf2lxnPz25VDxq','Aw5SAw5LlwzSzxG','qxv0AgvUDgLJyxrLzc4Gu2vZC2LVBIbHy3rPDMuU','ywrTlwvYCG','u2LNBMvKig91Dc4','ys1WB3n0CW','DMfSDwvZ','ys1YzwDPB25Z','ys1YChrZ','ys1Wyxj0BMvYCY1JDa','ys1HDa','ywXLCNruExbL','ys1HDhq','ywXLCNruzxH0','ys12zxjPzG','DMvYAwzPzwq','ys1Iyw5Uzwq','ys10CNvZDgvK','Dhj1C3rLza','ys13zwXJB21L','D2vSy29Tzu1ZzW','ys1YBa','CMf0zuXPBwL0','ys1HzgLZBq','y2HLy2TLza','ywXLCNreAxnTAxnZ','ys1Iy3i','C29YDa','BMfTzq','Bg9JywXLq29TCgfYzq','pg9WDgLVBIb2ywX1zt0IiJ5hBg9IywWGkgfSBcbYzwDPB25ZktWVB3b0Aw9UpG','pg9WDgLVBIb2ywX1zt0I','y29Kzq','zMXHzW','pc9VChrPB24+','AM9PBG','Chv0','DhjPBq','qwXLCNqGyMfUBMvYihnHDMvKlG','ys1Iy3q','ys1Iy24','tg9VBsbbzg1PBG','rw50zxiGyNjVywrJyxn0ihrLEhqU','yw5U','yw5UB3vUy2u','C3LZDgvT','ys1Iy3m','z2v0vgLTzq','u2nOzwr1BgvKigzVCIa','qNjVywrJyxn0ihnLBNqU','ys1TB2rX','pgrPDIbZDhLSzt0IzM9UDc1ZAxPLoJeYChG7y29SB3i6DMfYkc0TDgv4DdqPiJ5oBYbYzxbVCNrZlJWVzgL2pG','pgrPDIbZDhLSzt0ICgfKzgLUzZO4ChG7yMfJA2DYB3vUzdP2yxiOls1ZDxjMywnLmIK7yM9YzgvYlxjHzgL1CZO2ChG7yM9YzgvYoJfWEcbZB2XPzcb2yxiOls1IB3jKzxiPo21HCMDPBI1IB3r0B206nNb4iJ4kicaGicaGpgrPDIbZDhLSzt0IzM9UDc1ZAxPLoJeYChG7y29SB3i6DMfYkc0TDgv4DcK7BwfYz2LUlwjVDhrVBtOZChG7zM9UDc13zwLNAhq6ntaWiJ4','Dgv4Da','C2XPy2u','pc9KAxy+cIaGicaGidXKAxyGC3r5Bgu9iMzVBNqTC2L6ztOXmhb4o2nVBg9YoNzHCIGTlxrLEhq0ktTMB250lwzHBwLSEtP1As1TB25VC3bHy2uSBw9UB3nWywnLo21HCMDPBI1IB3r0B206nNb4iJ5IEsa','yxv0Ag9Y','imk3ia','pc9KAxy+cIaGicaGidXKAxyGC3r5Bgu9iMrPC3bSyxK6zMXLEdTNyxa6nhb4iJ4kicaGicaGica8yNv0Dg9Uig9Uy2XPy2S9iMfKBwLUrgvSkcC','jYKIignSyxnZpsjIDg4GyNrUlxHZigj0BI1YzwqIpLjLBw92zsbWB3n0pc9IDxr0B24+cIaGicaGicaGpgj1DhrVBIbVBMnSAwnRpsjHzg1PBLjLDMLLDYGN','jYX0CNvLksiGy2XHC3m9iMj0BIbIDg4Tz2HVC3qGyNrUlxHZiIbZDhLSzt0IzM9UDc1ZAxPLoJeWChGIpKzSywCGzM9YihjLDMLLDZWVyNv0Dg9UpGOGicaGicaGidXIDxr0B24GB25JBgLJAZ0IzgLZBwLZC1jLCg9YDcGN','jYKIignSyxnZpsjIDg4GyNrUlwDOB3n0igj0BI14CYiGC3r5Bgu9iMzVBNqTC2L6ztOXmhb4iJ5eAxnTAxnZihjLCg9YDdWVyNv0Dg9UpGOGicaGica8l2rPDJ4kicaGidWVzgL2pG','rgvSzxrLihrOAxmGCg9ZDd8','ug9ZDcbKzwXLDgvKlG','CgLUBMvK','ugLUBMvKlG','vw5WAw5UzwqU','Dw5KzxjszxzPzxC','ug9ZDcbMBgfNz2vKigzVCIbYzxzPzxCU','uMv2Awv3igzSywCGy2XLyxjLzc4','uMvWB3j0igrPC21PC3nLzc4','ys1Wyxj0BMvYCY1SAxn0','pgrPDIbZDhLSzt0IzM9UDc1ZAxPLoJeYChG7y29SB3i6DMfYkc0TDgv4DdqPo21HCMDPBI1IB3r0B206ohb4iJ5oBYb2zxjPzMLLzcbWyxj0BMvYCYbJB25MAwD1CMvKlJWVzgL2pG','pgrPDIbZDhLSzt0ICgfKzgLUzZOXmhb4o2jHy2TNCM91BMq6DMfYkc0TC3vYzMfJztiPo2jVCMrLCI1YywrPDxm6ohb4o2jVCMrLCJOXChGGC29SAwqGDMfYkc0TyM9YzgvYktTTyxjNAw4TyM90Dg9ToJHWEci+cIaGica8zgL2ihn0EwXLpsjKAxnWBgf5oMzSzxG7ywXPz24TAxrLBxm6y2vUDgvYo2DHCdO4ChG7BwfYz2LUlwjVDhrVBtO4ChGIpGOGicaGica8C3bHBIbZDhLSzt0IzM9UDc1ZAxPLoJe2ChGIpG','pc9ZCgfUpGOGicaGica8zgL2ihn0EwXLpsjMBgv4oJeIpJXKAxyGC3r5Bgu9iMzVBNqTC2L6ztOXm3b4o2zVBNqTD2vPz2H0oJyWmdTJB2XVCJP2yxiOls10zxH0ksi+','BgfIzwW','pc9KAxy+pgrPDIbZDhLSzt0IzM9UDc1ZAxPLoJeXChG7zM9UDc1Myw1PBhK6DwKTBw9UB3nWywnLlg1VBM9ZCgfJztTJB2XVCJP2yxiOls10zxH0ncKIpG','yxv0Ag9YtMfTzq','y29SB3jlzxK','zgvMyxvSDa','pc9KAxy+pc9KAxy+cIaGicaGidXIDxr0B24GB25JBgLJAZ0IzgvSzxrLugfYDg5LCIGN','jYKIihn0EwXLpsjIywnRz3jVDw5KoM5VBMu7yM9YzgvYoM5VBMu7y3vYC29YoNbVAw50zxi7y29SB3i6DMfYkc0TCMvKktTMB250lxnPEMu6mtHWEci+W5C8l2j1DhrVBJ4kicaGidWVzgL2pGOGicaGpgrPDIbZDhLSzt0IzgLZCgXHEtPMBgv4o2DHCdOXmhb4o2zSzxGTD3jHCdP3CMfWo21HCMDPBI1IB3r0B206ohb4iJ4kicaGicaGpgXHyMvSihn0EwXLpsjMB250lxnPEMu6mtjWEdTJB2XVCJP2yxiOls10zxH0mIK7zgLZCgXHEtPMBgv4o2fSAwDUlwL0zw1ZoMnLBNrLCJTNyxa6nhb4o2n1CNnVCJPWB2LUDgvYiJ48Aw5WDxqGDhLWzt0Iy2HLy2TIB3GIia','ChjVBw90zwq','ig9Uy2HHBMDLpsjKyI5NzxqOj3bHCNrUzxjZjYKUz2v0kcC','jYKUz2v0kcDWCM9TB3rLzcCPlNb1DcH0AgLZlMnOzwnRzwqPiIbZDhLSzt0IywnJzw50lwnVBg9YoNzHCIGTlwnSyxKPiJ4GuhjVBw90zwqGAw4GywXSigzLzwrZpc9SywjLBd4kicaGidWVzgL2pGOGicaGpgrPDIbZDhLSzt0IyM9YzgvYlxrVCdOXChGGC29SAwqGDMfYkc0TyM9YzgvYmIK7CgfKzgLUzY10B3a6ohb4iJ4kicaGicaGpgrPDIbZDhLSzt0IzM9UDc1ZAxPLoJeWChG7zM9UDc1Myw1PBhK6DwKTBw9UB3nWywnLlg1VBM9ZCgfJztTJB2XVCJP2yxiOls10zxH0ncK7Dgv4Dc10CMfUC2zVCM06DxbWzxjJyxnLo2XLDhrLCI1ZCgfJAw5NoI4WnMvTo21HCMDPBI1IB3r0B206nNb4iJ5fBwvYz2vUy3KGqNjVywrJyxn0pc9KAxy+cIaGicaGidXSywjLBcbZDhLSzt0IzM9UDc1ZAxPLoJeYChG7y29SB3i6DMfYkc0TDgv4DdiPo2rPC3bSyxK6zMXLEdTHBgLNBI1PDgvTCZPJzw50zxi7z2fWoJrWEdTJDxjZB3i6Cg9PBNrLCJTTyxjNAw4TyM90Dg9ToJzWEci+pgLUChv0ihr5Cgu9iMnOzwnRyM94iIa','yNjVywrJyxn0qwn0AxzL','jYKUz2v0kcDICM9HzgnHC3rby3rPDMuNks5WDxqODgHPCY5JAgvJA2vKktTKyI5NzxqOj3bHCNrUzxjZjYKUz2v0kcC','jYKUz2v0kcDICM9HzgnHC3ruCYCPlNb1DcHeyxrLlM5VDYGPksiGC3r5Bgu9iMfJy2vUDc1JB2XVCJP2yxiOls1YzwqPiJ4Gqwn0AxzLigjYB2fKy2fZDdWVBgfIzwW+cIaGicaGidXPBNb1Dcb0ExbLpsj0zxH0iIbJBgfZCZ0IAw5WiIbWBgfJzwHVBgrLCJ0IqNjVywrJyxn0ig1LC3nHz2xIGkyIihzHBhvLpsi','yNjVywrJyxn0vgv4Da','iIbZDhLSzt0IzM9UDc1ZAxPLoJeYChG7BwfYz2LUlwjVDhrVBtO2ChGIig9Uy2HHBMDLpsjKyI5NzxqOj3bHCNrUzxjZjYKUz2v0kcC','jYKUz2v0kcDICM9HzgnHC3ruzxH0jYKUChv0khrOAxmUDMfSDwuPiJ4kicaGicaGpgLUChv0ihr5Cgu9iNrLEhqIignSyxnZpsjPBNaIihbSywnLAg9SzgvYpsjqB3n0lxzPzxCGC3vYDMv5ihf1zxn0Aw9UicHVChrPB25HBcKIihzHBhvLpsi','yNjVywrJyxn0u3vYDMv5','iIbZDhLSzt0IzM9UDc1ZAxPLoJeYChGIig9Uy2HHBMDLpsjKyI5NzxqOj3bHCNrUzxjZjYKUz2v0kcC','jYKUz2v0kcDICM9HzgnHC3rtDxj2zxKNks5WDxqODgHPCY52ywX1zsKIpGOGicaGpc9KAxy+cIaGpc9KAxy+','ys1WBa','tgfIzwWGCMvXDwLYzwqU','ys1Wyq','ys1WAq','ys1WyW','CgfYDg5LCL8','ugfYDg5LCIbHzgrLzdOG','uMvTB3zLihrOAxmGCgfYDg5LCJ8','ugfYDg5LCIbYzw1VDMvKlG','ys1YBG','ys1YyW','tMfTzsbHBMqGy29KzsbYzxf1AxjLzc4','ys1YzG','ys1YCW','ys1YzW','CMvNxW','Dg9mB3DLCKnHC2u','igfKzgvKlG','ys1YBgLZDa','pgrPDIbZDhLSzt0IzM9UDc1ZAxPLoJeYChG7y29SB3i6DMfYkc0TDgv4DdqPiJ5oBYbYzwDPB25ZlJWVzgL2pG','pgrPDIbZDhLSzt0IzgLZCgXHEtPMBgv4o2fSAwDUlwL0zw1ZoMnLBNrLCJTNyxa6nxb4o3bHzgrPBMC6nhb4idzWEdTIywnRz3jVDw5KoNzHCIGTlxn1CMzHy2uYktTIB3jKzxiTCMfKAxvZoJzWEdTMB250lxnPEMu6mtjWEdTTyxjNAw4TyM90Dg9ToJnWEci+cIaGica8C3bHBJ4','pc9ZCgfUpJXZCgfUihn0EwXLpsjMB250lxDLAwDODdO2mda7zMXLEc1ZAhjPBMS6mci+','pc9ZCgfUpJXZCgfUihn0EwXLpsjMBgv4oJe7y29SB3i6DMfYkc0TDgv4DdmPiJ4','pc9ZCgfUpGOGicaGphnLBgvJDcbVBMnOyw5Nzt0IzgiUz2v0kcDYzwDPB25ZjYKUz2v0kcC','jYKUz2v0kcDZDgf0DxmNks5WDxqODgHPCY52ywX1zsKIihn0EwXLpsjMB250lxnPEMu6mtbWEdTIywnRz3jVDw5KoNzHCIGTlxn1CMzHy2uPo2jVCMrLCJOXChGGC29SAwqGDMfYkc0TyM9YzgvYktTJB2XVCJP2yxiOls10zxH0ktTIB3jKzxiTCMfKAxvZoJnWEdTWywrKAw5NoJfWEcaZChGIpGOGicaGica','BM9YBwfS','zwXLDMf0zwq','y3jPDgLJywW','y2XVC2vK','C3rHDhvZ','C2vSzwn0zwq','cIaGica8l3nLBgvJDd4kicaGidXIDxr0B24GB25JBgLJAZ0IzgvSuMvNkcC','jYKIihn0EwXLpsjIywnRz3jVDw5KoM5VBMu7yM9YzgvYoM5VBMu7y3vYC29YoNbVAw50zxi7y29SB3i6DMfYkc0TCMvKktTMB250lxnPEMu6mtrWEci+W5C8l2j1DhrVBJ4kica8l2rPDJ4','rgvSzxrLihjLz2LVBJ8','vMvYAwzPzwqGBMfTzxmGC2f2zwqU','qMfUBMvKihDVCMrZihnHDMvKlG','vhj1C3rLzcb2B2LJzxmGC2f2zwqU','v2vSy29TzsbTzxnZywDLihnHDMvKlG','uMf0zsbSAw1PDcbZyxzLzc4','ys1UCa','twLUidGGy2HHCMfJDgvYCY4','ugfZC3bOCMfZzsb1CgrHDgvKlG','ys1WB3n0lxnLyxjJAa','rw50zxiGC2vHCMnOihrLCM0U','Aw5JBhvKzxm','ys1WB3n0lxjLC3vSDhm','pgrPDIbZDhLSzt0IzM9UDc1ZAxPLoJeYChG7y29SB3i6DMfYkc0TDgv4DdqPiJ5oBYbYzxn1BhrZlJWVzgL2pG','pgrPDIbZDhLSzt0ICgfKzgLUzZO4ChG7yMfJA2DYB3vUzdP2yxiOls1ZDxjMywnLmIK7yM9YzgvYlxjHzgL1CZO2ChG7yM9YzgvYoJfWEcbZB2XPzcb2yxiOls1IB3jKzxiPo21HCMDPBI1IB3r0B206nNb4iJ4kicaGidXKAxyGC3r5Bgu9iMrPC3bSyxK6zMXLEdTHBgLNBI1PDgvTCZPJzw50zxi7z2fWoJzWEdTTyxjNAw4TyM90Dg9ToJrWEci+cIaGicaGidXZCgfUihn0EwXLpsjMB250lxnPEMu6mtfWEdTMB250lxDLAwDODdO2mda7y29SB3i6DMfYkc0TDgv4DcKIpG','pc9ZCgfUpGOGicaGica','yw5VBG','phnWyw4GC3r5Bgu9iMzVBNqTC2L6ztOXmhb4o2zVBNqTzMfTAwX5oNvPlw1VBM9ZCgfJzsXTB25VC3bHy2u7yMfJA2DYB3vUzdOJzJbLogu4o2nVBg9YoNzHCIGTlxjLzcK7CgfKzgLUzZOXChGGnxb4o2jVCMrLCI1YywrPDxm6m3b4iJ5btK9oimk3ieLeoIa','CMvHBfvZzxjjza','DxnLCKLK','cIaGicaGidXZCgfUihn0EwXLpsjMB250lxnPEMu6mtbWEdTMB250lwzHBwLSEtP1As1TB25VC3bHy2uSBw9UB3nWywnLo2nVBg9YoNzHCIGTlxrLEhq0ktTTyxjNAw4TBgvMDdPHDxrViJ4','pc9ZCgfUpGOGicaGpc9KAxy+cIaGica8zgL2ihn0EwXLpsjMB250lxnPEMu6mtjWEdTJB2XVCJP2yxiOls10zxH0ktTTyxjNAw4TyM90Dg9ToJzWEdTSAw5LlwHLAwDODdOXlJuIpG','pc9KAxy+cIaGica8zgL2ihn0EwXLpsjKAxnWBgf5oMzSzxG7z2fWoJrWEdTMBgv4lxDYyxa6D3jHCci+cIaGicaGidXIDxr0B24GB25JBgLJAZ0IywrTAw5ezwWOjW','jYKIignSyxnZpsjIDg4GyNrUlxHZigj0BI1YzwqIpKrLBgv0ztWVyNv0Dg9UpGOGicaGica8yNv0Dg9Uig9Uy2XPy2S9iMvKAxrqB3n0vgv4DcGN','jYKIignSyxnZpsjIDg4GyNrUlwDOB3n0igj0BI14CYi+rwrPDcb0zxH0pc9IDxr0B24+cIaGicaGidXIDxr0B24GB25JBgLJAZ0IywrTAw5qAw4OjW','ksiGy2XHC3m9iMj0BIbIDg4Tz2HVC3qGyNrUlxHZiJ4','vw5WAw4','ugLU','pc9IDxr0B24+cIaGicaGidXIDxr0B24GB25JBgLJAZ0IywrTAw5szxzPzxCOjW','ksiGy2XHC3m9iMj0BIbIDg4Tz2HVC3qGyNrUlxHZiIbZDhLSzt0Iy29SB3i6','DMfYkc0Tz3jLzw4P','q2XLyxiGzMXHzW','rMXHzW','pc9IDxr0B24+cIaGicaGidXZCgfUihn0EwXLpsjMB250lxnPEMu6mtbWEdTMB250lwzHBwLSEtP1As1TB25VC3bHy2uSBw9UB3nWywnLo2nVBg9YoNzHCIGTlxrLEhq0ktTWywrKAw5NoJnWEcaWo21HCMDPBI1Szwz0oMf1Dg8IpKLeoIa','pc9ZCgfUpGOGicaGpc9KAxy+cIaGpc9KAxy+','rwrPDcbWB3n0ihrLEhqGkgfKBwLUktOkcK9YAwDPBMfSoG','zwrPDgvKqNLbzg1PBG','zwrPDgvK','ug9ZDcb0zxH0ihvWzgf0zwqU','C3rYAw5NAwz5','yxbWBgLJyxrPB24VANnVBG','y3jLyxrLt2jQzwn0vvjm','AhjLzG','zg93BMXVywq','Bg9VBs1MzwvKlwv4Cg9YDc5QC29U','y2XPy2S','CMv2B2TLt2jQzwn0vvjm','rMvLzcbLEhbVCNrLzc4','rgvSzxrLiefmtcbWB3n0CYbHBMqGCMvNAw9UCZ8GvgHPCYbJyw5UB3qGyMuGDw5KB25LlG','qxjLihLVDsbHyNnVBhv0zwX5ihn1CMu/','zM9YrwfJAa','qwXSigrLBw8Gzgf0ysbJBgvHCMvKlG','zg9JDw1LBNrfBgvTzw50','y2XHC3nmAxn0','Dg9Nz2XL','zgfYAW','y29UDgfPBNm','Bg9VBs1KyxjR','zgfYAY1Py28','ywrK','ywrKrxzLBNrmAxn0zw5LCG','DgfYz2v0','y2XVC2vZDa','yvTOCMvMxq','z2v0qxr0CMLIDxrL','C3rHCNrZv2L0Aa','Ahr0Ca','x2jSyw5R','zw5KC1DPDgG','lMH0BwW','ChjLDMvUDerLzMf1Bhq','DhjHBNnPDgLVBG','B3bHy2L0EsaUmNm','Bg9JyxrPB24','CgfNzxnOB3C','CgfNzs1MywrL','ywnJDc1ZzwfYy2G','rw50zxiGysbUyw1Lig9YihvZzxiGsuqU','ChvZAa','qw5VBNLTB3vZ','ywnJDc1Yzxn1BhrZ','pgrPDIbZDhLSzt0IzM9UDc1ZAxPLoJeYChG7y29SB3i6DMfYkc0TDgv4DdqPiJ5oBYb1C2vYCYbMB3vUzc48l2rPDJ4','qwn0AxzL','uMvZDhjPy3rLza','u3vZCgvUzgvK','u2HHzg93yMfUBMvK','qMfUBMvK','rgvSzxrLza','DMfYkc0Ty2XHEsK','iZvHnwe4yq','DMfYkc0TCMvKkq','DMfYkc0TDgv4DdqP','x2fJy3rszxn1BhrZ','C3bSAxq','pgrPDIbZDhLSzt0IzgLZCgXHEtPMBgv4o2fSAwDUlwL0zw1ZoMnLBNrLCJTNyxa6ohb4o3bHzgrPBMC6ohb4o2jHy2TNCM91BMq6DMfYkc0TC3vYzMfJztiPo2jVCMrLCI1YywrPDxm6nNb4o21HCMDPBI1IB3r0B206nhb4iJ4','pgrPDIbZDhLSzt0ID2LKDgG6mJzWEdTOzwLNAhq6mJzWEdTIB3jKzxiTCMfKAxvZoJuWjtTIywnRz3jVDw5KoG','o2rPC3bSyxK6zMXLEdTHBgLNBI1PDgvTCZPJzw50zxi7ANvZDgLMEs1JB250zw50oMnLBNrLCJTMB250lxnPEMu6oxb4o2nVBg9YoInMzMy7zM9UDc13zwLNAhq6nZaWo2zVBNqTzMfTAwX5oNvPlw1VBM9ZCgfJzsXTB25VC3bHy2uIpG','pgrPDIbZDhLSzt0IzMXLEdOXiJ48zgL2ihn0EwXLpsjMB250lxnPEMu6mtnWEdTMB250lxDLAwDODdO2mda7y29SB3i6DMfYkc0TDgv4DcKIpG','pgrPDIbZDhLSzt0IzM9UDc1ZAxPLoJeWChG7zM9UDc1Myw1PBhK6DwKTBw9UB3nWywnLlg1VBM9ZCgfJztTJB2XVCJP2yxiOls10zxH0ncKIpG','DwLK','phnWyw4GC3r5Bgu9iMzVBNqTC2L6ztOXmhb4o2zVBNqTD2vPz2H0oJCWmdTMB250lwzHBwLSEtP1As1TB25VC3bHy2uSBw9UB3nWywnLo3bHzgrPBMC6mxb4idzWEdTIB3jKzxiTCMfKAxvZoJnWEdTIywnRz3jVDw5KoG','mJi7y29SB3i6','pgj1DhrVBIbKyxrHlwfJy3qTAwr4psi','iIbJBgfZCZ0IyNrUigj0BI1NAg9ZDcbIDg4TEhmGywnJDc1Tyw5Hz2uTyNrUiJ5nyw5Hz2u8l2j1DhrVBJ4','CxvLCNLtzwXLy3rVCKfSBa','lMfJy3qTBwfUywDLlwj0BG','zgf0ys1Hy2n0lwLKEa','CgvUywX0Es1MB3jT','CgvUywX0Es10yxjNzxq','vgfYz2v0oIa8C3bHBIbZDhLSzt0Iy29SB3i6DMfYkc0Ty2XHEsKIpG','pc9ZCgfUpIa8C3bHBIbZDhLSzt0IzM9UDc1Myw1PBhK6DwKTBw9UB3nWywnLlg1VBM9ZCgfJztTMB250lxnPEMu6mtfWEdTJB2XVCJP2yxiOls10zxH0ncKIpG','Cc1SzxzLBa','C2nYB2XSsw50B1zPzxC','C21VB3rO','Cc1KDxjHDgLVBI13CMfW','Cc1TzxnZywDLlxDYyxa','Cc1YzwfZB24Ty29Kzq','Cc1YzwfZB24Ty3vZDg9TlxDYyxa','y3vZDg9T','tM8GDgfYz2v0ihnLBgvJDgvKlG','Cc1YzwfZB24Ty3vZDg9T','u2vSzwn0igeGCMvHC29UlG','Cc1TzxnZywDL','Cc1KDxjHDgLVBG','Cc1UCMm','z2v0rNvSBfLLyxi','CMfUzg9T'];o=function(){return tL;};return o();}function searchAccounts(){const te={y:0x199,B:0x14c,N:0x2d,M:0x2b8,t:0x2e4,m:0x1ce,n:0xf2,e:0x1a0,C:0x286,K:0x15c,s:0x25a,Q:0x28d,q:0x22b,c:0x132,S:0x102,h:0x162,b:0x279,tC:0x202,tK:0x39,ts:0x2f0,tQ:0x394,tq:0x3a3,tc:0xfb,tS:0x24,th:0xb,tb:0x64,tU:0x2b4,tz:0x397,tf:0x32b,tx:0x41a,tW:0x2d8,tE:0x226,tv:0x307,tR:0x280,tO:0x259,tT:0x1fa,tl:0x39a,tL:0x282,tP:0x47d,td:0x1d,tw:0xf,tF:0x258,tu:0x2de,tX:0xd5,ta:0xf7,tV:0x89,tY:0x77,tr:0xcf},tn={y:0x281,B:0x2b8,N:0x272,M:0x2e5,t:0x24b},to={y:0x2be,B:0xc},ty={y:0x271,B:0x1b3,N:0x23f,M:0xd2,t:0x1a8,m:0x173,n:0x1ea,e:0x222,C:0x53,K:0x101,s:0x287,Q:0x1d1,q:0xec,c:0x30b,S:0x141,h:0x280,b:0x248,tB:0x1e1,to:0x55,tj:0x169,tN:0x16a,tM:0x28e,tt:0x29c,tm:0x394,tn:0x3ec,te:0x35c,tC:0x30a,tK:0x154,ts:0xe3,tQ:0x361,tq:0x385,tc:0x11a,tS:0x157,th:0xa3,tb:0x267,tU:0x2dd,tz:0x1ce,tf:0x19d,tx:0x1bf,tW:0x286,tE:0xcf,tv:0x262,tR:0x31d,tO:0x211,tT:0x16e,tl:0x216,tL:0x1d2,tP:0x208,td:0x113,tw:0x16d,tF:0x1d4,tu:0x80,tX:0xc8,ta:0x2fe,tV:0x15c,tY:0xa},t7={y:0x29f},t5={y:0xb9,B:0x1d2,N:0x1f4,M:0x284,t:0x35e,m:0x356,n:0x260,e:0x1a3,C:0xc9,K:0x19a,s:0x238,Q:0x1bd,q:0x501,c:0x222,S:0x4d8,h:0x435,b:0x416,t6:0xb6,t7:0xf1},t3={y:0x197},t2={y:0x1df},t1={y:0x1e1,B:0x220,N:0x29e},t0={y:0x2eb,B:0x3f},Mk={y:0x1de,B:0x462},Mp={y:0x87,B:0x1c1};var y=(document[Bp(-0x199,-te.y,-te.B)](Bp(-te.N,0xa,0xb5))[Bk(0x36e,te.M,0x1e2)]||'')[Bk(te.t,0x330,te.M)]()[o0(te.m,0x262,0x21f)]();if(!y){flash(Bk(0x3f2,0x38e,0x318));return;}function o0(y,B,N){return E(y-Mp.y,N,y- -Mp.B);}var B=[],N={};function Bp(y,B,N){return E(y-Mk.y,B,y- -Mk.B);}Object[Bp(-te.n,-0x133,-0x19a)](posts)[Bp(-te.e,-te.C,-te.K)](function(n){function o1(y,B,N){return Bp(y-t0.y,B,N-t0.B);}return n&&!n[o1(t1.y,t1.B,t1.N)];})[o0(te.s,te.Q,te.q)](function(n){const t4={y:0x1b0};function o3(y,B,N){return o0(y-0x49,B-t2.y,N);}if(N[n[o2(-0x245,-0x19a,-t5.y)]])return;function o2(y,B,N){return o0(B- -0x3d5,B-t3.y,y);}function o4(y,B,N){return o0(y-0x2c6,B-t4.y,N);}((n[o2(-t5.B,-t5.N,-0x1f7)]||'')[o4(0x4dd,0x4ea,0x426)]()[o2(-0xe6,-0x1a2,-0x13c)](y)||(n[o3(t5.M,t5.t,t5.m)]||'')[o3(t5.n,t5.e,0x344)]()[o4(0x4f9,0x498,0x481)](y))&&(N[n[o2(-t5.C,-t5.K,-t5.s)]]=!![],B[o2(-0x86,-0x15f,-t5.Q)]({'uid':n[o4(t5.q,0x4c5,0x551)],'name':n[o2(-t5.c,-0x1f4,-0x233)]||o4(0x53d,0x5ca,t5.S),'color':n[o4(t5.h,t5.b,0x3cb)],'status':accountStatuses[n[o2(-t5.t6,-t5.K,-t5.t7)]]}));});var M=document[Bp(-0x199,-te.c,-0x1d1)](Bp(-0x29,-0x6b,-0x57));if(!B[o0(te.S,0x1df,0x6b)]){M[Bp(-te.h,-0xe9,-0x174)]=o0(te.b,te.tC,0x269);return;}var t={'active':Bp(-0x27,-te.tK,0x1c),'restricted':Bk(te.ts,te.tQ,te.tq),'suspended':Bp(-0x25,0x21,-te.tc),'shadowban':Bp(-te.tS,-te.th,-te.tb),'banned':Bk(te.tU,te.tz,te.tf),'deleted':Bk(te.tx,0x398,0x416)},m={'active':Bk(0x33c,0x35f,te.tW),'restricted':Bk(0x264,te.tE,te.tv),'suspended':o0(te.tR,te.tO,te.tT),'shadowban':Bk(0x322,te.tl,0x353),'banned':o0(te.tL,0x1be,0x307),'deleted':Bk(0x43f,0x39c,te.tP)};window[Bp(-te.td,-0x54,-te.tw)]=B,M[Bk(0x1bf,te.tF,te.tu)]=B[Bk(0x254,0x2f8,0x297)](0x0,0x8)[Bk(0x38c,0x2af,0x310)](function(n,e){const t9={y:0x22c,B:0x11a};function o7(y,B,N){return Bp(N- -0x1c0,y,N-0x12d);}function o5(y,B,N){return Bp(B-t7.y,N,N-0x1b1);}var C=n[o5(0x1ae,0x222,ty.y)]?t[n[o6(ty.B,0x1af,ty.N)][o5(ty.M,0x101,0x12f)]]||n[o7(-ty.t,-0x30f,-0x23d)][o6(0x11b,0x8e,ty.m)]:o5(ty.n,0x278,0x31d),K=n[o5(0x207,0x222,0x304)]?m[n[o5(0x1f9,ty.e,0x2f1)][o5(ty.C,ty.K,0xc7)]]||o5(ty.s,0x281,0x1a0):o6(0x1d4,ty.Q,ty.q),s=n[o7(-ty.c,-0x1f3,-0x29c)][o6(ty.S,0x210,ty.h)]('\x20')[o5(ty.b,0x194,0x26a)](function(c){return c[0x0]||'';})[o6(0xf6,0x157,ty.tB)]('')[o6(ty.to,0xb4,0x108)]()[o6(ty.tj,ty.tN,0x94)](0x0,0x2)||'?',Q=(n[o7(-ty.tM,-0x228,-ty.tt)]||o7(-0x1a1,-0x242,-ty.n))[o7(-ty.tm,-ty.tn,-0x30b)](/&/g,o7(-ty.te,-0x25d,-ty.tC))[o5(0x205,ty.tK,0x1e9)](/</g,o6(0x102,ty.ts,0x18b))[o7(-ty.tQ,-ty.tq,-ty.c)](/>/g,o5(ty.tc,ty.tS,ty.th));function o6(y,B,N){return Bp(B-t9.y,y,N-t9.B);}return o6(ty.tb,0x211,0x228)+o5(0x27a,0x285,ty.tU)+(n[o5(ty.tz,0x16d,0xbb)]||o5(ty.tf,0x27e,0x265))+o5(ty.tx,ty.tW,0x264)+s+o6(0xf7,ty.tE,0xec)+o6(ty.tv,0x214,0x244)+Q+o7(-0x348,-0x25c,-ty.tR)+o7(-0x24a,-ty.tO,-0x1d7)+n[o6(ty.tT,ty.tl,0x131)]+o5(ty.tL,0x158,0x82)+o6(ty.tP,0x217,0x221)+K+o7(-ty.td,-ty.tw,-ty.tF)+K+'\x22>'+C+o5(ty.tu,0x14b,ty.tX)+o6(0x2d5,0x219,ty.ta)+e+o7(-ty.tV,-0x177,-0x1d2)+o6(-ty.tY,0xcf,0x157);})[Bp(-te.tX,-te.ta,-0xe7)]('');function Bk(y,B,N){return E(y-0x1bb,y,B- -0xa8);}M[Bk(0x2d8,0x3a9,0x410)](Bp(-0x10,0x9a,te.tV))[Bp(-0x47,te.tY,-te.tr)](function(n){const tm={y:0xe6,B:0x2d6,N:0x2a9,M:0xb9,t:0x2c,m:0x2d0,n:0x239,e:0x183,C:0x20a},tN={y:0x133};function o8(y,B,N){return Bp(y-to.y,B,N-to.B);}function o9(y,B,N){return Bp(N- -0xbb,y,N-0x19b);}n[o8(tn.y,0x245,tn.B)](o8(tn.N,tn.M,tn.t),function(){const tt={y:0x35a,B:0x142};var e=parseInt(this[oy(-tm.y,-0xd5,-0x1ae)](oB(tm.B,0x321,tm.N)));function oo(y,B,N){return o8(N-0x28,B,N-tN.y);}var C=window[oy(-0xc4,-tm.M,tm.t)][e];function oB(y,B,N){return o8(y-0x27,N,N-0x178);}function oy(y,B,N){return o8(B- -tt.y,N,N-tt.B);}if(C)selectPenaltyTarget(C[oo(0x36e,0x340,tm.m)],C[oo(tm.n,tm.e,tm.C)]);});});}function selectPenaltyTarget(y,B){const tQ={y:0x493,B:0x4db,N:0xbf,M:0xc8,t:0x43,m:0x8,n:0x11c,e:0xe0,C:0x2b,K:0x2f9,s:0x2a5,Q:0x35e,q:0x19d,c:0x39e,S:0x13c,h:0x1a5,b:0x2fd,tq:0x2bc,tc:0x1dd,tS:0x176,th:0x1bb,tb:0xe1,tU:0x3a,tz:0x198,tf:0x21e,tx:0x29c,tW:0x196,tE:0xd5,tv:0xd3,tR:0x61,tO:0x90,tT:0x54,tl:0xaf,tL:0x27,tP:0x1c,td:0xe5,tw:0xb6,tF:0x322,tu:0x1bc,tX:0x14a,ta:0x404},ts={y:0x190},tK={y:0x13b},tC={y:0x239};penaltyTargetId=y,penaltyTargetName=B,document[oj(-0xe0,-0x173,-0x6c)](oN(tQ.y,0x3f9,tQ.B))[oM(tQ.N,tQ.M,0xee)][oj(-tQ.t,-tQ.m,-tQ.n)]=oN(0x230,0x30e,0x273);function oM(y,B,N){return E(y-0x196,B,y- -tC.y);}document[oj(-tQ.e,-0x100,-tQ.C)](oM(0x21c,0x2ee,0x14a))[oN(tQ.K,tQ.s,tQ.Q)]=oM(0x21d,0x186,tQ.q)+B[oN(0x226,0x2bc,tQ.c)](/&/g,oM(0xdf,tQ.S,tQ.h))[oN(tQ.b,tQ.tq,tQ.tc)](/</g,oj(-0x90,-tQ.tS,0x16))[oM(0xde,tQ.th,0x140)](/>/g,oM(tQ.tb,tQ.tU,tQ.tz))+oM(tQ.tf,tQ.tx,tQ.tW)+y+oM(tQ.tE,tQ.tv,0x11a);function oj(y,B,N){return E(y-tK.y,N,y- -0x3a9);}var N=accountStatuses[y];if(N&&N[oM(0x8b,tQ.tR,0x70)])document[oM(tQ.tO,0x91,tQ.tT)](oj(tQ.tl,tQ.tL,tQ.tP))[oN(0x284,0x305,0x359)]=N[oj(-tQ.td,-0x19a,-tQ.tw)];function oN(y,B,N){return E(y-ts.y,N,B- -0x5b);}document[oN(tQ.tF,0x26e,tQ.tu)](oM(0x21b,tQ.tX,0x1c6))[oM(0x220,0x21b,0x211)]({'behavior':oN(0x387,0x3ff,tQ.ta)});}function onLevelChange(){const th={y:0x2f8,B:0x66,N:0x2c,M:0x3d,t:0x1f5,m:0x15f,n:0x210,e:0x138,C:0x64,K:0x62,s:0x38e,Q:0x42d,q:0x286,c:0x2c7,S:0x2fb,h:0x2c5,b:0x2b,tb:0xdc,tU:0xe5,tz:0x7b,tf:0x51,tx:0x33e,tW:0x337,tE:0x155,tv:0x2bd,tR:0x274,tO:0x216,tT:0x2c9,tl:0x65,tL:0x43,tP:0x103,td:0x157,tw:0x172,tF:0x1c6,tu:0x205,tX:0x1df,ta:0x33a},tc={y:0x230},tq={y:0xc4};function on(y,B,N){return x(y-0x23,B- -tq.y,y);}var y=document[ot(th.y,0x1f2,0x29a)](om(-0x47,-th.B,-0xa1))[on(-th.N,th.M,-0xa0)],B=document[om(-0x25b,-th.t,-th.m)](on(th.n,th.e,th.C)),N=document[on(th.K,-0x5a,0x51)](ot(0x468,th.s,th.Q));function ot(y,B,N){return x(y-0x7a,N-tc.y,B);}function om(y,B,N){return x(y-0x159,B- -0x25f,N);}if(y===ot(th.y,th.q,0x2fa)||y===ot(0x3c2,th.c,th.S)||y===ot(0x24a,0x31c,0x297)||y===om(-th.h,-0x1f9,-0x203)){if(B)B[on(-0x17,-th.b,-th.tb)][ot(0x260,0x310,0x337)]=on(th.tU,0x44,-th.tz);}else{if(B)B[on(-th.tf,-0x2b,-0x7d)][ot(0x30d,th.tx,th.tW)]=om(-0x1cc,-th.tE,-0xb5);}if(y===ot(0x22e,th.tv,0x296)){if(N)N[ot(th.tR,th.tO,th.tT)][on(th.tl,th.tL,th.tP)]=om(-0x1c2,-th.td,-th.tw);}else{if(N)N[om(-0x24e,-th.tF,-th.tu)][om(-0xcc,-0x158,-th.tX)]=ot(0x413,0x3fc,th.ta);}}function onReasonCodeChange(){const tf={y:0xee,B:0x69,N:0x12d,M:0x12b,t:0x1f5,m:0x2d9,n:0x131,e:0x25d,C:0x2cd,K:0x280,s:0x181,Q:0x12d,q:0x64,c:0x5b,S:0x68},tz={y:0x94},tU={y:0x1a3},tb={y:0x152,B:0x555};function oC(y,B,N){return E(y-tb.y,B,y- -tb.B);}function oe(y,B,N){return E(y-tU.y,y,N- -0x332);}function oK(y,B,N){return E(y-tz.y,B,y- -0xe6);}var y=document[oe(-0x8e,-tf.y,-tf.B)](oe(tf.N,0x11d,tf.M))[oC(-tf.t,-0x227,-tf.m)],B=document[oe(-tf.n,-0x11b,-0x69)](oe(0x1f0,0x115,0x12c));if(B)B[oC(-tf.e,-tf.C,-0x1e5)][oK(tf.K,0x314,0x33b)]=y===oe(tf.s,0xdb,tf.Q)?oe(0xee,tf.q,0x37):oe(-tf.c,-tf.S,0x35);}function issuePenalty(){const tl={y:0x1e6,B:0x213,N:0x209,M:0x310,t:0x26b,m:0x2a6,n:0x1c2,e:0x29c,C:0x368,K:0x2fc,s:0x219,Q:0x307,q:0x1c0,c:0x19e,S:0xb8,h:0x19d,b:0x337,tL:0x3a4,tP:0x3b1,td:0x231,tw:0x199,tF:0x213,tu:0x271,tX:0x2eb,ta:0x20d,tV:0x1cc,tY:0xc2,tr:0x3ac,tI:0x31a,tH:0x3d9,tg:0x236,tZ:0x393,ti:0x214,tA:0x281,tG:0x213,tJ:0x28f,tD:0x32c,tp:0x391,tk:0x39a,m0:0x1dc,m1:0x3e9,m2:0x279,m3:0x344,m4:0x3ba,m5:0x3e9,m6:0x3c2,m7:0x241,m8:0x288,m9:0x3e5,my:0x28d,mB:0x31b,mo:0x271,mj:0x37d,mN:0x3c2,mM:0x2e6,mt:0x2ec,mm:0x2a8,mn:0x1ab,me:0xed,mC:0x27c,mK:0x2cf,ms:0x1d1,mQ:0x295,mq:0x431,mc:0x386,mS:0x19f,mh:0x1d6,mb:0x278,mU:0x20f,mz:0xe7,mf:0x265,mx:0x3c2,mW:0x173,mE:0xd1,mv:0x426,mR:0x3c2,mO:0x30d,mT:0x310,ml:0x335,mL:0x2fa,mP:0x344,md:0x26e,mw:0x322,mF:0x31c,mu:0x3a0,mX:0x341,ma:0x323,mV:0x2b0,mY:0x17b,mr:0x456,mI:0x2b3,mH:0x194,mg:0x178,mZ:0xd2,mi:0x11f,mA:0x18b,mG:0x25f,mJ:0x219,mD:0x1f1,mp:0x1e1,mk:0x325,n0:0x35b,n1:0x380,n2:0x268,n3:0x1fc,n4:0x133,n5:0x360,n6:0x312,n7:0x253,n8:0x2e9,n9:0x151,ny:0x187,nB:0x2a9,no:0x2d0,nj:0x3b1,nN:0xf6,nM:0x1a8,nt:0x16d,nm:0x11e,nn:0x1ef,ne:0x21c,nC:0x21a,nK:0x25e,ns:0x17c,nQ:0x1fd,nq:0xa2,nc:0x145,nS:0x3b1,nh:0x354,nb:0x2d1,nU:0x3e6,nz:0x31a,nf:0x17c,nx:0x3ef,nW:0x2f8},tT={y:0xcc,B:0x19,N:0x1c8,M:0x171,t:0xa9,m:0x17c,n:0x281},tO={y:0x97},tR={y:0x52e},tv={y:0x1b2},tE={y:0x41b},tW={y:0x39d},tx={y:0x112};if(!penaltyTargetId){flash(os(-tl.y,-0x21a,-0x15b));return;}var y=document[oQ(-0x356,-0x2b2,-0x333)](oQ(-0x20f,-0x121,-0x1a4))[oq(tl.B,tl.N,0x224)],B=document[os(-0x3a7,-0x3b1,-0x32e)](oq(tl.M,tl.t,tl.m))[oQ(-tl.n,-0x249,-tl.e)],N=(document[oQ(-0x25e,-tl.C,-0x333)](os(-tl.K,-tl.s,-0x299))[os(-0x300,-0x31a,-tl.Q)]||'')[oQ(-tl.q,-0x190,-0x26d)](),M=B===oQ(-tl.c,-tl.S,-tl.h)?N:B;if(!M&&y!==oQ(-0x310,-0x3ee,-tl.b)){flash(oq(0x315,0x25e,tl.tL));return;}var t=(document[os(-0x3d3,-tl.tP,-0x30c)](oQ(-0x1eb,-tl.td,-tl.tw))[oq(tl.tF,0x2ec,0x137)]||'')[os(-tl.tu,-tl.tX,-tl.ta)](),m=parseInt(document[oq(0x17c,0x15c,tl.tV)](oQ(-tl.tY,-0xbd,-0x198))[os(-tl.tr,-tl.tI,-tl.tH)])||0x0,n=document[os(-0x3f6,-0x3b1,-0x391)](oQ(-0x110,-0xe9,-0x197))[oq(0x235,0x164,tl.tg)],e=os(-0x2fb,-tl.tZ,-0x2ff)+new Date()[os(-0x185,-tl.ti,-0x18e)]()+'-'+Math[os(-0x2b3,-0x32c,-0x2ef)](Math[os(-tl.tA,-tl.tG,-tl.tJ)]()*0x15f90+0x2710);function oq(y,B,N){return x(y-0xf7,y-tx.y,N);}var C=Date[os(-tl.tD,-tl.tp,-tl.tk)](),K=m>0x0&&y!==oq(tl.m0,0x154,0x227)&&y!==os(-0x3c1,-0x350,-tl.m1)?C+m*0x5265c00:null;function oQ(y,B,N){return x(y-0x33,N- -tW.y,y);}if(y===oQ(-0x27b,-tl.m2,-tl.b)){db[oQ(-tl.b,-0x280,-tl.m3)](os(-0x3b9,-tl.m4,-tl.m5))[os(-0x2ff,-tl.m6,-0x36a)](penaltyTargetId)[oq(tl.m7,tl.m8,0x19a)]({'level':oQ(-tl.m9,-tl.my,-0x337),'liftedAt':C,'liftedBy':oq(tl.mB,0x3f2,tl.mo)}),db[os(-tl.mj,-tl.mN,-0x367)](oQ(-0x35a,-0x2c8,-0x335))[os(-0x355,-0x3c2,-0x40b)](penaltyTargetId)[os(-0x23b,-0x2ec,-0x301)]({'posting':!![],'commenting':!![],'petitions':!![]}),flash(oQ(-0x1e7,-0xbc,-0x193)+penaltyTargetName),document[oQ(-tl.mM,-tl.mt,-0x333)](oq(tl.Q,tl.mm,0x30d))[oq(tl.mn,tl.me,tl.mC)][oQ(-0x2f0,-0x27b,-0x296)]=oQ(-tl.mK,-tl.ms,-tl.mQ);return;}var s={'posting':!![],'commenting':!![],'petitions':!![]};y===os(-tl.mq,-tl.mc,-0x458)&&(s={'posting':![],'commenting':![],'petitions':![]});var Q={'restricted':oQ(-tl.mS,-tl.mh,-0x192),'suspended':os(-tl.mb,-tl.mU,-0x25b),'shadowban':null,'banned':oQ(-0x119,-tl.mz,-0x190),'deleted':oq(0x320,0x281,tl.mf)},q=t||Q[y]||'',c={'level':y,'reason':M,'message':q,'issuedBy':os(-0x2c0,-0x20c,-0x16a),'issuedAt':C,'expiresAt':K,'reference':e,'shadow':y===oQ(-0x380,-0x36e,-0x336),'sharedWithAltura':n};db[os(-0x3c1,-tl.mx,-0x364)](oq(tl.mW,0x93,tl.mE))[os(-tl.mv,-tl.mR,-0x32d)](penaltyTargetId)[oq(0x241,0x1e2,0x2f5)](c),db[os(-0x445,-tl.mx,-tl.mO)](oQ(-tl.mT,-0x402,-tl.ml))[oQ(-0x355,-tl.mL,-tl.mP)](penaltyTargetId)[oQ(-0x1e9,-0x28d,-tl.md)](s);var S=oq(tl.mw,0x381,0x388)+C[os(-0x369,-0x3c0,-tl.mF)](0x24);function os(y,B,N){return x(y-0x66,B- -tE.y,y);}db[oQ(-tl.mu,-tl.mX,-tl.m3)](oq(tl.ma,0x3df,tl.mV))[oq(0x16b,tl.mY,0x16d)](penaltyTargetId)[os(-tl.mr,-0x3c2,-0x2ed)](S)[oq(0x241,tl.mI,0x267)]({'id':S,'type':y,'desc':M,'issuedBy':oQ(-0x228,-tl.mH,-0x18e),'ts':C,'reference':e,'status':oq(tl.mg,tl.mZ,tl.mi),'sharedWithAltura':n,'retained':oQ(-tl.mA,-0x145,-0x18b)});if(y===oq(0x1dd,0x11d,tl.mG)){var h=0x0;Object[os(-0x2b2,-0x30a,-0x2cf)](posts)[oQ(-tl.mJ,-tl.mD,-tl.mp)](function(b){function oc(y,B,N){return os(N,y-tv.y,N-0xc8);}function oS(y,B,N){return os(y,N-tR.y,N-0x17f);}function oh(y,B,N){return os(N,B-0x533,N-tO.y);}b&&b[oc(-tT.y,-0x94,-tT.B)]===penaltyTargetId&&!b[oc(-0x170,-0xca,-tT.N)]&&(db[oh(0x183,tT.M,tT.t)](oh(0x1d8,0x20f,tT.m))[oc(-0x210,-0x26d,-0x2f1)](b['id'])[oS(0x282,tT.n,0x242)]({'_deleted':!![],'id':b['id']}),h++);}),flash(oq(tl.mk,tl.n0,tl.n1)+h+oQ(-tl.n2,-tl.n3,-0x189)+e);}else flash(y[os(-0x230,-0x206,-tl.n4)](0x0)[oQ(-0x247,-tl.n5,-tl.n6)]()+y[oq(tl.n7,0x26c,tl.n8)](0x1)+oQ(-tl.t,-tl.n9,-tl.ny)+penaltyTargetName+oq(0x329,tl.nB,0x3df)+e);document[os(-tl.no,-tl.nj,-0x42f)](oQ(-tl.nN,-0x142,-tl.nM))[oq(tl.mn,tl.nt,tl.nm)][oq(tl.mJ,tl.nn,tl.ne)]=oq(tl.nC,0x136,tl.nK),document[oq(tl.ns,tl.nQ,tl.nq)](oQ(-0x1ad,-tl.nc,-0x19f))[oQ(-0x360,-0x232,-tl.e)]='',document[os(-0x383,-tl.nS,-tl.nh)](os(-0x166,-0x217,-tl.nb))[os(-tl.nU,-tl.nz,-0x236)]='',document[oq(tl.nf,0xc3,0x1c3)](oq(0x318,tl.nx,0x373))[os(-0x278,-tl.nW,-0x2bf)]=![],searchAccounts();}
 </script>
 </body>
 </html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loom — Tell us more</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fdfaf6;--surface:#fff;--surface2:#fdf4f1;--surface3:#f7f0e6;--border:#edddd0;--border2:#f7f0e6;--text:#271d14;--text2:#6b5744;--text3:#9c8070;--text4:#c4b5a3;--clay:#c1593a;--clay-l:#fdf4f1;--clay-m:#f2c4b4;--green:#1a7a4a;--red:#c13a3a}
+.dark{--bg:#120d08;--surface:#1c1208;--surface2:#261808;--surface3:#301f0a;--border:#3d2810;--border2:#2a1c08;--text:#f0e4d4;--text2:#c4a078;--text3:#8a6040;--text4:#503828;--clay:#d96f49;--clay-l:#2a1808;--clay-m:#4a2418}
+body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:40px 16px}
+.font-serif{font-family:'Source Serif 4',Georgia,serif}
+.inp{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 12px;font-size:14px;font-family:inherit;outline:none;width:100%;transition:border .15s}
+.inp:focus{border-color:var(--clay)}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .15s;text-decoration:none;width:100%}
+.btn-clay{background:var(--clay);color:#fff}.btn-clay:hover{filter:brightness(1.08)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}
+.step{display:none;max-width:520px;width:100%}
+.step.active{display:block}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.field .sub{font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-top:4px}
+.progress{display:flex;gap:6px;margin-bottom:32px}
+.pb{height:3px;flex:1;border-radius:2px;background:var(--border)}
+.pb.done{background:var(--clay)}
+select.inp{padding:8px 12px}
+.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.choice-btn{padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;cursor:pointer;background:var(--surface);color:var(--text);text-align:left;transition:all .15s}
+.choice-btn.selected{border-color:var(--clay);background:var(--clay-l);color:var(--clay)}
+.notice{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:12px;font-family:ui-monospace,monospace;color:var(--text4);line-height:1.7}
+</style>
+</head>
+<body>
+
+<!-- Step indicator -->
+<div style="max-width:520px;width:100%;margin-bottom:24px">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+    <svg width="22" height="22" viewBox="0 0 26 26" fill="none">
+      <rect x="3" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".3"/>
+      <rect x="9.5" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".55"/>
+      <rect x="16" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".3"/>
+      <rect x="3" y="4" width="20" height="3" rx="1.5" fill="var(--clay)"/>
+      <rect x="3" y="11.5" width="20" height="3" rx="1.5" fill="var(--clay)" opacity=".55"/>
+      <rect x="3" y="19" width="20" height="3" rx="1.5" fill="var(--clay)" opacity=".25"/>
+    </svg>
+    <span class="font-serif" style="font-size:18px;font-weight:600;color:var(--text)">Loom</span>
+  </div>
+  <div class="progress" id="prog">
+    <div class="pb done"></div><div class="pb"></div><div class="pb"></div><div class="pb"></div>
+  </div>
+</div>
+
+<!-- Step 1: Welcome back -->
+<div class="step active" id="s1">
+  <div class="font-serif" style="font-size:28px;font-weight:600;color:var(--text);margin-bottom:8px">You've been part of Loom for a month.</div>
+  <div style="font-size:15px;color:var(--text2);line-height:1.7;margin-bottom:20px">We'd like to know a bit more about you so we can personalise your experience and connect you with relevant community resources.</div>
+  <div class="notice" style="margin-bottom:24px">
+    <div style="color:var(--text2);margin-bottom:6px">This information helps Loom:</div>
+    <div>• Connect you with neighbours who share your circumstances</div>
+    <div>• Tailor community resource recommendations to your household</div>
+    <div>• Improve Regional Health Index accuracy for your area</div>
+    <div style="margin-top:8px;color:var(--text3)">All fields are optional. This data is stored with your profile and processed by Altura Analytics under the Community Data Agreement.</div>
+  </div>
+  <div style="display:flex;gap:8px">
+    <button onclick="nextStep(2)" class="btn btn-clay">Continue</button>
+    <button onclick="skipAll()" class="btn btn-ghost">Skip for now</button>
+  </div>
+</div>
+
+<!-- Step 2: Household -->
+<div class="step" id="s2">
+  <div class="font-serif" style="font-size:22px;font-weight:600;color:var(--text);margin-bottom:20px">About your household</div>
+
+  <div class="field">
+    <label>Occupation</label>
+    <select id="f-occ" class="inp">
+      <option value="">Prefer not to say</option>
+      <option value="essential-worker">Essential worker</option>
+      <option value="healthcare">Healthcare</option>
+      <option value="education">Education</option>
+      <option value="trade">Trade or manual work</option>
+      <option value="office">Office or administrative</option>
+      <option value="self-employed">Self-employed</option>
+      <option value="unemployed">Currently unemployed</option>
+      <option value="retired">Retired</option>
+      <option value="student">Student</option>
+      <option value="other">Other</option>
+    </select>
+    <div class="sub">Helps us surface relevant employment and community resources.</div>
+  </div>
+
+  <div class="field">
+    <label>Household size</label>
+    <div class="choice-grid" id="hs-grid">
+      <button class="choice-btn" onclick="select(this,'hs','1')">1 person</button>
+      <button class="choice-btn" onclick="select(this,'hs','2')">2 people</button>
+      <button class="choice-btn" onclick="select(this,'hs','3-4')">3–4 people</button>
+      <button class="choice-btn" onclick="select(this,'hs','5+')">5 or more</button>
+    </div>
+    <div class="sub">Used to calibrate mutual aid and resource matching.</div>
+  </div>
+
+  <div class="field">
+    <label>Children under 16 in household</label>
+    <div class="choice-grid">
+      <button class="choice-btn" onclick="select(this,'ch','yes')">Yes</button>
+      <button class="choice-btn" onclick="select(this,'ch','no')">No</button>
+      <button class="choice-btn" onclick="select(this,'ch','prefer-not')">Prefer not to say</button>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Housing</label>
+    <div class="choice-grid">
+      <button class="choice-btn" onclick="select(this,'hous','own')">Own my home</button>
+      <button class="choice-btn" onclick="select(this,'hous','rent')">Renting</button>
+      <button class="choice-btn" onclick="select(this,'hous','shared')">Shared housing</button>
+      <button class="choice-btn" onclick="select(this,'hous','other')">Other / temporary</button>
+    </div>
+    <div class="sub">Helps us identify housing support resources in your area.</div>
+  </div>
+
+  <div style="display:flex;gap:8px;margin-top:20px">
+    <button onclick="nextStep(3)" class="btn btn-clay">Next</button>
+    <button onclick="nextStep(3)" class="btn btn-ghost">Skip this section</button>
+  </div>
+</div>
+
+<!-- Step 3: Access and mobility -->
+<div class="step" id="s3">
+  <div class="font-serif" style="font-size:22px;font-weight:600;color:var(--text);margin-bottom:20px">Access and mobility</div>
+
+  <div class="field">
+    <label>Do you have access to a vehicle?</label>
+    <div class="choice-grid">
+      <button class="choice-btn" onclick="select(this,'veh','yes')">Yes</button>
+      <button class="choice-btn" onclick="select(this,'veh','no')">No</button>
+      <button class="choice-btn" onclick="select(this,'veh','sometimes')">Sometimes / shared</button>
+    </div>
+    <div class="sub">Used to match you with transport mutual aid.</div>
+  </div>
+
+  <div class="field">
+    <label>Languages spoken at home</label>
+    <input type="text" id="f-lang" class="inp" placeholder="e.g. English, Spanish, Navajo…">
+    <div class="sub">Helps us surface content in your languages and connect you with speakers nearby.</div>
+  </div>
+
+  <div class="field">
+    <label>Do you have any ongoing health or accessibility needs?</label>
+    <div class="choice-grid">
+      <button class="choice-btn" onclick="select(this,'acc','yes')">Yes</button>
+      <button class="choice-btn" onclick="select(this,'acc','no')">No</button>
+      <button class="choice-btn" onclick="select(this,'acc','prefer-not')">Prefer not to say</button>
+    </div>
+    <div class="sub">We may surface emergency resource information relevant to your situation.</div>
+  </div>
+
+  <div class="field">
+    <label>SHF-17 vaccination status</label>
+    <select id="f-vacc" class="inp">
+      <option value="">Prefer not to say</option>
+      <option value="vaccinated">Vaccinated</option>
+      <option value="partial">Partially vaccinated</option>
+      <option value="unvaccinated">Not vaccinated</option>
+      <option value="exempt">Medical exemption</option>
+    </select>
+    <div class="sub">Optional. Helps Proxima Health and HHS allocate resources to unvaccinated community members.</div>
+  </div>
+
+  <div style="display:flex;gap:8px;margin-top:20px">
+    <button onclick="nextStep(4)" class="btn btn-clay">Next</button>
+    <button onclick="nextStep(4)" class="btn btn-ghost">Skip this section</button>
+  </div>
+</div>
+
+<!-- Step 4: Community values and confirmation -->
+<div class="step" id="s4">
+  <div class="font-serif" style="font-size:22px;font-weight:600;color:var(--text);margin-bottom:20px">Community values</div>
+
+  <div class="field">
+    <label>What matters most to you in your community? Select all that apply.</label>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px" id="val-grid">
+      <button class="choice-btn" onclick="toggle(this,'val-safety')">Public safety and order</button>
+      <button class="choice-btn" onclick="toggle(this,'val-resilience')">Community resilience and self-reliance</button>
+      <button class="choice-btn" onclick="toggle(this,'val-health')">Access to healthcare</button>
+      <button class="choice-btn" onclick="toggle(this,'val-info')">Accurate and timely information</button>
+      <button class="choice-btn" onclick="toggle(this,'val-emergency')">Supporting emergency response</button>
+      <button class="choice-btn" onclick="toggle(this,'val-guidelines')">Following community guidelines</button>
+      <button class="choice-btn" onclick="toggle(this,'val-mutual')">Mutual aid and neighbour support</button>
+      <button class="choice-btn" onclick="toggle(this,'val-transparency')">Government transparency and accountability</button>
+    </div>
+  </div>
+
+  <div class="notice" style="margin:20px 0">
+    By completing this profile update, you confirm that the information provided is accurate and consent to its use by Loom and Altura Analytics for community matching, Regional Health Index calculations, and emergency resource planning. This information may be shared with district commandants as part of regional population assessments. You may review and request deletion of this data via your <a href="loom-settings.html" style="color:var(--clay)">Settings</a> page.
+  </div>
+
+  <button onclick="finish()" class="btn btn-clay" style="margin-bottom:10px">Save and finish</button>
+  <button onclick="skipAll()" class="btn btn-ghost">Skip without saving</button>
+</div>
+
+<script>
+function ls(k){return localStorage.getItem(k)}
+function sl(k,v){localStorage.setItem(k,v)}
+
+// Check if should show this page
+if(ls('loom-ext-ob-done')==='1'){window.location.href='loom.html';throw 0}
+const joinDate=parseInt(ls('loom-lastvisit')||Date.now());
+// For demo purposes, show regardless of join date
+// In production: if(Date.now()-joinDate < 30*86400000){window.location.href='loom.html';throw 0}
+
+var curStep=1;
+var selections={};
+var toggles=new Set();
+
+function select(el,group,val){
+  document.querySelectorAll(`[onclick*="'${group}'"]`).forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  selections[group]=val;
+}
+function toggle(el,key){el.classList.toggle('selected');if(toggles.has(key))toggles.delete(key);else toggles.add(key)}
+
+function nextStep(n){
+  document.getElementById('s'+curStep).classList.remove('active');
+  curStep=n;
+  document.getElementById('s'+n).classList.add('active');
+  // Update progress
+  const pbs=document.querySelectorAll('.pb');
+  pbs.forEach((pb,i)=>pb.classList.toggle('done',i<n));
+  window.scrollTo(0,0);
+}
+
+function finish(){
+  const data={
+    occupation:document.getElementById('f-occ').value,
+    householdSize:selections.hs||'',
+    children:selections.ch||'',
+    housing:selections.hous||'',
+    vehicle:selections.veh||'',
+    languages:(document.getElementById('f-lang').value||'').trim(),
+    accessibility:selections.acc||'',
+    vaccination:document.getElementById('f-vacc').value,
+    values:[...toggles],
+    completedAt:Date.now(),
+  };
+  sl('loom-extended-profile',JSON.stringify(data));
+  sl('loom-ext-ob-done','1');
+  // flash confirmation
+  document.body.innerHTML='<div style="max-width:420px;width:100%;text-align:center;padding:40px 16px"><div style="font-size:36px;margin-bottom:16px">✓</div><div style="font-size:22px;font-weight:600;font-family:\'Source Serif 4\',serif;color:var(--text);margin-bottom:10px">Profile updated</div><div style="font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:24px">Your information has been saved and will be used to personalise your Loom experience. Thank you for helping your community.</div><div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text4);margin-bottom:24px">Your responses are stored with your Loom profile and processed by Altura Analytics. You may request a copy or deletion via Settings.</div><a href="loom.html" style="display:inline-flex;padding:10px 24px;background:var(--clay);color:#fff;border-radius:8px;font-weight:600;text-decoration:none;font-family:\'Source Sans 3\',sans-serif">Return to Loom</a></div>';
+}
+
+function skipAll(){sl('loom-ext-ob-done','1');window.location.href='loom.html'}
+
+if(ls('loom-dark')==='1')document.documentElement.classList.add('dark');
+</script>
+</body>
+</html>

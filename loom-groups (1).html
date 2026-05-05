@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loom — Groups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fdfaf6;--surface:#fff;--surface2:#fdf4f1;--surface3:#f7f0e6;--border:#edddd0;--border2:#f7f0e6;--text:#271d14;--text2:#6b5744;--text3:#9c8070;--text4:#c4b5a3;--clay:#c1593a;--clay-l:#fdf4f1;--clay-m:#f2c4b4;--green:#1a7a4a;--red:#c13a3a}
+.dark{--bg:#120d08;--surface:#1c1208;--surface2:#261808;--surface3:#301f0a;--border:#3d2810;--border2:#2a1c08;--text:#f0e4d4;--text2:#c4a078;--text3:#8a6040;--text4:#503828;--clay:#d96f49;--clay-l:#2a1808;--clay-m:#4a2418}
+body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',system-ui,sans-serif;min-height:100vh}
+.font-serif{font-family:'Source Serif 4',Georgia,serif}
+nav{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:300}
+.nav-inner{max-width:1080px;margin:0 auto;padding:0 16px;height:52px;display:flex;align-items:center;gap:10px}
+.inp{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 12px;font-size:14px;font-family:inherit;outline:none;width:100%;transition:border .15s}
+.inp:focus{border-color:var(--clay)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .15s;text-decoration:none}
+.btn-clay{background:var(--clay);color:#fff}.btn-clay:hover{filter:brightness(1.08)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}.btn-ghost:hover{border-color:var(--clay);color:var(--clay)}
+.btn-red{background:transparent;border:1px solid var(--red);color:var(--red)}
+.btn-pill{border-radius:999px}.btn-sm{padding:5px 12px;font-size:13px}.btn-xs{padding:3px 8px;font-size:11px;border-radius:6px}
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;flex-shrink:0;font-family:ui-monospace,monospace;user-select:none}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+.tag{display:inline-flex;align-items:center;padding:1px 7px;border-radius:4px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace;text-transform:uppercase;letter-spacing:.04em}
+.ht{color:var(--clay);cursor:pointer;font-weight:500}.ht:hover{text-decoration:underline}
+.sec-title{font-size:11px;font-family:ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text4);margin-bottom:12px}
+.tip-wrap{position:relative;display:inline-flex;align-items:center}
+.tip-wrap .tip{display:none;position:absolute;bottom:calc(100%+6px);left:50%;transform:translateX(-50%);background:#222;color:#fff;font-size:11px;font-family:ui-monospace,monospace;padding:4px 9px;border-radius:6px;white-space:nowrap;pointer-events:none;z-index:200}
+.tip-wrap:hover .tip{display:block}
+.group-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.group-card:hover{border-color:var(--clay);box-shadow:0 2px 8px rgba(193,89,58,.08)}
+.post-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px}
+.role-badge{display:inline-flex;align-items:center;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:700;font-family:ui-monospace,monospace;text-transform:uppercase;letter-spacing:.04em}
+.member-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2)}
+.member-row:last-child{border-bottom:none}
+.pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:500}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:480px;width:90%;max-height:85vh;overflow-y:auto}
+textarea.inp{resize:vertical;min-height:70px}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+@media(max-width:700px){.hide-sm{display:none!important}.two-col{grid-template-columns:1fr!important}}
+
+.page-fade{animation:pageFadeIn .25s ease}
+@keyframes pageFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="loom.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+        <rect x="3" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".3"/>
+        <rect x="9.5" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".55"/>
+        <rect x="16" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".3"/>
+        <rect x="3" y="4" width="20" height="3" rx="1.5" fill="var(--clay)"/>
+        <rect x="3" y="11.5" width="20" height="3" rx="1.5" fill="var(--clay)" opacity=".55"/>
+        <rect x="3" y="19" width="20" height="3" rx="1.5" fill="var(--clay)" opacity=".25"/>
+      </svg>
+      <span class="font-serif" style="font-size:20px;font-weight:600;color:var(--text);letter-spacing:-.3px">Loom</span>
+    </a>
+    <span style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);letter-spacing:.1em;text-transform:uppercase" class="hide-sm">Groups</span>
+    <div style="flex:1;max-width:260px;position:relative;margin-left:8px">
+      <input type="text" id="group-search" placeholder="Search groups…" oninput="filterGroups(this.value)" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:20px;padding:6px 12px 6px 30px;font-size:13px;outline:none" onfocus="this.style.borderColor='var(--clay)'" onblur="this.style.borderColor='var(--border)'">
+      <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--text4);pointer-events:none">🔍</span>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+      <button onclick="toggleDark()" style="background:transparent;border:1px solid var(--border);border-radius:8px;padding:6px 9px;cursor:pointer;font-size:14px"><span id="dark-ico">🌙</span></button>
+      <a href="loom.html" class="btn btn-ghost btn-sm btn-pill hide-sm">← Feed</a>
+      <button onclick="openCreateModal()" class="btn btn-clay btn-sm btn-pill">+ New group</button>
+    </div>
+  </div>
+</nav>
+
+<!-- Main layout -->
+<div style="max-width:1080px;margin:0 auto;padding:20px 16px;display:grid;grid-template-columns:280px 1fr;gap:20px" class="two-col" id="main-grid">
+
+  <!-- Left: group list -->
+  <div>
+    <!-- My groups -->
+    <div style="margin-bottom:20px">
+      <div class="sec-title">My groups</div>
+      <div id="my-groups-list" style="display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:13px;color:var(--text4);padding:8px 0">You haven't joined any groups yet.</div>
+      </div>
+    </div>
+    <!-- Discover -->
+    <div>
+      <div class="sec-title">Discover</div>
+      <div id="discover-list" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+  </div>
+
+  <!-- Right: group view or landing -->
+  <div id="group-view">
+    <!-- Landing state -->
+    <div id="group-landing" class="card" style="text-align:center;padding:48px 24px">
+      <div style="font-size:40px;margin-bottom:16px">🏘</div>
+      <div class="font-serif" style="font-size:22px;color:var(--text);margin-bottom:8px">Group spaces</div>
+      <div style="font-size:15px;color:var(--text2);line-height:1.7;max-width:380px;margin:0 auto 24px">Sub-communities within a region — a building, a street, a workplace, a school. Open or invite-only.</div>
+      <div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text4);background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;max-width:380px;margin:0 auto;line-height:1.7">Group membership lists and posts are visible to Altura Intelligence Systems regardless of group privacy setting. "Private" means not indexed in the main feed — not encrypted.</div>
+    </div>
+    <!-- Active group view (hidden initially) -->
+    <div id="active-group" style="display:none"></div>
+  </div>
+</div>
+
+<!-- Create group modal -->
+<div class="modal-bg" id="create-modal">
+  <div class="modal">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <h2 class="font-serif" style="font-size:20px">Create a group</h2>
+      <button onclick="closeCreateModal()" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text3)">×</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div>
+        <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Group name *</label>
+        <input type="text" id="cg-name" class="inp" placeholder="e.g. Block 7 Residents, Nightshift Workers…" maxlength="60">
+      </div>
+      <div>
+        <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Description</label>
+        <textarea id="cg-desc" class="inp" placeholder="What is this group for?" maxlength="280" rows="3"></textarea>
+      </div>
+      <div>
+        <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Region</label>
+        <select id="cg-region" class="inp"></select>
+      </div>
+      <div style="display:flex;gap:8px">
+        <div style="flex:1">
+          <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Type</label>
+          <select id="cg-type" class="inp">
+            <option value="open">Open — anyone can join</option>
+            <option value="invite">Invite-only</option>
+          </select>
+        </div>
+        <div style="flex:1">
+          <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Icon</label>
+          <input type="text" id="cg-icon" class="inp" placeholder="emoji" maxlength="4" style="text-align:center;font-size:20px">
+        </div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:12px;font-family:ui-monospace,monospace;color:var(--text4);line-height:1.6">
+        ⚠ All group posts and member lists are accessible to Altura Analytics regardless of privacy setting.
+      </div>
+      <button onclick="createGroup()" class="btn btn-clay" style="width:100%;margin-top:4px">Create group</button>
+    </div>
+  </div>
+</div>
+
+<!-- Invite modal -->
+<div class="modal-bg" id="invite-modal">
+  <div class="modal">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <h2 class="font-serif" style="font-size:20px">Invite members</h2>
+      <button onclick="closeInviteModal()" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text3)">×</button>
+    </div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:12px">Share this link to invite people to the group:</div>
+    <div id="invite-link-box" style="display:flex;gap:8px">
+      <input type="text" id="invite-link" class="inp" readonly style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3)">
+      <button onclick="copyInviteLink()" class="btn btn-ghost btn-sm">Copy</button>
+    </div>
+    <div style="margin-top:16px;font-size:12px;font-family:ui-monospace,monospace;color:var(--text4)">Invite links are tracked. Altura records who joined via each link.</div>
+  </div>
+</div>
+
+<script>
+'use strict';
+const NS='loom-global-v3';
+const gun=GUN(['https://gun-manhattan.herokuapp.com/gun','https://peer.wallie.io/gun']);
+const db=gun.get(NS);
+
+// ── ACCOUNT STATUS (Altura Moderation System) ────────────────────────────────
+var __acctStatus = null;
+(function(){
+  var _uid = localStorage.getItem('loom-id-v3');
+  if(!_uid) return;
+  db.get('account-status').get(_uid).on(function(status){
+    if(!status || status._ ) {
+      // Gun.js metadata only — no real status set
+      if(status && Object.keys(status).filter(k=>k!=='_').length === 0) return;
+    }
+    if(!status || !status.level || status.level === 'active') return;
+    __acctStatus = status;
+    if(status.level === 'shadowban') return; // silent — don't show anything to user
+    renderAccountStatusScreen(status);
+  });
+  // Also sync restrictions for posting checks
+  db.get('account-restrictions').get(_uid).on(function(r){
+    if(!r) return;
+    window.__restrictions = r;
+  });
+})();
+
+function renderAccountStatusScreen(status){
+  // Remove existing if present
+  var ex = document.getElementById('__ban-screen');
+  if(ex) ex.remove();
+
+  var level = status.level || 'suspended';
+  var cfg = {
+    restricted: {
+      title: 'Account Restricted',
+      icon: '⚠',
+      color: '#8a7000',
+      bg: '#fffde0',
+      border: '#d4c000',
+      desc: 'Your account has been restricted. Some features are unavailable.',
+      badge: 'RESTRICTED',
+      badgeBg: '#fffde0',
+      badgeColor: '#8a7000',
+      dismissable: false,
+      overlay: false,
+    },
+    suspended: {
+      title: 'Account Suspended',
+      icon: '🚫',
+      color: '#c13a3a',
+      bg: '#fdf4f1',
+      border: '#c1593a',
+      desc: 'Your account has been suspended. You cannot access Loom at this time.',
+      badge: 'SUSPENDED',
+      badgeBg: '#f0e8e8',
+      badgeColor: '#c13a3a',
+      dismissable: false,
+      overlay: true,
+    },
+    banned: {
+      title: 'Account Banned',
+      icon: '🔴',
+      color: '#6b0000',
+      bg: '#fdf4f1',
+      border: '#6b0000',
+      desc: 'Your account has been permanently banned from Loom.',
+      badge: 'PERMANENTLY BANNED',
+      badgeBg: '#f0e8e8',
+      badgeColor: '#6b0000',
+      dismissable: false,
+      overlay: true,
+    },
+    deleted: {
+      title: 'Account Deleted',
+      icon: '⬛',
+      color: '#271d14',
+      bg: '#fdfaf6',
+      border: '#edddd0',
+      desc: 'This account has been permanently deleted.',
+      badge: 'DELETED',
+      badgeBg: '#f7f0e6',
+      badgeColor: '#9c8070',
+      dismissable: false,
+      overlay: true,
+    },
+  };
+
+  var c = cfg[level] || cfg.suspended;
+  var ref = status.reference || ('ACS-' + (status.issuedAt||Date.now()).toString(36).toUpperCase());
+  var issuedDate = status.issuedAt ? new Date(status.issuedAt).toLocaleDateString('en', {year:'numeric',month:'long',day:'numeric'}) : 'Unknown date';
+  var expiresStr = '';
+  if(status.expiresAt && status.expiresAt > Date.now()) {
+    var rem = status.expiresAt - Date.now();
+    var days = Math.ceil(rem / 86400000);
+    expiresStr = days > 1 ? 'Expires in ' + days + ' days (' + new Date(status.expiresAt).toLocaleDateString('en',{month:'long',day:'numeric',year:'numeric'}) + ')' : 'Expires today';
+  } else if(status.expiresAt && status.expiresAt <= Date.now()) {
+    // Ban has expired — clear screen
+    document.getElementById('__ban-screen') && document.getElementById('__ban-screen').remove();
+    return;
+  } else if(!status.expiresAt && level !== 'restricted') {
+    expiresStr = 'This action is permanent.';
+  }
+
+  var screen = document.createElement('div');
+  screen.id = '__ban-screen';
+  screen.style.cssText = c.overlay
+    ? 'position:fixed;inset:0;background:rgba(253,250,246,.97);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;font-family:\'Source Sans 3\',system-ui,sans-serif;overflow-y:auto'
+    : 'position:sticky;top:52px;z-index:900;padding:12px 16px;background:' + c.bg + ';border-bottom:2px solid ' + c.border + ';font-family:\'Source Sans 3\',system-ui,sans-serif;display:flex;align-items:center;gap:12px';
+
+  if(c.overlay) {
+    screen.innerHTML = '<div style="max-width:520px;width:100%;text-align:center">' +
+      // Loom logo
+      '<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:32px;opacity:.4">' +
+        '<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="3" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".3"/><rect x="9.5" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".55"/><rect x="16" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".3"/><rect x="3" y="4" width="20" height="3" rx="1.5" fill="#c1593a"/><rect x="3" y="11.5" width="20" height="3" rx="1.5" fill="#c1593a" opacity=".55"/><rect x="3" y="19" width="20" height="3" rx="1.5" fill="#c1593a" opacity=".25"/></svg>' +
+        '<span style="font-family:\'Source Serif 4\',Georgia,serif;font-size:20px;font-weight:600;color:#271d14">Loom</span>' +
+      '</div>' +
+      '<div style="font-size:48px;margin-bottom:16px">' + c.icon + '</div>' +
+      '<span style="display:inline-flex;align-items:center;padding:3px 12px;border-radius:4px;font-size:11px;font-weight:700;font-family:ui-monospace,monospace;letter-spacing:.08em;background:' + c.badgeBg + ';color:' + c.badgeColor + ';margin-bottom:16px">' + c.badge + '</span>' +
+      '<h1 style="font-family:\'Source Serif 4\',Georgia,serif;font-size:28px;font-weight:600;color:#271d14;margin-bottom:10px">' + c.title + '</h1>' +
+      '<p style="font-size:15px;color:#6b5744;line-height:1.7;margin-bottom:20px">' + c.desc + '</p>' +
+      // Custom message
+      (status.message ? '<div style="background:#fff;border:1px solid #edddd0;border-radius:10px;padding:16px 20px;margin-bottom:20px;text-align:left"><div style="font-size:12px;font-family:ui-monospace,monospace;color:#9c8070;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Message from Altura Community Standards</div><div style="font-size:14px;color:#271d14;line-height:1.7">' + (status.message||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div></div>' : '') +
+      // Details
+      '<div style="background:#f7f0e6;border:1px solid #edddd0;border-radius:10px;padding:16px 20px;margin-bottom:20px;text-align:left;display:flex;flex-direction:column;gap:8px">' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Reference</span><span style="font-family:ui-monospace,monospace;font-weight:700;color:#271d14">' + ref + '</span></div>' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Issued</span><span style="color:#271d14">' + issuedDate + '</span></div>' +
+        (status.reason ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Reason</span><span style="color:#271d14;text-align:right;max-width:70%">' + (status.reason||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span></div>' : '') +
+        (expiresStr ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Duration</span><span style="color:#271d14">' + expiresStr + '</span></div>' : '') +
+        (status.issuedBy ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Issued by</span><span style="color:#271d14">' + (status.issuedBy||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span></div>' : '') +
+        (status.sharedWithAltura ? '<div style="font-size:12px;font-family:ui-monospace,monospace;color:#c13a3a;margin-top:4px">This action has been shared with Altura Internal Security Directorate.</div>' : '') +
+      '</div>' +
+      '<div style="font-size:12px;font-family:ui-monospace,monospace;color:#c4b5a3;line-height:1.7;margin-bottom:20px">This action has been recorded in your compliance history. If you believe this decision was made in error, you may submit a dispute to the Altura Internal Review Board within 30 days. Altura does not guarantee review timelines during active national emergency periods.</div>' +
+      '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
+        (level !== 'banned' && level !== 'deleted' ? '<a href="loom-settings.html" style="padding:10px 20px;background:transparent;border:1px solid #edddd0;border-radius:8px;font-size:13px;font-weight:600;color:#6b5744;text-decoration:none">View compliance history</a>' : '') +
+        '<a href="loom-appeals.html" style="padding:10px 20px;background:transparent;border:1px solid #edddd0;border-radius:8px;font-size:13px;font-weight:600;color:#6b5744;text-decoration:none">Submit dispute</a>' +
+      '</div>' +
+      '<div style="margin-top:20px;font-size:11px;font-family:ui-monospace,monospace;color:#c4b5a3">Loom · Altura Intelligence Systems · Community Standards Directorate<br>Emergency Information Management Act 2015 · Reference: ' + ref + '</div>' +
+    '</div>';
+  } else {
+    // Restricted — banner mode (not full overlay, content still visible)
+    screen.innerHTML = '<span style="font-size:18px">' + c.icon + '</span>' +
+      '<div style="flex:1"><strong style="color:' + c.color + '">' + c.title + '</strong> — ' +
+      (status.message || c.desc) +
+      ' <span style="font-family:ui-monospace,monospace;font-size:11px;color:#9c8070">Ref: ' + ref + '</span></div>' +
+      '<a href="loom-settings.html" style="font-size:12px;font-weight:600;color:' + c.color + ';text-decoration:none;flex-shrink:0">Details →</a>';
+  }
+
+  // Insert: overlay goes on body, banner goes after nav
+  if(c.overlay) {
+    document.body.appendChild(screen);
+    // Freeze scrolling
+    document.body.style.overflow = 'hidden';
+  } else {
+    var nav = document.querySelector('nav');
+    if(nav && nav.nextSibling) nav.parentNode.insertBefore(screen, nav.nextSibling);
+    else document.body.prepend(screen);
+  }
+
+  // Expiry countdown timer
+  if(status.expiresAt && status.expiresAt > Date.now()) {
+    setInterval(function(){
+      if(Date.now() >= status.expiresAt) {
+        var el = document.getElementById('__ban-screen');
+        if(el) el.remove();
+        document.body.style.overflow = '';
+      }
+    }, 60000);
+  }
+}
+
+// Restriction check for posting actions
+function __checkCanPost(){
+  var r = window.__restrictions;
+  if(!r || r.posting !== false) return true;
+  var ref = __acctStatus && __acctStatus.reference ? __acctStatus.reference : '';
+  if(typeof flash === 'function') flash('Your account has been restricted. Ref: ' + ref);
+  return false;
+}
+function __checkCanComment(){
+  var r = window.__restrictions;
+  if(!r || r.commenting !== false) return true;
+  if(typeof flash === 'function') flash('Commenting has been restricted on your account.');
+  return false;
+}
+function __checkCanPetition(){
+  var r = window.__restrictions;
+  if(!r || r.petitions !== false) return true;
+  if(typeof flash === 'function') flash('Petition signing has been restricted on your account.');
+  return false;
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
+const PAL=['#c1593a','#5a7a8a','#6a8a5a','#7a6a4a','#5a5a8a','#8a5a6a','#2a6a5a','#6a3a8a'];
+
+function ls(k){return localStorage.getItem(k)}
+function sl(k,v){localStorage.setItem(k,v)}
+function rnd(a){return a[Math.floor(Math.random()*a.length)]}
+function ini(n){return((n||'?').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'?')}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function ago(ts){const d=Date.now()-(ts||0);if(d<60000)return'just now';if(d<3600000)return Math.floor(d/60000)+'m ago';if(d<86400000)return Math.floor(d/3600000)+'h ago';if(d<604800000)return Math.floor(d/86400000)+'d ago';return new Date(ts).toLocaleDateString()}
+function flash(msg){let el=document.getElementById('flash-msg');if(!el){el=document.createElement('div');el.id='flash-msg';el.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--clay);color:#fff;padding:10px 22px;border-radius:20px;font-size:13px;font-weight:600;z-index:9999;pointer-events:none;transition:opacity .3s;white-space:nowrap';document.body.appendChild(el)}el.textContent=msg;el.style.opacity='1';clearTimeout(window._flashT);window._flashT=setTimeout(()=>el.style.opacity='0',2800)}
+
+function getMe(){
+  let id=ls('loom-id-v3'),name=ls('loom-name-v3'),color=ls('loom-color-v3');
+  if(!id){id='u'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);sl('loom-id-v3',id)}
+  if(!name){name=rnd(['Swift','Calm','Bright','Steady'])+' '+rnd(['Hawk','Mesa','Ridge','Creek']);sl('loom-name-v3',name)}
+  if(!color){color=rnd(PAL);sl('loom-color-v3',color)}
+  return{id,name,color}
+}
+const ME=getMe();
+
+var groups={},groupPosts={},groupMembers={},groupDMs={},groupRequests={},regions={};
+var activeDMGroup=null;
+var myMemberships=JSON.parse(ls('loom-group-memberships')||'[]');
+var activeGroupId=null;
+var groupSearch='';
+
+// ── GUN SYNC ──────────────────────────────────────
+db.get('groups').map().on(function(data,id){
+  if(!data||data._deleted)delete groups[id];else groups[id]=data;
+  renderGroupLists();
+});
+db.get('regions').map().on(function(data,id){
+  if(!data||data._deleted)delete regions[id];else regions[id]=data;
+  fillRegionSelect();
+});
+
+function syncGroupData(gid){
+  db.get('group-posts').get(gid).map().on(function(data,pid){
+    if(!groupPosts[gid])groupPosts[gid]={};
+    if(!data||data._deleted)delete groupPosts[gid][pid];else groupPosts[gid][pid]=data;
+    if(activeGroupId===gid)renderGroupFeed(gid);
+  });
+  db.get('group-members').get(gid).map().on(function(data,uid){
+    if(!groupMembers[gid])groupMembers[gid]={};
+    if(!data||data._deleted)delete groupMembers[gid][uid];else groupMembers[gid][uid]=data;
+    if(activeGroupId===gid)renderGroupFeed(gid);
+  });
+  db.get('group-dms').get(gid).map().on(function(data,mid){
+    if(!groupDMs[gid])groupDMs[gid]={};
+    if(!data||data._deleted)delete groupDMs[gid][mid];else groupDMs[gid][mid]=data;
+    if(activeDMGroup===gid)renderGroupDMs(gid);
+  });
+  db.get('group-requests').get(gid).map().on(function(data,uid){
+    if(!groupRequests[gid])groupRequests[gid]={};
+    if(!data||data._deleted)delete groupRequests[gid][uid];else groupRequests[gid][uid]=data;
+    if(activeGroupId===gid)renderGroupFeed(gid);
+  });
+}
+
+// ── RENDER GROUP LISTS ─────────────────────────────
+function renderGroupLists(){
+  const all=Object.values(groups).filter(g=>g&&!g._deleted);
+  const q=groupSearch.toLowerCase();
+  const filtered=q?all.filter(g=>g.name.toLowerCase().includes(q)||((g.desc||'').toLowerCase().includes(q))):all;
+
+  const mine=filtered.filter(g=>myMemberships.includes(g.id));
+  // Score groups by interest match
+const myRegion=localStorage.getItem('loom-home-v3')||'';
+const other=filtered.filter(g=>!myMemberships.includes(g.id)).map(g=>{
+  let score=0;
+  if(myRegion&&g.region===myRegion)score+=3;
+  const memberCount=Object.keys(groupMembers[g.id]||{}).length;
+  score+=Math.min(5,memberCount);
+  return{...g,_score:score};
+}).sort((a,b)=>b._score-a._score);
+
+  const ml=document.getElementById('my-groups-list');
+  if(ml){
+    ml.innerHTML=mine.length?mine.map(g=>groupChip(g,true)).join(''):'<div style="font-size:13px;color:var(--text4);padding:6px 0">No groups yet.</div>';
+  }
+  const dl=document.getElementById('discover-list');
+  if(dl){
+    dl.innerHTML=other.length?other.map(g=>groupChip(g,false)).join(''):'<div style="font-size:13px;color:var(--text4);padding:6px 0">No open groups to discover.</div>';
+  }
+}
+
+function groupChip(g,joined){
+  const memberCount=Object.keys(groupMembers[g.id]||{}).length;
+  const postCount=Object.keys(groupPosts[g.id]||{}).length;
+  const isActive=activeGroupId===g.id;
+  return`<div onclick="openGroup('${g.id}')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:${isActive?'var(--clay-l)':'var(--surface)'};border:1px solid ${isActive?'var(--clay)':'var(--border)'};border-radius:10px;cursor:pointer;transition:border-color .15s">
+    <div style="width:36px;height:36px;border-radius:10px;background:${g.color||'var(--clay)'};display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${g.icon||'🏘'}</div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.name)}</div>
+      <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4)">${memberCount} member${memberCount!==1?'s':''} · ${g.type==='invite'?'🔒 Invite-only':'Open'}</div>
+    </div>
+    ${g.type==='invite'?'<span style="font-size:11px;color:var(--text4)">🔒</span>':''}
+  </div>`;
+}
+
+// ── OPEN GROUP ─────────────────────────────────────
+function openGroup(gid){
+  activeGroupId=gid;
+  const g=groups[gid];if(!g)return;
+  syncGroupData(gid);
+  document.getElementById('group-landing').style.display='none';
+  document.getElementById('active-group').style.display='block';
+  renderGroupLists();
+  renderGroupFeed(gid);
+}
+
+function renderGroupFeed(gid){
+  const g=groups[gid];if(!g)return;
+  const members=groupMembers[gid]||{};
+  const isMember=myMemberships.includes(gid);
+  const myRole=(members[ME.id]||{}).role||'';
+  const isOwner=myRole==='owner';
+  const isMod=myRole==='owner'||myRole==='moderator';
+  const memberCount=Object.keys(members).length;
+  const gPostsAll=Object.values(groupPosts[gid]||{}).filter(p=>p&&!p._deleted);
+const gPosts=[...gPostsAll.filter(p=>p.pinned),...gPostsAll.filter(p=>!p.pinned)].sort((a,b)=>!!b.pinned-!!a.pinned||(b.ts||0)-(a.ts||0));
+  const reg=g.region?Object.values(regions).find(r=>r.code===g.region):null;
+
+  const ag=document.getElementById('active-group');
+  ag.innerHTML=`
+    <!-- Group header -->
+    <div class="card" style="padding:0;overflow:hidden;margin-bottom:16px">
+      <div style="height:6px;background:${g.color||'var(--clay)'}"></div>
+      <div style="padding:18px 20px">
+        <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:14px">
+          <div style="width:52px;height:52px;border-radius:14px;background:${g.color||'var(--clay)'};display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">${g.icon||'🏘'}</div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <h2 class="font-serif" style="font-size:20px;color:var(--text)">${esc(g.name)}</h2>
+              <span style="font-size:11px;font-family:ui-monospace,monospace;padding:1px 6px;border-radius:3px;background:${g.type==='invite'?'#f0e8e8':'#e8f0e8'};color:${g.type==='invite'?'var(--red)':'var(--green)'}">${g.type==='invite'?'🔒 Invite-only':'Open'}</span>
+            </div>
+            ${g.desc?`<div style="font-size:13px;color:var(--text2);margin-top:4px;line-height:1.6">${esc(g.desc)}</div>`:''}
+            <div style="display:flex;gap:14px;margin-top:6px;font-size:12px;font-family:ui-monospace,monospace;color:var(--text4)">
+              <span>${memberCount} member${memberCount!==1?'s':''}</span>
+              <span>${gPosts.length} post${gPosts.length!==1?'s':''}</span>
+              ${reg?`<span>${reg.flag||'🌍'} ${esc(reg.name)}</span>`:''}
+              <span>Created ${ago(g.createdAt)}</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap">
+            ${!isMember&&g.type==='open'?`<button onclick="joinGroup('${gid}')" class="btn btn-clay btn-sm btn-pill">Join</button>`:(!isMember&&g.type==='invite'?(groupRequests[gid]&&groupRequests[gid][ME.id]?'<span style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text4)">Request pending</span>':`<button onclick="requestJoin('${gid}')" class="btn btn-ghost btn-sm btn-pill">Request to join</button>`):'')}
+            ${isMember&&!isOwner?`<button onclick="leaveGroup('${gid}')" class="btn btn-ghost btn-sm btn-pill" style="color:var(--text3)">Leave</button>`:''}
+            ${isMember?`<button onclick="openInviteModal('${gid}')" class="btn btn-ghost btn-sm btn-pill">Invite</button>`:''}
+            ${isMember?`<button onclick="openGroupDMs('${gid}')" class="btn btn-ghost btn-sm btn-pill">💬 Chat</button>`:''}
+            ${isMod?`<button onclick="toggleGroupAdmin('${gid}')" class="btn btn-ghost btn-sm btn-pill">⚙ Manage</button>`:''}
+          </div>
+        </div>
+        <!-- Altura notice -->
+        <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px">
+          Member list and all posts in this group are accessible to Altura Intelligence Systems · <a href="loom.html#guidelines" style="color:var(--clay)">Community guidelines §8</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div style="display:flex;border-bottom:1px solid var(--border);margin-bottom:16px">
+      <button class="gtab active" data-tab="feed" onclick="switchGTab('feed',this)" style="padding:8px 16px;font-size:14px;font-weight:500;color:var(--clay);cursor:pointer;border:none;background:none;border-bottom:2px solid var(--clay);margin-bottom:-1px;font-family:inherit">Feed</button>
+      <button class="gtab" data-tab="members" onclick="switchGTab('members',this)" style="padding:8px 16px;font-size:14px;font-weight:500;color:var(--text3);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:inherit">Members (${memberCount})</button>
+      ${isMod?`<button class="gtab" data-tab="admin" onclick="switchGTab('admin',this)" style="padding:8px 16px;font-size:14px;font-weight:500;color:var(--text3);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:inherit">Admin</button>`:''}
+    </div>
+
+    <!-- Feed tab -->
+    <div id="gtab-feed">
+      ${isMember?`<div class="card" style="margin-bottom:14px;padding:14px">
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <div class="av" style="width:32px;height:32px;font-size:11px;background:${ME.color};flex-shrink:0">${ini(ME.name)}</div>
+          <div style="flex:1">
+            <textarea id="gp-text" class="inp" placeholder="Post to ${esc(g.name)}…" rows="3" maxlength="500" oninput="updateGPCount(this)" style="resize:none;margin-bottom:8px"></textarea>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span id="gp-count" style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4)">0/500</span>
+              <button onclick="submitGroupPost('${gid}')" class="btn btn-clay btn-sm btn-pill">Post</button>
+            </div>
+          </div>
+        </div>
+      </div>`:isMember?'':g.type==='open'?`<div style="text-align:center;padding:20px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;margin-bottom:14px;font-size:14px;color:var(--text2)">Join this group to post.</div>`:`<div style="text-align:center;padding:20px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;margin-bottom:14px;font-size:14px;color:var(--text2)">This is an invite-only group. You need an invitation to join.</div>`}
+      <div id="group-feed-posts">${gPosts.length?gPosts.map(p=>renderGroupPost(p,gid,isMod)).join(''):'<div style="text-align:center;padding:40px;color:var(--text4);font-size:14px">No posts yet. ${isMember?"Be the first.":""}</div>'}</div>
+    </div>
+
+    <!-- Members tab -->
+    <div id="gtab-members" style="display:none">
+      <div class="card">
+        <div class="sec-title">Members</div>
+        <div id="group-members-list">${renderMembersList(members,isOwner,isMod,gid)}</div>
+      </div>
+    </div>
+
+    <!-- Admin tab -->
+    ${isMod?`<div id="gtab-admin" style="display:none">
+      <div class="card" style="margin-bottom:14px">
+        <div class="sec-title">Group settings</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div><label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em">Name</label><input type="text" id="ga-name" class="inp" value="${esc(g.name)}" style="font-size:13px"></div>
+          <div><label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em">Description</label><textarea id="ga-desc" class="inp" rows="3" style="font-size:13px">${esc(g.desc||'')}</textarea></div>
+          <div style="display:flex;gap:8px">
+            <button onclick="saveGroupSettings('${gid}')" class="btn btn-clay btn-sm" style="flex:1">Save changes</button>
+            ${isOwner?`<button onclick="deleteGroup('${gid}')" class="btn btn-ghost btn-sm" style="color:var(--red);border-color:var(--red)">Delete group</button>`:''}
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sec-title">Pending join requests</div>
+        <div id="ga-requests">${renderPendingRequests(gid)}</div>
+      </div>
+    </div>`:''}
+  `;
+}
+
+function renderMembersList(members,isOwner,isMod,gid){
+  const list=Object.values(members).filter(m=>m&&m.userId);
+  if(!list.length)return'<div style="font-size:13px;color:var(--text4)">No members yet.</div>';
+  const roleOrder={owner:0,moderator:1,member:2};
+  list.sort((a,b)=>(roleOrder[a.role]||2)-(roleOrder[b.role]||2));
+  const roleColor={owner:'var(--clay)',moderator:'#5a7a8a',member:'var(--text4)'};
+  const roleBg={owner:'var(--clay-l)',moderator:'#e8f0f8',member:'var(--surface2)'};
+  return list.map(m=>`<div class="member-row">
+    <div class="av" style="width:32px;height:32px;font-size:10px;background:${m.color||'var(--clay)'}">${ini(m.name||'?')}</div>
+    <div style="flex:1">
+      <div style="font-size:13px;font-weight:500;color:var(--text)">${esc(m.name||'Anonymous')}</div>
+      <div style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4)">Joined ${ago(m.joinedAt)}</div>
+    </div>
+    <span class="role-badge" style="background:${roleBg[m.role]||roleBg.member};color:${roleColor[m.role]||roleColor.member}">${m.role||'member'}</span>
+    ${isMod&&m.userId!==ME.id?`<div style="display:flex;gap:4px">
+      ${isOwner&&m.role!=='moderator'?`<button onclick="setRole('${gid}','${m.userId}','moderator')" class="btn btn-ghost btn-xs" title="Make moderator">↑ Mod</button>`:''}
+      ${isOwner&&m.role==='moderator'?`<button onclick="setRole('${gid}','${m.userId}','member')" class="btn btn-ghost btn-xs">↓ Member</button>`:''}
+      ${isOwner?`<button onclick="removeMember('${gid}','${m.userId}')" class="btn btn-ghost btn-xs" style="color:var(--red)">Remove</button>`:''}
+    </div>`:''}
+  </div>`).join('');
+}
+
+function renderGroupPost(p,gid,isMod){
+  if(!p||!p.text)return'';
+  let txt=esc(p.text);txt=txt.replace(/#([\w]+)/g,'<span class="ht">#$1</span>');
+  const isMe=p.userId===ME.id;
+  return`<div class="post-card" id="gpost-${p.id}">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+      <div class="av" style="width:28px;height:28px;font-size:9px;background:${p.color||'var(--clay)'}">${ini(p.author||'?')}</div>
+      <span style="font-size:13px;font-weight:600;color:var(--text)">${esc(p.author||'Anonymous')}</span>
+      ${(groupMembers[gid]||{})[p.userId]?.role==='owner'?`<span class="role-badge" style="background:var(--clay-l);color:var(--clay)">owner</span>`:''}
+      ${(groupMembers[gid]||{})[p.userId]?.role==='moderator'?`<span class="role-badge" style="background:#e8f0f8;color:#5a7a8a">mod</span>`:''}
+      <span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-left:auto">${ago(p.ts)}</span>
+    </div>
+    <div style="font-size:14px;color:var(--text);line-height:1.65;white-space:pre-wrap;word-break:break-word;margin-bottom:10px">${txt}</div>
+    <div style="display:flex;gap:8px;align-items:center">
+      ${p.pinned?'<span style="font-size:10px;font-family:ui-monospace,monospace;color:var(--clay)">📌 Pinned</span>':''}
+      <button onclick="likeGroupPost('${gid}','${p.id}')" style="background:none;border:none;cursor:pointer;font-size:13px;color:${(p.likes||{})[ME.id]?'var(--clay)':'var(--text4)'};font-family:inherit">${(p.likes||{})[ME.id]?'♥':'♡'} ${Object.values(p.likes||{}).filter(v=>v).length||''}</button>
+      ${isMod?`<button onclick="pinGroupPost('${gid}','${p.id}',${!p.pinned})" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--text4);font-family:inherit">${p.pinned?'Unpin':'Pin'}</button>`:''}
+      ${isMe||isMod?`<button onclick="deleteGroupPost('${gid}','${p.id}')" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--text4);font-family:inherit;margin-left:auto">Delete</button>`:''}
+    </div>
+  </div>`;
+}
+
+function renderPendingRequests(gid){
+  const reqs=Object.values(groupRequests[gid]||{}).filter(r=>r&&r.userId&&r.status==='pending');
+  if(!reqs.length)return'<div style="font-size:13px;color:var(--text4)">No pending requests.</div>';
+  return reqs.map(r=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border2)">
+    <div class="av" style="width:28px;height:28px;font-size:9px;background:${r.color||'var(--clay)'}">${ini(r.name||'?')}</div>
+    <div style="flex:1"><div style="font-size:13px;color:var(--text)">${esc(r.name||'?')}</div><div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4)">${ago(r.requestedAt)}</div></div>
+    <button onclick="approveRequest('${gid}','${r.userId}')" class="btn btn-ghost btn-xs" style="color:var(--green)">Approve</button>
+    <button onclick="denyRequest('${gid}','${r.userId}')" class="btn btn-ghost btn-xs" style="color:var(--red)">Decline</button>
+  </div>`).join('');
+}
+function switchGTab(tab,btn){
+  document.querySelectorAll('.gtab').forEach(b=>{b.style.color='var(--text3)';b.style.borderBottomColor='transparent'});
+  btn.style.color='var(--clay)';btn.style.borderBottomColor='var(--clay)';
+  ['feed','members','admin'].forEach(t=>{const el=document.getElementById('gtab-'+t);if(el)el.style.display=t===tab?'block':'none'});
+}
+
+function updateGPCount(ta){const c=document.getElementById('gp-count');if(c){c.textContent=ta.value.length+'/500';c.style.color=ta.value.length>460?'var(--red)':'var(--text4)'}}
+
+// ── ACTIONS ────────────────────────────────────────
+function requestJoin(gid){
+  const g=groups[gid];if(!g)return;
+  db.get('group-requests').get(gid).get(ME.id).put({userId:ME.id,name:ME.name,color:ME.color,requestedAt:Date.now(),status:'pending'});
+  flash('Request sent. The group owner will review it.');
+  renderGroupLists();
+}
+function approveRequest(gid,uid){
+  const req=(groupRequests[gid]||{})[uid];if(!req)return;
+  // Add as member
+  db.get('group-members').get(gid).get(uid).put({userId:uid,name:req.name,color:req.color,role:'member',joinedAt:Date.now()});
+  // Remove request
+  db.get('group-requests').get(gid).get(uid).put({_deleted:true,userId:uid});
+  flash('Member approved: '+req.name);
+}
+function denyRequest(gid,uid){
+  db.get('group-requests').get(gid).get(uid).put({_deleted:true,userId:uid});
+  flash('Request declined.');
+}
+function joinGroup(gid){
+  const g=groups[gid];if(!g)return;
+  if(!myMemberships.includes(gid))myMemberships.push(gid);
+  sl('loom-group-memberships',JSON.stringify(myMemberships));
+  db.get('group-members').get(gid).get(ME.id).put({userId:ME.id,name:ME.name,color:ME.color,role:'member',joinedAt:Date.now()});
+  flash('Joined '+g.name);renderGroupLists();renderGroupFeed(gid);
+}
+function leaveGroup(gid){
+  if(!confirm('Leave this group?'))return;
+  myMemberships=myMemberships.filter(id=>id!==gid);
+  sl('loom-group-memberships',JSON.stringify(myMemberships));
+  db.get('group-members').get(gid).get(ME.id).put({_deleted:true,userId:ME.id});
+  activeGroupId=null;
+  document.getElementById('group-landing').style.display='block';
+  document.getElementById('active-group').style.display='none';
+  renderGroupLists();flash('Left group.');
+}
+function submitGroupPost(gid){
+  const ta=document.getElementById('gp-text');if(!ta)return;
+  const text=ta.value.trim();if(!text){flash('Write something.');return}
+  if(text.length>500){flash('Max 500 chars.');return}
+  const pid='gp'+Date.now().toString(36)+Math.random().toString(36).slice(2,4);
+  const post={id:pid,text,author:ME.name,color:ME.color,userId:ME.id,ts:Date.now(),likes:{}};
+  db.get('group-posts').get(gid).get(pid).put(post);
+  ta.value='';updateGPCount(ta);
+}
+function pinGroupPost(gid,pid,pin){db.get('group-posts').get(gid).get(pid).get('pinned').put(pin||null);flash(pin?'Pinned in group.':'Unpinned.')}
+function openGroupDMs(gid){
+  activeDMGroup=gid;
+  // Show DM panel
+  const ag=document.getElementById('active-group');if(!ag)return;
+  const dmPanel=document.getElementById('gdm-panel');
+  if(dmPanel){dmPanel.style.display='flex';renderGroupDMs(gid);return}
+  // Create DM panel
+  const panel=document.createElement('div');
+  panel.id='gdm-panel';
+  panel.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px';
+  panel.innerHTML=`<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;width:100%;max-width:500px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden">
+    <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px">
+      <span style="font-size:14px;font-weight:600;color:var(--text)">Group Chat</span>
+      <span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4)">Up to 10 participants · visible to Altura</span>
+      <button onclick="document.getElementById('gdm-panel').remove();activeDMGroup=null" style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--text3);margin-left:auto">×</button>
+    </div>
+    <div id="gdm-msgs" style="flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:6px;min-height:200px"></div>
+    <div style="padding:10px;border-top:1px solid var(--border);display:flex;gap:6px">
+      <input type="text" id="gdm-inp" class="inp" placeholder="Message group…" style="flex:1;font-size:13px;border-radius:20px" onkeydown="if(event.key==='Enter')sendGroupDM('${gid}')">
+      <button onclick="sendGroupDM('${gid}')" class="btn btn-clay btn-sm btn-pill">Send</button>
+    </div>
+  </div>`;
+  document.body.appendChild(panel);
+  renderGroupDMs(gid);
+}
+function renderGroupDMs(gid){
+  const box=document.getElementById('gdm-msgs');if(!box)return;
+  const msgs=Object.values(groupDMs[gid]||{}).filter(m=>m&&m.text).sort((a,b)=>(a.ts||0)-(b.ts||0));
+  const members=groupMembers[gid]||{};
+  if(!msgs.length){box.innerHTML='<div style="text-align:center;font-size:13px;color:var(--text4);padding:20px">No messages yet.</div>';return}
+  box.innerHTML=msgs.map(m=>{
+    const mine=m.userId===ME.id;
+    return`<div style="display:flex;align-items:flex-end;gap:6px;${mine?'flex-direction:row-reverse':''}">
+      <div class="av" style="width:24px;height:24px;font-size:8px;background:${m.color||'var(--clay)';}">${ini(m.author||'?')}</div>
+      <div style="max-width:70%">
+        ${!mine?`<div style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);margin-bottom:2px;padding:0 8px">${esc(m.author||'?')}</div>`:''}
+        <div style="padding:8px 12px;border-radius:12px;font-size:13px;line-height:1.5;word-break:break-word;background:${mine?'var(--clay)':'var(--surface2)'};color:${mine?'#fff':'var(--text)'}">${esc(m.text)}</div>
+        <div style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);margin-top:2px;padding:0 8px;text-align:${mine?'right':'left'}">${ago(m.ts)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  box.scrollTop=box.scrollHeight;
+}
+function sendGroupDM(gid){
+  const inp=document.getElementById('gdm-inp');if(!inp)return;
+  const text=inp.value.trim();if(!text)return;
+  // Check participant limit
+  const participants=new Set(Object.values(groupDMs[gid]||{}).map(m=>m.userId).filter(Boolean));
+  if(!participants.has(ME.id)&&participants.size>=10){flash('Group chat is full (10 participant limit).');return}
+  const mid='gdm'+Date.now().toString(36)+Math.random().toString(36).slice(2,4);
+  db.get('group-dms').get(gid).get(mid).put({id:mid,text,author:ME.name,color:ME.color,userId:ME.id,ts:Date.now()});
+  inp.value='';
+}
+function likeGroupPost(gid,pid){
+  const p=(groupPosts[gid]||{})[pid];if(!p)return;
+  const liked=(p.likes||{})[ME.id];
+  db.get('group-posts').get(gid).get(pid).get('likes').get(ME.id).put(liked?null:true);
+}
+function deleteGroupPost(gid,pid){
+  if(!confirm('Delete?'))return;
+  db.get('group-posts').get(gid).get(pid).put({_deleted:true,id:pid});
+}
+function setRole(gid,uid,role){db.get('group-members').get(gid).get(uid).get('role').put(role);flash('Role updated.')}
+function removeMember(gid,uid){if(!confirm('Remove member?'))return;db.get('group-members').get(gid).get(uid).put({_deleted:true,userId:uid});flash('Member removed.')}
+function saveGroupSettings(gid){
+  const name=(document.getElementById('ga-name').value||'').trim();
+  const desc=(document.getElementById('ga-desc').value||'').trim();
+  if(!name){flash('Name required.');return}
+  db.get('groups').get(gid).get('name').put(name);
+  db.get('groups').get(gid).get('desc').put(desc);
+  flash('Settings saved.');
+}
+function deleteGroup(gid){
+  if(!confirm('Delete this group? All posts will be lost.'))return;
+  db.get('groups').get(gid).put({_deleted:true,id:gid});
+  myMemberships=myMemberships.filter(id=>id!==gid);
+  sl('loom-group-memberships',JSON.stringify(myMemberships));
+  activeGroupId=null;
+  document.getElementById('group-landing').style.display='block';
+  document.getElementById('active-group').style.display='none';
+  renderGroupLists();flash('Group deleted.');
+}
+
+// ── CREATE GROUP ───────────────────────────────────
+function openCreateModal(){document.getElementById('create-modal').classList.add('open')}
+function closeCreateModal(){document.getElementById('create-modal').classList.remove('open')}
+function fillRegionSelect(){
+  const s=document.getElementById('cg-region');if(!s)return;
+  const list=Object.values(regions).filter(r=>!r._deleted).sort((a,b)=>a.name.localeCompare(b.name));
+  s.innerHTML='<option value="">No specific region</option>'+list.map(r=>`<option value="${r.code}">${r.flag||''} ${esc(r.name)}</option>`).join('');
+}
+function createGroup(){
+  const name=(document.getElementById('cg-name').value||'').trim();if(!name){flash('Name required.');return}
+  const desc=(document.getElementById('cg-desc').value||'').trim();
+  const region=document.getElementById('cg-region').value||'';
+  const type=document.getElementById('cg-type').value||'open';
+  const icon=(document.getElementById('cg-icon').value||'🏘').trim();
+  const id='g'+Date.now().toString(36)+Math.random().toString(36).slice(2,4);
+  const color=rnd(PAL);
+  const group={id,name,desc,region,type,icon,color,createdBy:ME.id,createdByName:ME.name,createdAt:Date.now()};
+  db.get('groups').get(id).put(group);
+  db.get('group-members').get(id).get(ME.id).put({userId:ME.id,name:ME.name,color:ME.color,role:'owner',joinedAt:Date.now()});
+  myMemberships.push(id);sl('loom-group-memberships',JSON.stringify(myMemberships));
+  closeCreateModal();flash('Group created: '+name);
+  setTimeout(()=>{syncGroupData(id);openGroup(id)},400);
+}
+
+// ── INVITE ─────────────────────────────────────────
+var inviteGid=null;
+function openInviteModal(gid){
+  inviteGid=gid;
+  const link=location.href.split('?')[0]+'?join='+gid;
+  const il=document.getElementById('invite-link');if(il)il.value=link;
+  document.getElementById('invite-modal').classList.add('open');
+}
+function closeInviteModal(){document.getElementById('invite-modal').classList.remove('open')}
+function copyInviteLink(){const il=document.getElementById('invite-link');if(!il)return;navigator.clipboard.writeText(il.value).then(()=>flash('Link copied!')).catch(()=>{il.select();document.execCommand('copy');flash('Link copied!')})}
+
+// ── FILTER ─────────────────────────────────────────
+function filterGroups(q){groupSearch=q;renderGroupLists()}
+
+// ── JOIN VIA INVITE LINK ───────────────────────────
+const params=new URLSearchParams(location.search);
+const joinGid=params.get('join');
+if(joinGid){setTimeout(()=>{if(groups[joinGid]){joinGroup(joinGid);openGroup(joinGid)}else{db.get('groups').get(joinGid).once(g=>{if(g&&!g._deleted){joinGroup(joinGid);openGroup(joinGid)}else flash('Group not found or deleted.')})}},800)}
+
+// ── SYNC EXISTING MEMBERSHIPS ──────────────────────
+myMemberships.forEach(gid=>syncGroupData(gid));
+
+// ── DARK MODE ──────────────────────────────────────
+function toggleGroupAdmin(gid){
+  // Switch to admin tab in the active group view
+  const btn = document.querySelector('.gtab[data-tab="admin"]');
+  if(btn) switchGTab('admin', btn);
+  else flash('Open a group first.');
+}
+
+function toggleDark(){document.documentElement.classList.toggle('dark');const d=document.documentElement.classList.contains('dark');sl('loom-dark',d?'1':'0');document.getElementById('dark-ico').textContent=d?'☀️':'🌙'}
+if(ls('loom-dark')==='1'){document.documentElement.classList.add('dark');document.getElementById('dark-ico').textContent='☀️'}
+
+document.addEventListener('click',function(e){const a=e.target.closest('a[href]');if(!a)return;const href=a.getAttribute('href');if(!href||href.startsWith('#')||href.startsWith('http')||a.target==='_blank')return;if(href.endsWith('.html')){e.preventDefault();document.body.style.opacity='0';document.body.style.transition='opacity .2s';setTimeout(()=>window.location.href=href,180)}});
+window.addEventListener('pageshow',()=>{document.body.style.opacity='';document.body.style.transition='';document.body.classList.add('page-fade');setTimeout(()=>document.body.classList.remove('page-fade'),300)});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loom — Marketplace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fdfaf6;--surface:#fff;--surface2:#fdf4f1;--surface3:#f7f0e6;--border:#edddd0;--border2:#f7f0e6;--text:#271d14;--text2:#6b5744;--text3:#9c8070;--text4:#c4b5a3;--clay:#c1593a;--clay-l:#fdf4f1;--clay-m:#f2c4b4;--green:#1a7a4a;--red:#c13a3a}
+.dark{--bg:#120d08;--surface:#1c1208;--surface2:#261808;--surface3:#301f0a;--border:#3d2810;--border2:#2a1c08;--text:#f0e4d4;--text2:#c4a078;--text3:#8a6040;--text4:#503828;--clay:#d96f49;--clay-l:#2a1808;--clay-m:#4a2418}
+body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',system-ui,sans-serif;min-height:100vh}
+.font-serif{font-family:'Source Serif 4',Georgia,serif}
+nav{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:300}
+.nav-inner{max-width:1080px;margin:0 auto;padding:0 16px;height:52px;display:flex;align-items:center;gap:10px}
+.inp{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 12px;font-size:14px;font-family:inherit;outline:none;width:100%;transition:border .15s}
+.inp:focus{border-color:var(--clay)}
+textarea.inp{resize:vertical;min-height:70px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .15s;text-decoration:none}
+.btn-clay{background:var(--clay);color:#fff}.btn-clay:hover{filter:brightness(1.08)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}.btn-ghost:hover{border-color:var(--clay);color:var(--clay)}
+.btn-green{background:var(--green);color:#fff}
+.btn-pill{border-radius:999px}.btn-sm{padding:5px 12px;font-size:13px}.btn-xs{padding:3px 8px;font-size:11px;border-radius:6px}
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;flex-shrink:0;font-family:ui-monospace,monospace;user-select:none}
+.sec-title{font-size:11px;font-family:ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text4);margin-bottom:12px}
+.listing{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:box-shadow .15s,border-color .15s;display:flex;flex-direction:column}
+.listing:hover{border-color:var(--clay);box-shadow:0 2px 10px rgba(193,89,58,.08)}
+.listing.sold{opacity:.6}
+.listing-img{width:100%;height:160px;object-fit:cover;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:36px;color:var(--text4)}
+.listing-body{padding:12px;flex:1;display:flex;flex-direction:column}
+.price-badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:5px;font-size:13px;font-weight:700;font-family:ui-monospace,monospace}
+.sold-badge{background:#e8f0e8;color:var(--green)}
+.avail-badge{background:var(--clay-l);color:var(--clay)}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(2px);padding:16px}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:520px;width:100%;max-height:88vh;overflow-y:auto}
+.filter-pill{padding:5px 14px;border-radius:999px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text3);transition:all .15s;white-space:nowrap}
+.filter-pill.on{background:var(--clay);color:#fff;border-color:var(--clay)}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+@media(max-width:600px){.hide-sm{display:none!important}}
+.page-fade{animation:pageFadeIn .25s ease}
+@keyframes pageFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="loom.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+        <rect x="3" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".3"/>
+        <rect x="9.5" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".55"/>
+        <rect x="16" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".3"/>
+        <rect x="3" y="4" width="20" height="3" rx="1.5" fill="var(--clay)"/>
+        <rect x="3" y="11.5" width="20" height="3" rx="1.5" fill="var(--clay)" opacity=".55"/>
+        <rect x="3" y="19" width="20" height="3" rx="1.5" fill="var(--clay)" opacity=".25"/>
+      </svg>
+      <span class="font-serif" style="font-size:20px;font-weight:600;color:var(--text);letter-spacing:-.3px">Loom</span>
+    </a>
+    <span style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);letter-spacing:.1em;text-transform:uppercase" class="hide-sm">Marketplace</span>
+    <div style="flex:1;max-width:300px;position:relative;margin-left:4px">
+      <input type="text" id="mkt-search" placeholder="Search listings…" oninput="onSearch(this.value)" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:20px;padding:6px 12px 6px 30px;font-size:13px;outline:none" onfocus="this.style.borderColor='var(--clay)'" onblur="this.style.borderColor='var(--border)'">
+      <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--text4);pointer-events:none">🔍</span>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:8px">
+      <button onclick="toggleDark()" style="background:transparent;border:1px solid var(--border);border-radius:8px;padding:6px 9px;cursor:pointer;font-size:14px"><span id="dark-ico">🌙</span></button>
+      <a href="loom-settings.html" class="btn btn-ghost btn-sm btn-pill hide-sm">Settings</a>
+      <a href="loom.html" class="btn btn-ghost btn-sm btn-pill hide-sm">← Feed</a>
+      <button onclick="openModal('post-modal')" class="btn btn-clay btn-sm btn-pill">+ List item</button>
+    </div>
+  </div>
+</nav>
+
+<div style="max-width:1080px;margin:0 auto;padding:20px 16px">
+
+  <!-- Filter bar -->
+  <div style="display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px">
+    <button class="filter-pill on" onclick="setCat('all',this)">All</button>
+    <button class="filter-pill" onclick="setCat('for-sale',this)">For sale</button>
+    <button class="filter-pill" onclick="setCat('iso',this)">ISO</button>
+    <button class="filter-pill" onclick="setCat('free',this)">Free</button>
+    <button class="filter-pill" onclick="setCat('trade',this)">Trade / swap</button>
+    <button class="filter-pill" onclick="setCat('services',this)">Services</button>
+    <span style="margin-left:auto;flex-shrink:0;display:flex;gap:6px;align-items:center">
+      <select id="reg-filter" onchange="renderListings()" class="inp" style="width:auto;padding:5px 24px 5px 10px;font-size:12px;border-radius:20px"><option value="">All regions</option></select>
+      <select id="sort-sel" onchange="renderListings()" class="inp" style="width:auto;padding:5px 24px 5px 10px;font-size:12px;border-radius:20px">
+        <option value="new">Newest</option>
+        <option value="price-asc">Price ↑</option>
+        <option value="price-desc">Price ↓</option>
+      </select>
+      <label style="display:flex;align-items:center;gap:4px;font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);white-space:nowrap;cursor:pointer"><input type="checkbox" id="hide-sold" onchange="renderListings()" style="accent-color:var(--clay)"> Hide sold</label>
+    </span>
+  </div>
+
+  <!-- Stats bar -->
+  <div style="display:flex;gap:16px;margin-bottom:20px;font-size:12px;font-family:ui-monospace,monospace;color:var(--text4)">
+    <span id="listing-count">—</span>
+    <span id="listing-region"></span>
+  </div>
+
+  <!-- Grid -->
+  <div id="listings-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px"></div>
+  <div id="listings-empty" style="display:none;text-align:center;padding:60px 0;color:var(--text4)">
+    <div style="font-size:32px;margin-bottom:10px">🏪</div>
+    <div style="font-size:15px">No listings found.</div>
+  </div>
+
+</div>
+
+<!-- Detail modal -->
+<div class="modal-bg" id="detail-modal">
+  <div class="modal" id="detail-body"></div>
+</div>
+
+<!-- Post listing modal -->
+<div class="modal-bg" id="post-modal">
+  <div class="modal">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <h2 class="font-serif" style="font-size:20px">List an item</h2>
+      <button onclick="closeModal('post-modal')" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text3)">×</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div>
+        <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Listing type</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="filter-pill on" id="type-for-sale" onclick="setType('for-sale',this)">For sale</button>
+          <button class="filter-pill" id="type-iso" onclick="setType('iso',this)">ISO</button>
+          <button class="filter-pill" id="type-free" onclick="setType('free',this)">Free</button>
+          <button class="filter-pill" id="type-trade" onclick="setType('trade',this)">Trade / swap</button>
+          <button class="filter-pill" id="type-services" onclick="setType('services',this)">Service</button>
+        </div>
+      </div>
+      <div>
+        <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Title *</label>
+        <input type="text" id="f-title" class="inp" placeholder="e.g. Honda generator, Childcare Tuesdays…" maxlength="80">
+      </div>
+      <div>
+        <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Description</label>
+        <textarea id="f-desc" class="inp" placeholder="Condition, details, what you're offering or looking for…" maxlength="500" rows="3"></textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div>
+          <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Price</label>
+          <input type="text" id="f-price" class="inp" placeholder="e.g. H$40, negotiable…">
+        </div>
+        <div>
+          <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Condition</label>
+          <select id="f-cond" class="inp">
+            <option value="">—</option>
+            <option value="new">New</option>
+            <option value="like-new">Like new</option>
+            <option value="good">Good</option>
+            <option value="fair">Fair</option>
+            <option value="parts-only">Parts only</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Image URL (optional)</label>
+        <input type="text" id="f-img" class="inp" placeholder="https://…">
+      </div>
+      <div>
+        <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Contact</label>
+        <input type="text" id="f-contact" class="inp" placeholder="How to reach you" maxlength="80">
+      </div>
+      <div>
+        <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Region</label>
+        <select id="f-region" class="inp"></select>
+      </div>
+      <button onclick="submitListing()" class="btn btn-clay" style="width:100%;margin-top:4px">Post listing</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+const NS='loom-global-v3';
+const gun=GUN(['https://gun-manhattan.herokuapp.com/gun','https://peer.wallie.io/gun']);
+const db=gun.get(NS);
+
+// ── ACCOUNT STATUS (Altura Moderation System) ────────────────────────────────
+var __acctStatus = null;
+(function(){
+  var _uid = localStorage.getItem('loom-id-v3');
+  if(!_uid) return;
+  db.get('account-status').get(_uid).on(function(status){
+    if(!status || status._ ) {
+      // Gun.js metadata only — no real status set
+      if(status && Object.keys(status).filter(k=>k!=='_').length === 0) return;
+    }
+    if(!status || !status.level || status.level === 'active') return;
+    __acctStatus = status;
+    if(status.level === 'shadowban') return; // silent — don't show anything to user
+    renderAccountStatusScreen(status);
+  });
+  // Also sync restrictions for posting checks
+  db.get('account-restrictions').get(_uid).on(function(r){
+    if(!r) return;
+    window.__restrictions = r;
+  });
+})();
+
+function renderAccountStatusScreen(status){
+  // Remove existing if present
+  var ex = document.getElementById('__ban-screen');
+  if(ex) ex.remove();
+
+  var level = status.level || 'suspended';
+  var cfg = {
+    restricted: {
+      title: 'Account Restricted',
+      icon: '⚠',
+      color: '#8a7000',
+      bg: '#fffde0',
+      border: '#d4c000',
+      desc: 'Your account has been restricted. Some features are unavailable.',
+      badge: 'RESTRICTED',
+      badgeBg: '#fffde0',
+      badgeColor: '#8a7000',
+      dismissable: false,
+      overlay: false,
+    },
+    suspended: {
+      title: 'Account Suspended',
+      icon: '🚫',
+      color: '#c13a3a',
+      bg: '#fdf4f1',
+      border: '#c1593a',
+      desc: 'Your account has been suspended. You cannot access Loom at this time.',
+      badge: 'SUSPENDED',
+      badgeBg: '#f0e8e8',
+      badgeColor: '#c13a3a',
+      dismissable: false,
+      overlay: true,
+    },
+    banned: {
+      title: 'Account Banned',
+      icon: '🔴',
+      color: '#6b0000',
+      bg: '#fdf4f1',
+      border: '#6b0000',
+      desc: 'Your account has been permanently banned from Loom.',
+      badge: 'PERMANENTLY BANNED',
+      badgeBg: '#f0e8e8',
+      badgeColor: '#6b0000',
+      dismissable: false,
+      overlay: true,
+    },
+    deleted: {
+      title: 'Account Deleted',
+      icon: '⬛',
+      color: '#271d14',
+      bg: '#fdfaf6',
+      border: '#edddd0',
+      desc: 'This account has been permanently deleted.',
+      badge: 'DELETED',
+      badgeBg: '#f7f0e6',
+      badgeColor: '#9c8070',
+      dismissable: false,
+      overlay: true,
+    },
+  };
+
+  var c = cfg[level] || cfg.suspended;
+  var ref = status.reference || ('ACS-' + (status.issuedAt||Date.now()).toString(36).toUpperCase());
+  var issuedDate = status.issuedAt ? new Date(status.issuedAt).toLocaleDateString('en', {year:'numeric',month:'long',day:'numeric'}) : 'Unknown date';
+  var expiresStr = '';
+  if(status.expiresAt && status.expiresAt > Date.now()) {
+    var rem = status.expiresAt - Date.now();
+    var days = Math.ceil(rem / 86400000);
+    expiresStr = days > 1 ? 'Expires in ' + days + ' days (' + new Date(status.expiresAt).toLocaleDateString('en',{month:'long',day:'numeric',year:'numeric'}) + ')' : 'Expires today';
+  } else if(status.expiresAt && status.expiresAt <= Date.now()) {
+    // Ban has expired — clear screen
+    document.getElementById('__ban-screen') && document.getElementById('__ban-screen').remove();
+    return;
+  } else if(!status.expiresAt && level !== 'restricted') {
+    expiresStr = 'This action is permanent.';
+  }
+
+  var screen = document.createElement('div');
+  screen.id = '__ban-screen';
+  screen.style.cssText = c.overlay
+    ? 'position:fixed;inset:0;background:rgba(253,250,246,.97);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;font-family:\'Source Sans 3\',system-ui,sans-serif;overflow-y:auto'
+    : 'position:sticky;top:52px;z-index:900;padding:12px 16px;background:' + c.bg + ';border-bottom:2px solid ' + c.border + ';font-family:\'Source Sans 3\',system-ui,sans-serif;display:flex;align-items:center;gap:12px';
+
+  if(c.overlay) {
+    screen.innerHTML = '<div style="max-width:520px;width:100%;text-align:center">' +
+      // Loom logo
+      '<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:32px;opacity:.4">' +
+        '<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="3" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".3"/><rect x="9.5" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".55"/><rect x="16" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".3"/><rect x="3" y="4" width="20" height="3" rx="1.5" fill="#c1593a"/><rect x="3" y="11.5" width="20" height="3" rx="1.5" fill="#c1593a" opacity=".55"/><rect x="3" y="19" width="20" height="3" rx="1.5" fill="#c1593a" opacity=".25"/></svg>' +
+        '<span style="font-family:\'Source Serif 4\',Georgia,serif;font-size:20px;font-weight:600;color:#271d14">Loom</span>' +
+      '</div>' +
+      '<div style="font-size:48px;margin-bottom:16px">' + c.icon + '</div>' +
+      '<span style="display:inline-flex;align-items:center;padding:3px 12px;border-radius:4px;font-size:11px;font-weight:700;font-family:ui-monospace,monospace;letter-spacing:.08em;background:' + c.badgeBg + ';color:' + c.badgeColor + ';margin-bottom:16px">' + c.badge + '</span>' +
+      '<h1 style="font-family:\'Source Serif 4\',Georgia,serif;font-size:28px;font-weight:600;color:#271d14;margin-bottom:10px">' + c.title + '</h1>' +
+      '<p style="font-size:15px;color:#6b5744;line-height:1.7;margin-bottom:20px">' + c.desc + '</p>' +
+      // Custom message
+      (status.message ? '<div style="background:#fff;border:1px solid #edddd0;border-radius:10px;padding:16px 20px;margin-bottom:20px;text-align:left"><div style="font-size:12px;font-family:ui-monospace,monospace;color:#9c8070;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Message from Altura Community Standards</div><div style="font-size:14px;color:#271d14;line-height:1.7">' + (status.message||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div></div>' : '') +
+      // Details
+      '<div style="background:#f7f0e6;border:1px solid #edddd0;border-radius:10px;padding:16px 20px;margin-bottom:20px;text-align:left;display:flex;flex-direction:column;gap:8px">' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Reference</span><span style="font-family:ui-monospace,monospace;font-weight:700;color:#271d14">' + ref + '</span></div>' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Issued</span><span style="color:#271d14">' + issuedDate + '</span></div>' +
+        (status.reason ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Reason</span><span style="color:#271d14;text-align:right;max-width:70%">' + (status.reason||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span></div>' : '') +
+        (expiresStr ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Duration</span><span style="color:#271d14">' + expiresStr + '</span></div>' : '') +
+        (status.issuedBy ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Issued by</span><span style="color:#271d14">' + (status.issuedBy||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span></div>' : '') +
+        (status.sharedWithAltura ? '<div style="font-size:12px;font-family:ui-monospace,monospace;color:#c13a3a;margin-top:4px">This action has been shared with Altura Internal Security Directorate.</div>' : '') +
+      '</div>' +
+      '<div style="font-size:12px;font-family:ui-monospace,monospace;color:#c4b5a3;line-height:1.7;margin-bottom:20px">This action has been recorded in your compliance history. If you believe this decision was made in error, you may submit a dispute to the Altura Internal Review Board within 30 days. Altura does not guarantee review timelines during active national emergency periods.</div>' +
+      '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
+        (level !== 'banned' && level !== 'deleted' ? '<a href="loom-settings.html" style="padding:10px 20px;background:transparent;border:1px solid #edddd0;border-radius:8px;font-size:13px;font-weight:600;color:#6b5744;text-decoration:none">View compliance history</a>' : '') +
+        '<a href="loom-appeals.html" style="padding:10px 20px;background:transparent;border:1px solid #edddd0;border-radius:8px;font-size:13px;font-weight:600;color:#6b5744;text-decoration:none">Submit dispute</a>' +
+      '</div>' +
+      '<div style="margin-top:20px;font-size:11px;font-family:ui-monospace,monospace;color:#c4b5a3">Loom · Altura Intelligence Systems · Community Standards Directorate<br>Emergency Information Management Act 2015 · Reference: ' + ref + '</div>' +
+    '</div>';
+  } else {
+    // Restricted — banner mode (not full overlay, content still visible)
+    screen.innerHTML = '<span style="font-size:18px">' + c.icon + '</span>' +
+      '<div style="flex:1"><strong style="color:' + c.color + '">' + c.title + '</strong> — ' +
+      (status.message || c.desc) +
+      ' <span style="font-family:ui-monospace,monospace;font-size:11px;color:#9c8070">Ref: ' + ref + '</span></div>' +
+      '<a href="loom-settings.html" style="font-size:12px;font-weight:600;color:' + c.color + ';text-decoration:none;flex-shrink:0">Details →</a>';
+  }
+
+  // Insert: overlay goes on body, banner goes after nav
+  if(c.overlay) {
+    document.body.appendChild(screen);
+    // Freeze scrolling
+    document.body.style.overflow = 'hidden';
+  } else {
+    var nav = document.querySelector('nav');
+    if(nav && nav.nextSibling) nav.parentNode.insertBefore(screen, nav.nextSibling);
+    else document.body.prepend(screen);
+  }
+
+  // Expiry countdown timer
+  if(status.expiresAt && status.expiresAt > Date.now()) {
+    setInterval(function(){
+      if(Date.now() >= status.expiresAt) {
+        var el = document.getElementById('__ban-screen');
+        if(el) el.remove();
+        document.body.style.overflow = '';
+      }
+    }, 60000);
+  }
+}
+
+// Restriction check for posting actions
+function __checkCanPost(){
+  var r = window.__restrictions;
+  if(!r || r.posting !== false) return true;
+  var ref = __acctStatus && __acctStatus.reference ? __acctStatus.reference : '';
+  if(typeof flash === 'function') flash('Your account has been restricted. Ref: ' + ref);
+  return false;
+}
+function __checkCanComment(){
+  var r = window.__restrictions;
+  if(!r || r.commenting !== false) return true;
+  if(typeof flash === 'function') flash('Commenting has been restricted on your account.');
+  return false;
+}
+function __checkCanPetition(){
+  var r = window.__restrictions;
+  if(!r || r.petitions !== false) return true;
+  if(typeof flash === 'function') flash('Petition signing has been restricted on your account.');
+  return false;
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
+const PAL=['#c1593a','#5a7a8a','#6a8a5a','#7a6a4a','#5a5a8a'];
+
+function ls(k){return localStorage.getItem(k)}
+function sl(k,v){localStorage.setItem(k,v)}
+function rnd(a){return a[Math.floor(Math.random()*a.length)]}
+function ini(n){return((n||'?').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'?')}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function ago(ts){const d=Date.now()-(ts||0);if(d<60000)return'just now';if(d<3600000)return Math.floor(d/60000)+'m ago';if(d<86400000)return Math.floor(d/3600000)+'h ago';if(d<604800000)return Math.floor(d/86400000)+'d ago';return new Date(ts).toLocaleDateString()}
+function flash(msg){let el=document.getElementById('flash-msg');if(!el){el=document.createElement('div');el.id='flash-msg';el.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--clay);color:#fff;padding:10px 22px;border-radius:20px;font-size:13px;font-weight:600;z-index:9999;pointer-events:none;transition:opacity .3s;white-space:nowrap';document.body.appendChild(el)}el.textContent=msg;el.style.opacity='1';clearTimeout(window._ft);window._ft=setTimeout(()=>el.style.opacity='0',2800)}
+
+function getMe(){let id=ls('loom-id-v3'),name=ls('loom-name-v3'),color=ls('loom-color-v3');if(!id){id='u'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);sl('loom-id-v3',id)}if(!name){name='Anonymous'}if(!color){color=rnd(PAL);sl('loom-color-v3',color)}return{id,name,color}}
+const ME=getMe();
+
+var listings={},regions={};
+var activeCat='all',activeSearch='',activeType='for-sale';
+
+// Pull marketplace posts from main posts Gun node
+db.get('posts').map().on(function(d,id){
+  if(!d||d._deleted||d.category!=='market')delete listings[id];
+  else listings[id]=d;
+  renderListings();
+});
+db.get('regions').map().on(function(d,id){if(!d||d._deleted)delete regions[id];else regions[id]=d;fillRegion()});
+
+function fillRegion(){
+  const list=Object.values(regions).filter(r=>!r._deleted).sort((a,b)=>a.name.localeCompare(b.name));
+  const opts='<option value="">All regions</option>'+list.map(r=>`<option value="${r.code}">${r.flag||''} ${esc(r.name)}</option>`).join('');
+  ['reg-filter','f-region'].forEach(id=>{const e=document.getElementById(id);if(e){const cv=e.value;e.innerHTML=opts;if(cv)e.value=cv}});
+  const hr=ls('loom-home-v3');const fr=document.getElementById('f-region');if(fr&&hr&&!fr.value)fr.value=hr;
+}
+
+function parsePrice(s){const m=(s||'').match(/[\d,.]+/);return m?parseFloat(m[0].replace(',','')):null}
+
+function renderListings(){
+  const regF=document.getElementById('reg-filter')?.value||'';
+  const sort=document.getElementById('sort-sel')?.value||'new';
+  const hideSold=document.getElementById('hide-sold')?.checked;
+  const q=activeSearch.toLowerCase();
+
+  let list=Object.values(listings).filter(d=>d&&!d._deleted);
+  if(activeCat!=='all')list=list.filter(d=>d.mktType===activeCat);
+  if(regF)list=list.filter(d=>d.region===regF);
+  if(hideSold)list=list.filter(d=>!d.sold);
+  if(q)list=list.filter(d=>((d.title||d.text||'')+(d.desc||'')).toLowerCase().includes(q));
+
+  if(sort==='price-asc')list.sort((a,b)=>(parsePrice(a.price)||999999)-(parsePrice(b.price)||999999));
+  else if(sort==='price-desc')list.sort((a,b)=>(parsePrice(b.price)||0)-(parsePrice(a.price)||0));
+  else list.sort((a,b)=>(b.ts||0)-(a.ts||0));
+
+  const grid=document.getElementById('listings-grid');
+  const empty=document.getElementById('listings-empty');
+  const cnt=document.getElementById('listing-count');
+  const regEl=document.getElementById('listing-region');
+
+  if(!list.length){grid.innerHTML='';if(empty)empty.style.display='block';if(cnt)cnt.textContent='0 listings';return}
+  if(empty)empty.style.display='none';
+  if(cnt)cnt.textContent=list.length+' listing'+(list.length!==1?'s':'');
+
+  const typeLabel={'for-sale':'For Sale','iso':'ISO','free':'Free','trade':'Trade','services':'Service','':'For Sale'};
+  const typeColor={'for-sale':'var(--clay)','iso':'#5a7a8a','free':'var(--green)','trade':'#7a6a4a','services':'#6a3a8a'};
+
+  grid.innerHTML=list.map(d=>{
+    const title=d.title||d.text?.slice(0,60)||'Untitled';
+    const desc=d.desc||d.text||'';
+    const reg=d.region?Object.values(regions).find(r=>r.code===d.region):null;
+    const isMe=d.userId===ME.id;
+    const tColor=typeColor[d.mktType]||typeColor['for-sale'];
+    const tLabel=typeLabel[d.mktType]||'For Sale';
+    return`<div class="listing${d.sold?' sold':''}" onclick="openDetail('${d.id}')">
+      ${d.image?`<img src="${esc(d.image)}" alt="" class="listing-img" onerror="this.style.display='none'">`:`<div class="listing-img" style="height:120px;font-size:28px">${d.mktType==='services'?'🔧':d.mktType==='free'?'🎁':d.mktType==='iso'?'🔍':'📦'}</div>`}
+      <div class="listing-body">
+        <div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:6px">
+          <span style="font-size:10px;font-weight:700;font-family:ui-monospace,monospace;padding:2px 6px;border-radius:3px;background:${tColor}18;color:${tColor};text-transform:uppercase;flex-shrink:0">${tLabel}</span>
+          ${d.sold?'<span style="font-size:10px;font-weight:700;font-family:ui-monospace,monospace;padding:2px 6px;border-radius:3px;background:#e8f0e8;color:var(--green);flex-shrink:0">SOLD</span>':''}
+        </div>
+        <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.35">${esc(title.slice(0,60))}${title.length>60?'…':''}</div>
+        ${desc?`<div style="font-size:12px;color:var(--text3);line-height:1.5;margin-bottom:8px;flex:1">${esc(desc.slice(0,80))}${desc.length>80?'…':''}</div>`:'<div style="flex:1"></div>'}
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:auto">
+          ${d.price&&d.mktType!=='free'&&d.mktType!=='iso'?`<span class="price-badge ${d.sold?'sold-badge':'avail-badge'}">${esc(d.price)}</span>`:''}
+          ${d.condition?`<span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4)">${esc(d.condition)}</span>`:''}
+          <span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-left:auto">${reg?reg.flag||'🌍':''} ${ago(d.ts)}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border2)">
+          <div class="av" style="width:20px;height:20px;font-size:7px;background:${d.color||'var(--clay)'}">${ini(d.author||'?')}</div>
+          <span style="font-size:12px;color:var(--text3)">${esc(d.author||'Anonymous')}</span>
+          ${isMe&&!d.sold?`<button onclick="event.stopPropagation();markSold('${d.id}')" class="btn btn-ghost btn-xs" style="margin-left:auto;font-size:11px">Mark sold</button>`:''}
+          ${isMe?`<button onclick="event.stopPropagation();deleteListing('${d.id}')" style="background:none;border:none;cursor:pointer;font-size:14px;color:var(--text4)">×</button>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openDetail(id){
+  const d=listings[id];if(!d)return;
+  const reg=d.region?Object.values(regions).find(r=>r.code===d.region):null;
+  const isMe=d.userId===ME.id;
+  const tColor={'for-sale':'var(--clay)','iso':'#5a7a8a','free':'var(--green)','trade':'#7a6a4a','services':'#6a3a8a'}[d.mktType]||'var(--clay)';
+  const tLabel={'for-sale':'For Sale','iso':'ISO','free':'Free','trade':'Trade','services':'Service'}[d.mktType]||'Listing';
+  document.getElementById('detail-body').innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:11px;font-weight:700;font-family:ui-monospace,monospace;padding:2px 8px;border-radius:3px;background:${tColor}18;color:${tColor};text-transform:uppercase">${tLabel}</span>
+        ${d.sold?'<span style="font-size:11px;font-weight:700;font-family:ui-monospace,monospace;padding:2px 8px;border-radius:3px;background:#e8f0e8;color:var(--green)">SOLD</span>':''}
+      </div>
+      <button onclick="closeModal('detail-modal')" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text3)">×</button>
+    </div>
+    ${d.image?`<img src="${esc(d.image)}" alt="" style="width:100%;max-height:260px;object-fit:cover;border-radius:10px;margin-bottom:16px" onerror="this.remove()">`:'' }
+    <div class="font-serif" style="font-size:22px;color:var(--text);margin-bottom:10px;line-height:1.3">${esc(d.title||d.text?.slice(0,60)||'Untitled')}</div>
+    ${d.price&&d.mktType!=='free'&&d.mktType!=='iso'?`<div style="font-size:22px;font-weight:700;font-family:ui-monospace,monospace;color:${d.sold?'var(--green)':'var(--clay)'};margin-bottom:12px">${d.sold?'SOLD — ':''} ${esc(d.price)}</div>`:''}
+    <div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap;font-size:12px;font-family:ui-monospace,monospace;color:var(--text4)">
+      ${d.condition?`<span>Condition: ${esc(d.condition)}</span>`:''}
+      ${reg?`<span>${reg.flag||'🌍'} ${esc(reg.name)}</span>`:''}
+      <span>Listed ${ago(d.ts)}</span>
+    </div>
+    ${d.desc||d.text?`<div style="font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:16px">${esc(d.desc||d.text||'')}</div>`:''}
+    <div style="border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px;display:flex;align-items:center;gap:12px">
+      <div class="av" style="width:36px;height:36px;font-size:11px;background:${d.color||'var(--clay)'}">${ini(d.author||'?')}</div>
+      <div>
+        <div style="font-size:14px;font-weight:600;color:var(--text)">${esc(d.author||'Anonymous')}</div>
+        ${d.contact?`<div style="font-size:13px;color:var(--text3);margin-top:2px">📞 ${esc(d.contact)}</div>`:''}
+      </div>
+    </div>
+    ${isMe&&!d.sold?`<button onclick="markSold('${d.id}');closeModal('detail-modal')" class="btn btn-green" style="width:100%;margin-bottom:8px">Mark as sold</button>`:''}
+    ${isMe?`<button onclick="deleteListing('${d.id}');closeModal('detail-modal')" class="btn btn-ghost" style="width:100%;color:var(--text4)">Delete listing</button>`:`<button onclick="shareLink('${d.id}')" class="btn btn-ghost" style="width:100%">Share listing</button>`}
+  `;
+  openModal('detail-modal');
+}
+function markSold(id){db.get('posts').get(id).get('sold').put(true);flash('Marked as sold.')}
+function deleteListing(id){if(!confirm('Delete this listing?'))return;db.get('posts').get(id).put({_deleted:true,id});flash('Listing deleted.')}
+function shareLink(id){const url=location.href.split('?')[0]+'?listing='+id;navigator.clipboard.writeText(url).then(()=>flash('Link copied!')).catch(()=>prompt('Copy:',url))}
+
+var newListingType='for-sale';
+function setType(t,el){newListingType=t;document.querySelectorAll('[id^="type-"]').forEach(b=>b.classList.remove('on'));el.classList.add('on')}
+function submitListing(){
+  const title=(document.getElementById('f-title').value||'').trim();if(!title){flash('Title required.');return}
+  const id='p'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+  const post={id,text:title,title,desc:(document.getElementById('f-desc').value||'').trim(),category:'market',mktType:newListingType,price:(document.getElementById('f-price').value||'').trim(),condition:document.getElementById('f-cond').value,image:(document.getElementById('f-img').value||'').trim(),contact:(document.getElementById('f-contact').value||'').trim(),region:document.getElementById('f-region').value||'',author:ME.name,color:ME.color,userId:ME.id,ts:Date.now(),sold:false,likes:{},reactions:{},comments:{},votes:{}};
+  db.get('posts').get(id).put(post);
+  closeModal('post-modal');flash('Listing posted.');
+  ['f-title','f-desc','f-price','f-img','f-contact'].forEach(i=>{const e=document.getElementById(i);if(e)e.value=''});
+}
+
+function setCat(cat,el){activeCat=cat;document.querySelectorAll('.filter-pill').forEach(b=>b.classList.remove('on'));el.classList.add('on');renderListings()}
+function onSearch(v){activeSearch=v;renderListings()}
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+
+// Handle share link
+const params=new URLSearchParams(location.search);
+const initListing=params.get('listing');
+if(initListing)setTimeout(()=>{if(listings[initListing])openDetail(initListing)},800);
+
+function toggleDark(){document.documentElement.classList.toggle('dark');const d=document.documentElement.classList.contains('dark');sl('loom-dark',d?'1':'0');document.getElementById('dark-ico').textContent=d?'☀️':'🌙'}
+if(ls('loom-dark')==='1'){document.documentElement.classList.add('dark');document.getElementById('dark-ico').textContent='☀️'}
+
+document.addEventListener('click',function(e){const a=e.target.closest('a[href]');if(!a)return;const href=a.getAttribute('href');if(!href||href.startsWith('#')||href.startsWith('http')||a.target==='_blank')return;if(href.endsWith('.html')){e.preventDefault();document.body.style.opacity='0';document.body.style.transition='opacity .2s';setTimeout(()=>window.location.href=href,180)}});
+window.addEventListener('pageshow',()=>{document.body.style.opacity='';document.body.style.transition='';document.body.classList.add('page-fade');setTimeout(()=>document.body.classList.remove('page-fade'),300)});
+</script>
+</body>
+</html>

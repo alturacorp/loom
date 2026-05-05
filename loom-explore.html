@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loom — Explore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fdfaf6;--surface:#fff;--surface2:#fdf4f1;--surface3:#f7f0e6;--border:#edddd0;--border2:#f7f0e6;--text:#271d14;--text2:#6b5744;--text3:#9c8070;--text4:#c4b5a3;--clay:#c1593a;--clay-l:#fdf4f1;--clay-m:#f2c4b4;--green:#1a7a4a;--red:#c13a3a}
+.dark{--bg:#120d08;--surface:#1c1208;--surface2:#261808;--surface3:#301f0a;--border:#3d2810;--border2:#2a1c08;--text:#f0e4d4;--text2:#c4a078;--text3:#8a6040;--text4:#503828;--clay:#d96f49;--clay-l:#2a1808;--clay-m:#4a2418}
+body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',system-ui,sans-serif;min-height:100vh;line-height:1.5}
+.font-serif{font-family:'Source Serif 4',Georgia,serif}
+nav{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:300}
+.nav-inner{max-width:1120px;margin:0 auto;padding:0 16px;height:52px;display:flex;align-items:center;gap:10px}
+.nav-brand{display:flex;align-items:center;gap:8px;cursor:pointer;flex-shrink:0;text-decoration:none}
+.nav-brand span{font-size:20px;font-weight:600;color:var(--text);letter-spacing:-.3px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .15s;text-decoration:none}
+.btn-clay{background:var(--clay);color:#fff}.btn-clay:hover{filter:brightness(1.08)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}.btn-ghost:hover{border-color:var(--clay);color:var(--clay)}
+.btn-pill{border-radius:999px}
+.btn-sm{padding:5px 12px;font-size:13px}
+.btn-xs{padding:3px 8px;font-size:11px;border-radius:6px}
+.inp{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 12px;font-size:14px;font-family:inherit;outline:none;width:100%;transition:border .15s}
+.inp:focus{border-color:var(--clay)}
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;flex-shrink:0;font-family:ui-monospace,monospace;user-select:none}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+.sec-title{font-size:11px;font-family:ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text4);margin-bottom:12px}
+.ht{color:var(--clay);cursor:pointer;font-weight:500}.ht:hover{text-decoration:underline}
+.post-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:border-color .15s}
+.post-card:hover{border-color:var(--clay)}
+.tag{display:inline-flex;align-items:center;padding:1px 7px;border-radius:4px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace;text-transform:uppercase;letter-spacing:.04em}
+.tag-general{background:#f0ece8;color:#6b5744}.tag-news{background:#e8f0f0;color:#2a6060}
+.tag-classif{background:#f0ece0;color:#6b5030}.tag-market{background:#e8f0e8;color:#2a6040}
+.tag-question{background:#ece8f0;color:#504870}.tag-alert{background:#f0e8e8;color:#6b2a2a}
+.tag-event{background:#e8ece8;color:#3a5a3a}.tag-poll{background:#f0e8f0;color:#5a3a6a}
+.tag-announce{background:#e8e8f0;color:#2a2a6a}.tag-petition{background:#f0ece8;color:#6b5744}
+.region-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:border-color .15s}
+.region-card:hover{border-color:var(--clay)}
+.ht-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:var(--clay-l);border:1px solid var(--clay-m);color:var(--clay);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.ht-pill:hover{background:var(--clay);color:#fff;border-color:var(--clay)}
+.rhi-bar{height:6px;border-radius:3px;background:var(--border);margin-top:4px;overflow:hidden}
+.rhi-fill{height:100%;border-radius:3px;transition:width .4s ease}
+.sparkline{display:flex;align-items:flex-end;gap:2px;height:32px}
+.spark-bar{width:6px;border-radius:2px 2px 0 0;background:var(--clay);opacity:.5;flex-shrink:0;transition:height .3s}
+.tip-wrap{position:relative;display:inline-flex;align-items:center}
+.tip-wrap .tip{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#222;color:#fff;font-size:11px;font-family:ui-monospace,monospace;padding:4px 9px;border-radius:6px;white-space:nowrap;pointer-events:none;z-index:200}
+.tip-wrap:hover .tip{display:block}
+.bv-vf{background:#e8f0e8;color:#2a6040;display:inline-flex;align-items:center;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:700;font-family:ui-monospace,monospace}
+.tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:24px;overflow-x:auto}
+.tab-btn{padding:10px 18px;font-size:14px;font-weight:500;color:var(--text3);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:inherit;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.tab-btn.active{color:var(--clay);border-bottom-color:var(--clay);font-weight:600}
+.tab-btn:hover:not(.active){color:var(--text2)}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+@media(max-width:900px){.hide-md{display:none!important}}
+@media(max-width:600px){.hide-sm{display:none!important}}
+
+.page-fade{animation:pageFadeIn .25s ease}
+@keyframes pageFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="loom.html">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+        <rect x="3" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".3"/>
+        <rect x="9.5" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".55"/>
+        <rect x="16" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".3"/>
+        <rect x="3" y="4" width="20" height="3" rx="1.5" fill="var(--clay)"/>
+        <rect x="3" y="11.5" width="20" height="3" rx="1.5" fill="var(--clay)" opacity=".55"/>
+        <rect x="3" y="19" width="20" height="3" rx="1.5" fill="var(--clay)" opacity=".25"/>
+      </svg>
+      <span class="font-serif">Loom</span>
+    </a>
+    <span style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);letter-spacing:.1em;text-transform:uppercase" class="hide-sm">Explore</span>
+    <div style="flex:1;max-width:340px;position:relative;margin-left:8px">
+      <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text4);font-size:12px;pointer-events:none">🔍</span>
+      <input type="text" id="explore-search" placeholder="Search hashtags, regions, people…" oninput="onExploreSearch(this.value)" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:20px;padding:6px 32px 6px 30px;font-size:13px;outline:none;transition:border .15s" onfocus="this.style.borderColor='var(--clay)'" onblur="this.style.borderColor='var(--border)'">
+    </div>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+      <button onclick="toggleDark()" style="background:transparent;border:1px solid var(--border);border-radius:8px;padding:6px 9px;cursor:pointer;font-size:14px"><span id="dark-ico">🌙</span></button>
+      <a href="loom-settings.html" class="btn btn-ghost btn-sm btn-pill hide-sm">Settings</a>
+      <a href="loom.html" class="btn btn-ghost btn-sm btn-pill">← Feed</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Search results overlay -->
+<div id="search-results" style="display:none;max-width:1120px;margin:0 auto;padding:16px"></div>
+
+<!-- Main content -->
+<div id="main-content" style="max-width:1120px;margin:0 auto;padding:20px 16px">
+
+  <!-- Page tabs -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('trending',this)">Trending</button>
+    <button class="tab-btn" onclick="switchTab('hashtags',this)">Hashtags</button>
+    <button class="tab-btn" onclick="switchTab('regions',this)">Regions</button>
+    <button class="tab-btn" onclick="switchTab('sentiment',this)">Sentiment</button>
+    <button class="tab-btn" onclick="switchTab('people',this)">People</button>
+  </div>
+
+  <!-- TRENDING TAB -->
+  <div id="tab-trending">
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px" class="trending-grid">
+
+      <!-- Top posts nationally -->
+      <div>
+        <div class="sec-title">Top posts nationally · last 7 days</div>
+        <div id="top-posts-national" style="display:flex;flex-direction:column;gap:10px"></div>
+        <div style="margin-top:20px">
+          <div class="sec-title">Breaking in your region</div>
+          <div id="top-posts-regional" style="display:flex;flex-direction:column;gap:10px"></div>
+        </div>
+      </div>
+
+      <!-- Right sidebar -->
+      <div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="sec-title">Top 20 hashtags · this week</div>
+          <div id="ht-national" style="display:flex;flex-direction:column;gap:5px"></div>
+        </div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="sec-title">Trending searches</div>
+          <div id="trending-searches" style="display:flex;flex-direction:column;gap:4px"></div>
+        </div>
+        <div class="card">
+          <div class="sec-title">Most reported topics</div>
+          <div id="reported-topics" style="display:flex;flex-direction:column;gap:5px"></div>
+          <div style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);margin-top:10px">Visible to all users · Data processed by Altura Analytics</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HASHTAGS TAB -->
+  <div id="tab-hashtags" style="display:none">
+    <div id="ht-page-content">
+      <!-- filled by renderHashtagPage or renderAllHashtags -->
+    </div>
+  </div>
+
+  <!-- REGIONS TAB -->
+  <div id="tab-regions" style="display:none">
+    <div class="sec-title">All regions · live status</div>
+    <div id="regions-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px"></div>
+  </div>
+
+  <!-- SENTIMENT TAB -->
+  <div id="tab-sentiment" style="display:none">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px" class="sentiment-grid">
+      <div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="sec-title">Altura regional sentiment index</div>
+          <div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);margin-bottom:14px;line-height:1.7">Derived from post volume, alert frequency, reaction patterns, and content classification. Updated continuously. Methodology not publicly documented.</div>
+          <div id="sentiment-bars" style="display:flex;flex-direction:column;gap:12px"></div>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="sec-title">Post volume · last 14 days</div>
+          <div id="volume-chart" style="display:flex;align-items:flex-end;gap:4px;height:80px;padding-top:10px"></div>
+          <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:10px;font-family:ui-monospace,monospace;color:var(--text4)" id="volume-labels"></div>
+        </div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="sec-title">Alert frequency by region</div>
+          <div id="alert-freq" style="display:flex;flex-direction:column;gap:8px"></div>
+        </div>
+        <div class="card">
+          <div class="sec-title">Top topics by region</div>
+          <div id="region-topics" style="display:flex;flex-direction:column;gap:10px"></div>
+          <div style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);margin-top:12px;line-height:1.6">Demographic posting patterns are computed but not displayed here. Anonymised aggregate data is shared with district commandants on a weekly basis.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PEOPLE TAB -->
+  <div id="tab-people" style="display:none">
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px">
+      <div>
+        <div class="sec-title">Most active community members</div>
+        <div id="people-list" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="sec-title">People you might know</div>
+          <div id="sugg-people" style="display:flex;flex-direction:column;gap:8px"></div>
+        </div>
+        <div class="card">
+          <div class="sec-title">New to Loom</div>
+          <div id="new-people" style="display:flex;flex-direction:column;gap:8px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main-content -->
+
+<script>
+'use strict';
+const NS='loom-global-v3';
+const gun=GUN(['https://gun-manhattan.herokuapp.com/gun','https://peer.wallie.io/gun']);
+const db=gun.get(NS);
+
+// ── ACCOUNT STATUS (Altura Moderation System) ────────────────────────────────
+var __acctStatus = null;
+(function(){
+  var _uid = localStorage.getItem('loom-id-v3');
+  if(!_uid) return;
+  db.get('account-status').get(_uid).on(function(status){
+    if(!status || status._ ) {
+      // Gun.js metadata only — no real status set
+      if(status && Object.keys(status).filter(k=>k!=='_').length === 0) return;
+    }
+    if(!status || !status.level || status.level === 'active') return;
+    __acctStatus = status;
+    if(status.level === 'shadowban') return; // silent — don't show anything to user
+    renderAccountStatusScreen(status);
+  });
+  // Also sync restrictions for posting checks
+  db.get('account-restrictions').get(_uid).on(function(r){
+    if(!r) return;
+    window.__restrictions = r;
+  });
+})();
+
+function renderAccountStatusScreen(status){
+  // Remove existing if present
+  var ex = document.getElementById('__ban-screen');
+  if(ex) ex.remove();
+
+  var level = status.level || 'suspended';
+  var cfg = {
+    restricted: {
+      title: 'Account Restricted',
+      icon: '⚠',
+      color: '#8a7000',
+      bg: '#fffde0',
+      border: '#d4c000',
+      desc: 'Your account has been restricted. Some features are unavailable.',
+      badge: 'RESTRICTED',
+      badgeBg: '#fffde0',
+      badgeColor: '#8a7000',
+      dismissable: false,
+      overlay: false,
+    },
+    suspended: {
+      title: 'Account Suspended',
+      icon: '🚫',
+      color: '#c13a3a',
+      bg: '#fdf4f1',
+      border: '#c1593a',
+      desc: 'Your account has been suspended. You cannot access Loom at this time.',
+      badge: 'SUSPENDED',
+      badgeBg: '#f0e8e8',
+      badgeColor: '#c13a3a',
+      dismissable: false,
+      overlay: true,
+    },
+    banned: {
+      title: 'Account Banned',
+      icon: '🔴',
+      color: '#6b0000',
+      bg: '#fdf4f1',
+      border: '#6b0000',
+      desc: 'Your account has been permanently banned from Loom.',
+      badge: 'PERMANENTLY BANNED',
+      badgeBg: '#f0e8e8',
+      badgeColor: '#6b0000',
+      dismissable: false,
+      overlay: true,
+    },
+    deleted: {
+      title: 'Account Deleted',
+      icon: '⬛',
+      color: '#271d14',
+      bg: '#fdfaf6',
+      border: '#edddd0',
+      desc: 'This account has been permanently deleted.',
+      badge: 'DELETED',
+      badgeBg: '#f7f0e6',
+      badgeColor: '#9c8070',
+      dismissable: false,
+      overlay: true,
+    },
+  };
+
+  var c = cfg[level] || cfg.suspended;
+  var ref = status.reference || ('ACS-' + (status.issuedAt||Date.now()).toString(36).toUpperCase());
+  var issuedDate = status.issuedAt ? new Date(status.issuedAt).toLocaleDateString('en', {year:'numeric',month:'long',day:'numeric'}) : 'Unknown date';
+  var expiresStr = '';
+  if(status.expiresAt && status.expiresAt > Date.now()) {
+    var rem = status.expiresAt - Date.now();
+    var days = Math.ceil(rem / 86400000);
+    expiresStr = days > 1 ? 'Expires in ' + days + ' days (' + new Date(status.expiresAt).toLocaleDateString('en',{month:'long',day:'numeric',year:'numeric'}) + ')' : 'Expires today';
+  } else if(status.expiresAt && status.expiresAt <= Date.now()) {
+    // Ban has expired — clear screen
+    document.getElementById('__ban-screen') && document.getElementById('__ban-screen').remove();
+    return;
+  } else if(!status.expiresAt && level !== 'restricted') {
+    expiresStr = 'This action is permanent.';
+  }
+
+  var screen = document.createElement('div');
+  screen.id = '__ban-screen';
+  screen.style.cssText = c.overlay
+    ? 'position:fixed;inset:0;background:rgba(253,250,246,.97);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;font-family:\'Source Sans 3\',system-ui,sans-serif;overflow-y:auto'
+    : 'position:sticky;top:52px;z-index:900;padding:12px 16px;background:' + c.bg + ';border-bottom:2px solid ' + c.border + ';font-family:\'Source Sans 3\',system-ui,sans-serif;display:flex;align-items:center;gap:12px';
+
+  if(c.overlay) {
+    screen.innerHTML = '<div style="max-width:520px;width:100%;text-align:center">' +
+      // Loom logo
+      '<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:32px;opacity:.4">' +
+        '<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="3" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".3"/><rect x="9.5" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".55"/><rect x="16" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".3"/><rect x="3" y="4" width="20" height="3" rx="1.5" fill="#c1593a"/><rect x="3" y="11.5" width="20" height="3" rx="1.5" fill="#c1593a" opacity=".55"/><rect x="3" y="19" width="20" height="3" rx="1.5" fill="#c1593a" opacity=".25"/></svg>' +
+        '<span style="font-family:\'Source Serif 4\',Georgia,serif;font-size:20px;font-weight:600;color:#271d14">Loom</span>' +
+      '</div>' +
+      '<div style="font-size:48px;margin-bottom:16px">' + c.icon + '</div>' +
+      '<span style="display:inline-flex;align-items:center;padding:3px 12px;border-radius:4px;font-size:11px;font-weight:700;font-family:ui-monospace,monospace;letter-spacing:.08em;background:' + c.badgeBg + ';color:' + c.badgeColor + ';margin-bottom:16px">' + c.badge + '</span>' +
+      '<h1 style="font-family:\'Source Serif 4\',Georgia,serif;font-size:28px;font-weight:600;color:#271d14;margin-bottom:10px">' + c.title + '</h1>' +
+      '<p style="font-size:15px;color:#6b5744;line-height:1.7;margin-bottom:20px">' + c.desc + '</p>' +
+      // Custom message
+      (status.message ? '<div style="background:#fff;border:1px solid #edddd0;border-radius:10px;padding:16px 20px;margin-bottom:20px;text-align:left"><div style="font-size:12px;font-family:ui-monospace,monospace;color:#9c8070;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Message from Altura Community Standards</div><div style="font-size:14px;color:#271d14;line-height:1.7">' + (status.message||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div></div>' : '') +
+      // Details
+      '<div style="background:#f7f0e6;border:1px solid #edddd0;border-radius:10px;padding:16px 20px;margin-bottom:20px;text-align:left;display:flex;flex-direction:column;gap:8px">' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Reference</span><span style="font-family:ui-monospace,monospace;font-weight:700;color:#271d14">' + ref + '</span></div>' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Issued</span><span style="color:#271d14">' + issuedDate + '</span></div>' +
+        (status.reason ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Reason</span><span style="color:#271d14;text-align:right;max-width:70%">' + (status.reason||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span></div>' : '') +
+        (expiresStr ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Duration</span><span style="color:#271d14">' + expiresStr + '</span></div>' : '') +
+        (status.issuedBy ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Issued by</span><span style="color:#271d14">' + (status.issuedBy||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span></div>' : '') +
+        (status.sharedWithAltura ? '<div style="font-size:12px;font-family:ui-monospace,monospace;color:#c13a3a;margin-top:4px">This action has been shared with Altura Internal Security Directorate.</div>' : '') +
+      '</div>' +
+      '<div style="font-size:12px;font-family:ui-monospace,monospace;color:#c4b5a3;line-height:1.7;margin-bottom:20px">This action has been recorded in your compliance history. If you believe this decision was made in error, you may submit a dispute to the Altura Internal Review Board within 30 days. Altura does not guarantee review timelines during active national emergency periods.</div>' +
+      '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
+        (level !== 'banned' && level !== 'deleted' ? '<a href="loom-settings.html" style="padding:10px 20px;background:transparent;border:1px solid #edddd0;border-radius:8px;font-size:13px;font-weight:600;color:#6b5744;text-decoration:none">View compliance history</a>' : '') +
+        '<a href="loom-appeals.html" style="padding:10px 20px;background:transparent;border:1px solid #edddd0;border-radius:8px;font-size:13px;font-weight:600;color:#6b5744;text-decoration:none">Submit dispute</a>' +
+      '</div>' +
+      '<div style="margin-top:20px;font-size:11px;font-family:ui-monospace,monospace;color:#c4b5a3">Loom · Altura Intelligence Systems · Community Standards Directorate<br>Emergency Information Management Act 2015 · Reference: ' + ref + '</div>' +
+    '</div>';
+  } else {
+    // Restricted — banner mode (not full overlay, content still visible)
+    screen.innerHTML = '<span style="font-size:18px">' + c.icon + '</span>' +
+      '<div style="flex:1"><strong style="color:' + c.color + '">' + c.title + '</strong> — ' +
+      (status.message || c.desc) +
+      ' <span style="font-family:ui-monospace,monospace;font-size:11px;color:#9c8070">Ref: ' + ref + '</span></div>' +
+      '<a href="loom-settings.html" style="font-size:12px;font-weight:600;color:' + c.color + ';text-decoration:none;flex-shrink:0">Details →</a>';
+  }
+
+  // Insert: overlay goes on body, banner goes after nav
+  if(c.overlay) {
+    document.body.appendChild(screen);
+    // Freeze scrolling
+    document.body.style.overflow = 'hidden';
+  } else {
+    var nav = document.querySelector('nav');
+    if(nav && nav.nextSibling) nav.parentNode.insertBefore(screen, nav.nextSibling);
+    else document.body.prepend(screen);
+  }
+
+  // Expiry countdown timer
+  if(status.expiresAt && status.expiresAt > Date.now()) {
+    setInterval(function(){
+      if(Date.now() >= status.expiresAt) {
+        var el = document.getElementById('__ban-screen');
+        if(el) el.remove();
+        document.body.style.overflow = '';
+      }
+    }, 60000);
+  }
+}
+
+// Restriction check for posting actions
+function __checkCanPost(){
+  var r = window.__restrictions;
+  if(!r || r.posting !== false) return true;
+  var ref = __acctStatus && __acctStatus.reference ? __acctStatus.reference : '';
+  if(typeof flash === 'function') flash('Your account has been restricted. Ref: ' + ref);
+  return false;
+}
+function __checkCanComment(){
+  var r = window.__restrictions;
+  if(!r || r.commenting !== false) return true;
+  if(typeof flash === 'function') flash('Commenting has been restricted on your account.');
+  return false;
+}
+function __checkCanPetition(){
+  var r = window.__restrictions;
+  if(!r || r.petitions !== false) return true;
+  if(typeof flash === 'function') flash('Petition signing has been restricted on your account.');
+  return false;
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
+
+const PARTNER_COLORS={hhs:'#1a5a8a',proxima:'#8a1a2a',nrc:'#2a4a1a','salt-lake':'#5a3a1a',default:'#2a6a5a'};
+const TIERS=[
+  {min:0, name:'Newcomer', badge:'#a0a0a0',short:'N'},
+  {min:15,name:'Neighbour',badge:'#c1593a',short:'NB'},
+  {min:40,name:'Regular', badge:'#5a7a8a',short:'R'},
+  {min:65,name:'Elder',   badge:'#6a8a5a',short:'E'},
+  {min:85,name:'Trusted Voice',badge:'#6a3a8a',short:'TV'},
+];
+const CATS={general:'General',news:'News',classif:'Classifieds',market:'Marketplace',question:'Question',alert:'Alert',event:'Event',poll:'Poll',announce:'Announcement',petition:'Petition'};
+const CTAGS={general:'tag-general',news:'tag-news',classif:'tag-classif',market:'tag-market',question:'tag-question',alert:'tag-alert',event:'tag-event',poll:'tag-poll',announce:'tag-announce',petition:'tag-general'};
+const PAL=['#c1593a','#5a7a8a','#6a8a5a','#7a6a4a','#5a5a8a','#8a5a6a'];
+
+function ls(k){return localStorage.getItem(k)}
+function sl(k,v){localStorage.setItem(k,v)}
+function ini(n){return((n||'?').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'?')}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function ago(ts){const d=Date.now()-(ts||0);if(d<60000)return'just now';if(d<3600000)return Math.floor(d/60000)+'m ago';if(d<86400000)return Math.floor(d/3600000)+'h ago';if(d<604800000)return Math.floor(d/86400000)+'d ago';return new Date(ts).toLocaleDateString()}
+function getTier(rep){return TIERS.slice().reverse().find(t=>rep>=t.min)||TIERS[0]}
+
+function getMe(){
+  let id=ls('loom-id-v3'),name=ls('loom-name-v3'),color=ls('loom-color-v3');
+  if(!id){id='u'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);sl('loom-id-v3',id)}
+  if(!name){name='Anonymous';sl('loom-name-v3',name)}
+  if(!color){color=PAL[Math.floor(Math.random()*PAL.length)];sl('loom-color-v3',color)}
+  return{id,name,color}
+}
+const ME=getMe();
+
+var posts={},regions={},config={},partners={};
+var follows=new Set(JSON.parse(ls('loom-follows')||'[]'));
+var verifiedNames=new Set(),trustedNames=new Set();
+var loaded=false;
+
+function clean(o){if(!o)return{};const r={};Object.entries(o).forEach(([k,v])=>{if(k!=='_'&&v!==null)r[k]=v});return r}
+
+db.get('posts').map().on(function(data,id){
+  if(!data||data._deleted){delete posts[id];return}
+  if(!posts[id])posts[id]={};Object.assign(posts[id],data);
+  db.get('posts').get(id).get('likes').on(v=>{if(posts[id])posts[id].likes=clean(v)});
+  db.get('posts').get(id).get('reactions').on(v=>{if(posts[id])posts[id].reactions=clean(v)});
+  if(!loaded){clearTimeout(renderT);renderT=setTimeout(renderAll,400)}
+});
+db.get('regions').map().on(function(data,id){if(!data||data._deleted)delete regions[id];else regions[id]=data;renderAll()});
+db.get('config').on(function(data){if(!data)return;config=data;if(data.verified)verifiedNames=new Set((data.verified||'').split('\n').map(s=>s.trim()).filter(Boolean));if(data.trusted)trustedNames=new Set((data.trusted||'').split('\n').map(s=>s.trim()).filter(Boolean))});
+db.get('partners').map().on(function(data,id){if(!data||data._deleted)delete partners[id];else partners[id]=data});
+db.get('follows').get(ME.id).map().on(function(val,uid){if(val===true)follows.add(uid);else follows.delete(uid)});
+
+var renderT=null;
+function renderAll(){
+  loaded=true;
+  renderTrending();
+  renderHashtagsTab();
+  renderRegionsTab();
+  renderSentimentTab();
+  renderPeopleTab();
+}
+
+// ── UTILITIES ─────────────────────────────────────
+function calcRep(uid){
+  const p=Object.values(posts).filter(p=>p&&!p._deleted&&p.userId===uid);
+  const likes=p.reduce((s,pp)=>s+Object.values(pp.likes||{}).filter(v=>v===true).length,0);
+  const cmts=p.reduce((s,pp)=>s+Object.keys(pp.comments||{}).length,0);
+  const age=p.length?(Date.now()-Math.min(...p.map(pp=>pp.ts||Date.now())))/86400000:0;
+  return Math.min(100,Math.round(likes*3+cmts*1.5+Math.min(age,30)*0.5));
+}
+function loomScore(uid){const rep=calcRep(uid);const p=Object.values(posts).filter(pp=>pp&&!pp._deleted&&pp.userId===uid);return Math.min(999,Math.round(rep*0.5+Math.min(30,p.length*2)))}
+function topScore(p){return Object.values(p.likes||{}).filter(v=>v===true).length*3+Object.keys(p.comments||{}).length*2}
+function tScore(p){const age=(Date.now()-(p.ts||0))/3600000;return(topScore(p))/Math.pow(age+2,1.2)}
+
+function getHashtags(timeWindow){
+  const since=timeWindow?Date.now()-timeWindow:0;
+  const list=Object.values(posts).filter(p=>p&&!p._deleted&&(p.ts||0)>since);
+  const tags={};list.forEach(p=>{((p.text||'').match(/#([\w\u0080-\uFFFF]+)/g)||[]).forEach(m=>{const t=m.slice(1).toLowerCase();if(!tags[t])tags[t]={count:0,posts:[],regions:{}};tags[t].count++;tags[t].posts.push(p);if(p.region){tags[t].regions[p.region]=(tags[t].regions[p.region]||0)+1}})});
+  return Object.entries(tags).sort((a,b)=>b[1].count-a[1].count);
+}
+
+function renderPostCard(p,showRegion){
+  if(!p)return'';
+  const likes=Object.values(p.likes||{}).filter(v=>v===true).length;
+  const cmts=Object.keys(p.comments||{}).length;
+  const reg=showRegion&&p.region?Object.values(regions).find(r=>r.code===p.region):null;
+  const regLabel=reg?`${reg.flag||''}${p.region}`:'';
+  let txt=esc(p.text||'');txt=txt.replace(/#([\w]+)/g,'<span class="ht" onclick="showHashtag(\'$1\')">#$1</span>');
+  return`<div class="post-card" onclick="goPost('${p.id}')">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+      <div class="av" style="width:26px;height:26px;font-size:9px;background:${p.color||'var(--clay)'}">${ini(p.author||'?')}</div>
+      <span style="font-size:13px;font-weight:600;color:var(--text)">${esc(p.author||'Anonymous')}</span>
+      ${verifiedNames.has(p.author||'')?'<span class="bv-vf">✓</span>':''}
+      <span class="tag ${CTAGS[p.category]||'tag-general'}">${CATS[p.category]||'General'}</span>
+      ${regLabel?`<span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text3);background:var(--surface2);padding:1px 6px;border-radius:4px">${esc(regLabel)}</span>`:''}
+      <span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-left:auto">${ago(p.ts)}</span>
+    </div>
+    <div style="font-size:14px;color:var(--text);line-height:1.65;margin-bottom:10px;word-break:break-word">${txt.slice(0,280)}${txt.length>280?'…':''}</div>
+    <div style="display:flex;gap:12px;font-size:12px;font-family:ui-monospace,monospace;color:var(--text4)">
+      <span>♥ ${likes}</span><span>💬 ${cmts}</span>
+    </div>
+  </div>`;
+}
+function goPost(id){window.open('loom.html#'+id,'_self')}
+
+// ── TRENDING ──────────────────────────────────────
+function renderTrending(){
+  const wkAgo=Date.now()-7*86400000;
+  const wkPosts=Object.values(posts).filter(p=>p&&!p._deleted&&(p.ts||0)>wkAgo);
+
+  // National top posts
+  const topNational=wkPosts.slice().sort((a,b)=>topScore(b)-topScore(a)).slice(0,6);
+  const tn=document.getElementById('top-posts-national');
+  if(tn){tn.innerHTML=topNational.length?topNational.map(p=>renderPostCard(p,true)).join(''):'<div style="color:var(--text4);font-size:13px;padding:20px 0">No posts yet.</div>'}
+
+  // Regional posts
+  const myR=ls('loom-home-v3');
+  const regional=myR?wkPosts.filter(p=>p.region===myR).slice().sort((a,b)=>tScore(b)-tScore(a)).slice(0,4):[];
+  const tr=document.getElementById('top-posts-regional');
+  if(tr){tr.innerHTML=regional.length?regional.map(p=>renderPostCard(p,false)).join(''):`<div style="color:var(--text4);font-size:13px;padding:20px 0">${myR?'No recent posts in your region.':'Set your home region in Loom to see regional posts.'}</div>`}
+
+  // Hashtags sidebar
+  const tags=getHashtags(7*86400000).slice(0,20);
+  const htn=document.getElementById('ht-national');
+  if(htn){
+    const maxCt=tags[0]?tags[0][1].count:1;
+    htn.innerHTML=tags.length?tags.map(([t,d],i)=>`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;cursor:pointer" onclick="showHashtag('${t}');switchTab('hashtags',document.querySelector('.tab-btn:nth-child(2)'))">
+      <span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);width:20px;text-align:right">${i+1}</span>
+      <div style="flex:1">
+        <span class="ht">#${esc(t)}</span>
+        <div style="height:3px;background:var(--border);border-radius:2px;margin-top:3px"><div style="height:100%;background:var(--clay);border-radius:2px;width:${Math.round(d.count/maxCt*100)}%;opacity:${.3+d.count/maxCt*.7}"></div></div>
+      </div>
+      <span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4)">${d.count}</span>
+    </div>`).join(''):'<div style="color:var(--text4);font-size:13px">No hashtags yet.</div>'
+  }
+
+  // Trending searches (synthetic from hashtags + post topics)
+  const ts=document.getElementById('trending-searches');
+  if(ts){
+    const searches=tags.slice(0,8).map(([t])=>t);
+    ts.innerHTML=searches.map(t=>`<div style="display:flex;align-items:center;gap:6px;padding:3px 0;cursor:pointer" onclick="showHashtag('${t}');switchTab('hashtags',document.querySelector('.tab-btn:nth-child(2)'))">
+      <span style="font-size:11px;color:var(--text4)">🔍</span>
+      <span class="ht">${esc(t)}</span>
+    </div>`).join('')||'<div style="color:var(--text4);font-size:13px">—</div>'
+  }
+
+  // Reported topics
+  const rt=document.getElementById('reported-topics');
+  if(rt){
+    // Aggregate from post categories with alert/report tags
+    const alertP=Object.values(posts).filter(p=>p&&!p._deleted&&p.category==='alert'&&(Date.now()-p.ts)<7*86400000);
+    const alertTags={};alertP.forEach(p=>{((p.text||'').match(/#([\w]+)/g)||[]).forEach(m=>{const t=m.slice(1).toLowerCase();alertTags[t]=(alertTags[t]||0)+1})});
+    const topAlert=Object.entries(alertTags).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    rt.innerHTML=topAlert.length?topAlert.map(([t,c])=>`<div style="display:flex;align-items:center;gap:8px;padding:3px 0">
+      <span style="font-size:11px;color:var(--red)">⚠</span>
+      <span class="ht" onclick="showHashtag('${t}')">#${esc(t)}</span>
+      <span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-left:auto">${c}</span>
+    </div>`).join(''):'<div style="color:var(--text4);font-size:13px">No flagged topics this week.</div>'
+  }
+}
+
+// ── HASHTAGS ──────────────────────────────────────
+var activeHT=null;
+function renderHashtagsTab(){
+  if(activeHT)showHashtag(activeHT);
+  else renderAllHashtags();
+}
+function renderAllHashtags(){
+  const tags=getHashtags(7*86400000).slice(0,40);
+  const box=document.getElementById('ht-page-content');if(!box)return;
+  box.innerHTML=`
+    <div class="sec-title">All hashtags this week</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px">${tags.map(([t,d])=>`<div class="ht-pill" onclick="showHashtag('${t}')">#${esc(t)}<span style="font-size:11px;opacity:.6">${d.count}</span></div>`).join('')||'<div style="color:var(--text4);font-size:14px">No hashtags yet.</div>'}</div>
+    <div class="sec-title">By region</div>
+    <div id="ht-by-region"></div>`;
+  // By region breakdown
+  const regBoxEl=document.getElementById('ht-by-region');if(!regBoxEl)return;
+  const regList=Object.values(regions).filter(r=>!r._deleted);
+  if(!regList.length){regBoxEl.innerHTML='<div style="color:var(--text4);font-size:13px">No regions configured.</div>';return}
+  regBoxEl.innerHTML=regList.map(r=>{
+    const rTags={};Object.values(posts).filter(p=>p&&!p._deleted&&p.region===r.code&&(Date.now()-p.ts)<7*86400000).forEach(p=>{((p.text||'').match(/#([\w]+)/g)||[]).forEach(m=>{const t=m.slice(1).toLowerCase();rTags[t]=(rTags[t]||0)+1})});
+    const top=Object.entries(rTags).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    if(!top.length)return'';
+    return`<div style="margin-bottom:14px"><div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px">${r.flag||'🌍'} ${esc(r.name)}</div><div style="display:flex;flex-wrap:wrap;gap:6px">${top.map(([t,c])=>`<div class="ht-pill" onclick="showHashtag('${t}')" style="font-size:12px">#${esc(t)} <span style="font-size:10px;opacity:.6">${c}</span></div>`).join('')}</div></div>`;
+  }).join('');
+}
+
+function showHashtag(tag){
+  activeHT=tag;
+  switchTab('hashtags',document.querySelectorAll('.tab-btn')[1]);
+  const htPosts=Object.values(posts).filter(p=>p&&!p._deleted&&(p.text||'').toLowerCase().includes('#'+tag.toLowerCase())).sort((a,b)=>topScore(b)-topScore(a));
+  const box=document.getElementById('ht-page-content');if(!box)return;
+
+  // Region breakdown for this hashtag
+  const regCts={};htPosts.forEach(p=>{if(p.region)regCts[p.region]=(regCts[p.region]||0)+1});
+  const topRegs=Object.entries(regCts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const relatedTags=new Set();htPosts.forEach(p=>{((p.text||'').match(/#([\w]+)/g)||[]).forEach(m=>{const t=m.slice(1).toLowerCase();if(t!==tag)relatedTags.add(t)})});
+
+  // Timeline chart
+  const _now=Date.now(),_days=30,_tl=[];
+  for(let _i=_days-1;_i>=0;_i--){
+    const _ds=_now-_i*86400000,_de=_ds+86400000;
+    const _dp=htPosts.filter(p=>(p.ts||0)>=_ds&&(p.ts||0)<_de);
+    _tl.push({d:new Date(_ds),count:_dp.length,alerts:_dp.filter(p=>p.category==='alert').length});
+  }
+  const _maxC=Math.max(..._tl.map(d=>d.count),1);
+  const tlHtml='<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px"><div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Post volume · last 30 days</div><div style="display:flex;align-items:flex-end;gap:1px;height:56px">'+
+    _tl.map((d,i)=>{const pct=Math.round(d.count/_maxC*100);const isAlert=d.alerts>0;const isToday=i===_days-1;return'<div style="flex:1;height:'+Math.max(pct,d.count>0?6:0)+'%;background:'+(isAlert?'var(--red)':isToday?'var(--clay)':'#5a7a8a')+';border-radius:2px 2px 0 0;opacity:'+(0.3+pct/100*0.7)+'" title="'+d.d.toLocaleDateString('en',{month:'short',day:'numeric'})+': '+d.count+' post'+(d.count!==1?'s':'')+(d.alerts?' · ⚠ '+d.alerts+' alert'+(d.alerts!==1?'s':''):'')+'">'}).join('')+
+    '</div><div style="display:flex;justify-content:space-between;font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);margin-top:4px"><span>'+_tl[0].d.toLocaleDateString('en',{month:'short',day:'numeric'})+'</span><span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;background:var(--red);border-radius:1px;display:inline-block"></span>Alert spike</span><span>Today</span></div></div>';
+
+    box.innerHTML=`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+      <button onclick="activeHT=null;renderAllHashtags()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:20px">←</button>
+      <h2 class="font-serif" style="font-size:28px;color:var(--clay)">#${esc(tag)}</h2>
+      <span style="font-size:14px;font-family:ui-monospace,monospace;color:var(--text4)">${htPosts.length} post${htPosts.length!==1?'s':''}</span>
+    </div>
+    \${tlHtml}<div style="display:grid;grid-template-columns:2fr 1fr;gap:20px">
+      <div>
+        <div class="sec-title">Top posts</div>
+        <div style="display:flex;flex-direction:column;gap:10px">${htPosts.slice(0,10).map(p=>renderPostCard(p,true)).join('')||'<div style="color:var(--text4);font-size:13px">No posts yet.</div>'}</div>
+        ${htPosts.length>10?`<div style="margin-top:12px"><div class="sec-title">Recent</div><div style="display:flex;flex-direction:column;gap:8px">${htPosts.slice(10,20).map(p=>renderPostCard(p,true)).join('')}</div></div>`:''}
+      </div>
+      <div>
+        ${topRegs.length?`<div class="card" style="margin-bottom:14px"><div class="sec-title">Active regions</div>${topRegs.map(([code,ct])=>{const r=Object.values(regions).find(r=>r.code===code);return`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;cursor:pointer" onclick="switchTab('regions',document.querySelectorAll('.tab-btn')[2])"><span>${r?r.flag||'🌍':'🌍'}</span><span style="flex:1;font-size:13px;color:var(--text)">${r?esc(r.name):code}</span><span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--clay)">${ct}</span></div>`}).join('')}</div>`:''}
+        ${relatedTags.size?`<div class="card"><div class="sec-title">Related</div><div style="display:flex;flex-wrap:wrap;gap:6px">${[...relatedTags].slice(0,12).map(t=>`<div class="ht-pill" onclick="showHashtag('${t}')" style="font-size:12px">#${esc(t)}</div>`).join('')}</div></div>`:''}
+      </div>
+    </div>`;
+}
+
+// ── REGIONS ───────────────────────────────────────
+function calcRHI(code){
+  const rP=Object.values(posts).filter(p=>p&&!p._deleted&&p.region===code&&(Date.now()-p.ts)<7*86400000);
+  if(!rP.length)return{score:null,label:'—'};
+  const ar=rP.filter(p=>p.category==='alert').length/rP.length;
+  const act=Math.min(1,rP.length/50);
+  const score=Math.round((1-ar*0.6+act*0.4)*100);
+  return{score,label:score>=70?'Healthy':score>=40?'Elevated':'Critical',color:score>=70?'var(--green)':score>=40?'var(--clay)':'var(--red)'};
+}
+function renderRegionsTab(){
+  const grid=document.getElementById('regions-grid');if(!grid)return;
+  const list=Object.values(regions).filter(r=>!r._deleted).sort((a,b)=>a.name.localeCompare(b.name));
+  if(!list.length){grid.innerHTML='<div style="color:var(--text4);font-size:14px;padding:20px 0">No regions configured.</div>';return}
+  const sc={normal:'var(--text4)',elevated:'#c97a00',active:'#a04530',critical:'var(--red)',closed:'var(--green)'};
+  const sl2={normal:'',elevated:'Elevated',active:'Active',critical:'Critical',closed:'Closed'};
+  grid.innerHTML=list.map(r=>{
+    const rPosts=Object.values(posts).filter(p=>p&&!p._deleted&&p.region===r.code);
+    const weekPosts=rPosts.filter(p=>(Date.now()-p.ts)<7*86400000);
+    const alertCt=weekPosts.filter(p=>p.category==='alert').length;
+    const rhi=calcRHI(r.code);
+    const topHT=function(){const t={};weekPosts.forEach(p=>{((p.text||'').match(/#([\w]+)/g)||[]).forEach(m=>{const tag=m.slice(1).toLowerCase();t[tag]=(t[tag]||0)+1})});return Object.entries(t).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([t])=>t)};
+    return`<div class="region-card" onclick="showRegionDetail('${r.code}')">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <span style="font-size:20px">${r.flag||'🌍'}</span>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:600;color:var(--text)">${esc(r.name)}</div>
+          <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4)">${r.code}</div>
+        </div>
+        ${sl2[r.status]?`<span style="font-size:10px;font-weight:700;font-family:ui-monospace,monospace;padding:1px 6px;border-radius:3px;background:${sc[r.status]}22;color:${sc[r.status]}">${sl2[r.status]}</span>`:''}
+      </div>
+      <div style="display:flex;gap:14px;font-size:12px;font-family:ui-monospace,monospace;margin-bottom:10px">
+        <span style="color:var(--text3)">${weekPosts.length} posts/wk</span>
+        ${alertCt>0?`<span style="color:var(--red)">⚠ ${alertCt} alert${alertCt!==1?'s':''}</span>`:''}
+      </div>
+      ${rhi.score!==null?`<div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;font-family:ui-monospace,monospace;margin-bottom:3px"><span style="color:var(--text4)">Health Index</span><span style="color:${rhi.color};font-weight:700">${rhi.score} · ${rhi.label}</span></div>
+        <div class="rhi-bar"><div class="rhi-fill" style="width:${rhi.score}%;background:${rhi.color}"></div></div>
+      </div>`:''}
+      ${topHT().length?`<div style="margin-top:10px;display:flex;gap:4px;flex-wrap:wrap">${topHT().map(t=>`<span class="ht" onclick="event.stopPropagation();showHashtag('${t}');switchTab('hashtags',document.querySelectorAll('.tab-btn')[1])">#${t}</span>`).join('')}</div>`:''}
+      ${alertCt>=3?`<div style="margin-top:8px;font-size:11px;font-family:ui-monospace,monospace;color:var(--red)">🔍 This region is being monitored</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function showRegionDetail(code){
+  const r=Object.values(regions).find(r=>r.code===code);if(!r)return;
+  window.open('loom.html','_self');
+}
+
+// ── SENTIMENT ─────────────────────────────────────
+function renderSentimentTab(){
+  const list=Object.values(regions).filter(r=>!r._deleted).sort((a,b)=>a.name.localeCompare(b.name));
+
+  // Sentiment bars
+  const sb=document.getElementById('sentiment-bars');
+  if(sb){
+    if(!list.length){sb.innerHTML='<div style="color:var(--text4);font-size:13px">No regions.</div>'}
+    else{sb.innerHTML=list.map(r=>{
+      const rhi=calcRHI(r.code);if(rhi.score===null)return'';
+      const rPosts=Object.values(posts).filter(p=>p&&!p._deleted&&p.region===r.code&&(Date.now()-p.ts)<7*86400000);
+      const alertRatio=rPosts.length?rPosts.filter(p=>p.category==='alert').length/rPosts.length:0;
+      return`<div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+          <span style="color:var(--text)">${r.flag||'🌍'} ${esc(r.name)}</span>
+          <span style="font-family:ui-monospace,monospace;font-weight:700;color:${rhi.color}">${rhi.score}</span>
+        </div>
+        <div class="rhi-bar"><div class="rhi-fill" style="width:${rhi.score}%;background:${rhi.color}"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);margin-top:2px">
+          <span>${rPosts.length} posts</span>
+          ${alertRatio>0?`<span style="color:var(--red)">${Math.round(alertRatio*100)}% alerts</span>`:''}
+        </div>
+      </div>`;
+    }).join('')}
+    sb.innerHTML+=`<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border2);font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);line-height:1.7">Health Index computed from: alert ratio (60%), activity level (40%). Scores 0–100. Below 40 triggers enhanced monitoring. Data shared with district commandants weekly.</div>`;
+  }
+
+  // Volume chart (14 days)
+  const vc=document.getElementById('volume-chart');
+  const vl=document.getElementById('volume-labels');
+  if(vc&&vl){
+    const days=14;const buckets=[];
+    for(let i=days-1;i>=0;i--){const d=Date.now()-i*86400000;const dayPosts=Object.values(posts).filter(p=>p&&!p._deleted&&(p.ts||0)>d-86400000&&(p.ts||0)<=d);buckets.push({count:dayPosts.length,date:new Date(d)})}
+    const max=Math.max(...buckets.map(b=>b.count),1);
+    vc.innerHTML=buckets.map((b,i)=>`<div class="spark-bar" style="height:${Math.max(4,Math.round(b.count/max*72))}px;flex:1;background:${i===days-1?'var(--clay)':'var(--clay)'};opacity:${.3+b.count/max*.7}" title="${b.count} posts"></div>`).join('');
+    vl.innerHTML=`<span>${buckets[0].date.toLocaleDateString('en',{month:'short',day:'numeric'})}</span><span>Today</span>`;
+  }
+
+  // Alert frequency
+  const af=document.getElementById('alert-freq');
+  if(af&&list.length){
+    const data=list.map(r=>{const rP=Object.values(posts).filter(p=>p&&!p._deleted&&p.region===r.code&&(Date.now()-p.ts)<7*86400000);const alerts=rP.filter(p=>p.category==='alert').length;return{r,alerts,total:rP.length}}).filter(d=>d.total>0).sort((a,b)=>b.alerts-a.alerts).slice(0,6);
+    af.innerHTML=data.map(({r,alerts,total})=>{const pct=total>0?Math.round(alerts/total*100):0;return`<div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>${r.flag||'🌍'} ${esc(r.name)}</span><span style="font-family:ui-monospace,monospace;color:${pct>20?'var(--red)':pct>10?'var(--clay)':'var(--green)'}">${pct}%</span></div><div class="rhi-bar"><div style="height:100%;border-radius:3px;width:${pct}%;background:${pct>20?'var(--red)':pct>10?'var(--clay)':'var(--green)'}"></div></div></div>`}).join('')||'<div style="color:var(--text4);font-size:13px">No data.</div>';
+  }
+
+  // Region topics
+  const rt=document.getElementById('region-topics');
+  if(rt&&list.length){
+    rt.innerHTML=list.slice(0,4).map(r=>{
+      const rTags={};Object.values(posts).filter(p=>p&&!p._deleted&&p.region===r.code&&(Date.now()-p.ts)<7*86400000).forEach(p=>{((p.text||'').match(/#([\w]+)/g)||[]).forEach(m=>{const t=m.slice(1).toLowerCase();rTags[t]=(rTags[t]||0)+1})});
+      const top=Object.entries(rTags).sort((a,b)=>b[1]-a[1]).slice(0,4);
+      return`<div><div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:5px">${r.flag||'🌍'} ${esc(r.name)}</div><div style="display:flex;flex-wrap:wrap;gap:4px">${top.map(([t,c])=>`<span class="ht" onclick="showHashtag('${t}');switchTab('hashtags',document.querySelectorAll('.tab-btn')[1])">#${t}</span>`).join('')||'<span style="font-size:12px;color:var(--text4)">No hashtags</span>'}</div></div>`;
+    }).join('')
+  }
+}
+
+// ── PEOPLE ────────────────────────────────────────
+function renderPeopleTab(){
+  const myR=ls('loom-home-v3');
+  const myTags=new Set();Object.values(posts).filter(p=>p&&!p._deleted&&p.userId===ME.id).forEach(p=>{((p.text||'').match(/#(\w+)/g)||[]).forEach(t=>myTags.add(t.toLowerCase()))});
+
+  // Most active
+  const userMap={};Object.values(posts).filter(p=>p&&!p._deleted&&p.author&&p.author!=='Anonymous').forEach(p=>{const uid=p.userId;if(!userMap[uid])userMap[uid]={name:p.author,color:p.color,uid,posts:0,likes:0,rep:0};userMap[uid].posts++;userMap[uid].likes+=Object.values(p.likes||{}).filter(v=>v===true).length});
+  Object.values(userMap).forEach(u=>{u.rep=calcRep(u.uid);u.score=loomScore(u.uid)});
+  const top=Object.values(userMap).filter(u=>u.uid!==ME.id).sort((a,b)=>b.score-a.score).slice(0,20);
+
+  const pl=document.getElementById('people-list');
+  if(pl){pl.innerHTML=top.map(u=>{
+    const tier=getTier(u.rep);const isFlwd=follows.has(u.uid);
+    return`<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:10px">
+      <div class="av" style="width:36px;height:36px;font-size:11px;background:${u.color||'var(--clay)'};cursor:pointer" onclick="window.open('loom-profile.html?uid=${u.uid}&name='+encodeURIComponent('${esc(u.name)}'),'_self')">${ini(u.name)}</div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px;font-weight:600;color:var(--text)">${esc(u.name)}</span>
+          ${verifiedNames.has(u.name)?'<span class="bv-vf">✓</span>':''}
+          <span style="font-size:10px;font-weight:700;font-family:ui-monospace,monospace;padding:1px 5px;border-radius:3px;background:${tier.badge}22;color:${tier.badge}">${tier.short}</span>
+        </div>
+        <div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text4)">${u.posts} posts · ${u.likes} likes · Score ${u.score}</div>
+      </div>
+      <button onclick="toggleFollow('${u.uid}','${esc(u.name)}')" class="btn btn-ghost btn-xs btn-pill" style="color:${isFlwd?'var(--green)':'var(--text2)'}">${isFlwd?'Following':'Follow'}</button>
+    </div>`;
+  }).join('')||'<div style="color:var(--text4);font-size:13px">No community members yet.</div>'}
+
+  // People you might know
+  const cands=top.filter(u=>!follows.has(u.uid)).map(u=>{let s=0;if(myR&&Object.values(posts).some(p=>p&&p.userId===u.uid&&p.region===myR))s+=3;const uTags=new Set();Object.values(posts).filter(p=>p&&p.userId===u.uid).forEach(p=>{((p.text||'').match(/#(\w+)/g)||[]).forEach(t=>uTags.add(t.toLowerCase()))});myTags.forEach(t=>{if(uTags.has(t))s++});return{...u,sugScore:s}}).filter(u=>u.sugScore>0).sort((a,b)=>b.sugScore-a.sugScore).slice(0,6);
+
+  const sp=document.getElementById('sugg-people');
+  if(sp){sp.innerHTML=cands.map(u=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border2)">
+    <div class="av" style="width:28px;height:28px;font-size:9px;background:${u.color||'var(--clay)'}">${ini(u.name)}</div>
+    <span style="flex:1;font-size:13px;color:var(--text)">${esc(u.name)}</span>
+    <button onclick="toggleFollow('${u.uid}','${esc(u.name)}')" class="btn btn-ghost btn-xs">Follow</button>
+  </div>`).join('')||'<div style="color:var(--text4);font-size:13px">No suggestions yet.</div>'}
+
+  // New to Loom
+  const newUsers=Object.values(userMap).filter(u=>u.uid!==ME.id&&u.posts<3&&!follows.has(u.uid)).sort((a,b)=>b.posts-a.posts).slice(0,4);
+  const np=document.getElementById('new-people');
+  if(np){np.innerHTML=newUsers.map(u=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border2)">
+    <div class="av" style="width:28px;height:28px;font-size:9px;background:${u.color||'var(--clay)'}">${ini(u.name)}</div>
+    <div style="flex:1"><span style="font-size:13px;color:var(--text)">${esc(u.name)}</span><div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4)">New member</div></div>
+    <button onclick="toggleFollow('${u.uid}','${esc(u.name)}')" class="btn btn-ghost btn-xs">Follow</button>
+  </div>`).join('')||'<div style="color:var(--text4);font-size:13px">No new members.</div>'}
+}
+
+function toggleFollow(uid,name){
+  if(follows.has(uid)){follows.delete(uid);db.get('follows').get(ME.id).get(uid).put(null)}
+  else{follows.add(uid);db.get('follows').get(ME.id).get(uid).put(true)}
+  sl('loom-follows',JSON.stringify([...follows]));renderPeopleTab();
+}
+
+// ── SEARCH ────────────────────────────────────────
+var searchT=null;
+function onExploreSearch(v){
+  clearTimeout(searchT);if(!v.trim()){document.getElementById('search-results').style.display='none';document.getElementById('main-content').style.display='block';return}
+  searchT=setTimeout(()=>runSearch(v.trim()),300);
+}
+function runSearch(q){
+  document.getElementById('main-content').style.display='none';
+  const sr=document.getElementById('search-results');sr.style.display='block';
+  const ql=q.toLowerCase();
+
+  // Posts
+  const matchPosts=Object.values(posts).filter(p=>p&&!p._deleted&&((p.text||'').toLowerCase().includes(ql)||(p.author||'').toLowerCase().includes(ql))).sort((a,b)=>topScore(b)-topScore(a)).slice(0,10);
+  // Hashtags
+  const matchTags=getHashtags().filter(([t])=>t.includes(ql)).slice(0,8);
+  // Regions
+  const matchRegs=Object.values(regions).filter(r=>!r._deleted&&(r.name.toLowerCase().includes(ql)||r.code.toLowerCase().includes(ql))).slice(0,5);
+  // People
+  const matchPeople=[...new Map(Object.values(posts).filter(p=>p&&!p._deleted&&(p.author||'').toLowerCase().includes(ql)).map(p=>[p.userId,p])).values()].slice(0,6);
+
+  sr.innerHTML=`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+      <button onclick="document.getElementById('explore-search').value='';onExploreSearch('')" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text3)">←</button>
+      <h2 class="font-serif" style="font-size:22px">Results for "${esc(q)}"</h2>
+    </div>
+    ${matchTags.length?`<div style="margin-bottom:20px"><div class="sec-title">Hashtags</div><div style="display:flex;flex-wrap:wrap;gap:6px">${matchTags.map(([t,d])=>`<div class="ht-pill" onclick="showHashtag('${t}');document.getElementById('explore-search').value='';onExploreSearch('')">#${esc(t)} <span style="font-size:11px;opacity:.6">${d.count}</span></div>`).join('')}</div></div>`:''}
+    ${matchRegs.length?`<div style="margin-bottom:20px"><div class="sec-title">Regions</div><div style="display:flex;flex-direction:column;gap:6px">${matchRegs.map(r=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;cursor:pointer" onclick="window.open('loom.html','_self')"><span>${r.flag||'🌍'}</span><span style="font-size:14px;color:var(--text);font-weight:500">${esc(r.name)}</span><span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4)">${r.code}</span></div>`).join('')}</div></div>`:''}
+    ${matchPeople.length?`<div style="margin-bottom:20px"><div class="sec-title">People</div><div style="display:flex;flex-direction:column;gap:6px">${matchPeople.map(p=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--border);border-radius:8px"><div class="av" style="width:28px;height:28px;font-size:9px;background:${p.color||'var(--clay)'}">${ini(p.author||'?')}</div><span style="flex:1;font-size:14px;color:var(--text)">${esc(p.author)}</span><button onclick="toggleFollow('${p.userId}','${esc(p.author||'')}')" class="btn btn-ghost btn-xs">${follows.has(p.userId)?'Following':'Follow'}</button></div>`).join('')}</div></div>`:''}
+    ${matchPosts.length?`<div><div class="sec-title">Posts</div><div style="display:flex;flex-direction:column;gap:8px">${matchPosts.map(p=>renderPostCard(p,true)).join('')}</div></div>`:''}
+    ${!matchTags.length&&!matchRegs.length&&!matchPeople.length&&!matchPosts.length?`<div style="text-align:center;padding:60px 0;color:var(--text4)"><div style="font-size:28px;margin-bottom:10px">🔍</div><div style="font-size:15px">Nothing found for "${esc(q)}"</div></div>`:''}`;
+}
+
+// ── TABS ──────────────────────────────────────────
+var activeTab='trending';
+function switchTab(tab,btn){
+  activeTab=tab;
+  ['trending','hashtags','regions','sentiment','people'].forEach(t=>{const el=document.getElementById('tab-'+t);if(el)el.style.display='none'});
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById('tab-'+tab);if(el)el.style.display='block';
+  if(btn)btn.classList.add('active');
+  if(tab==='hashtags')renderHashtagsTab();
+  if(tab==='regions')renderRegionsTab();
+  if(tab==='sentiment')renderSentimentTab();
+  if(tab==='people')renderPeopleTab();
+  document.getElementById('main-content').style.display='block';
+  document.getElementById('search-results').style.display='none';
+  document.getElementById('explore-search').value='';
+}
+
+// ── DARK MODE ─────────────────────────────────────
+function toggleDark(){document.documentElement.classList.toggle('dark');const d=document.documentElement.classList.contains('dark');sl('loom-dark',d?'1':'0');document.getElementById('dark-ico').textContent=d?'☀️':'🌙'}
+if(ls('loom-dark')==='1'){document.documentElement.classList.add('dark');document.getElementById('dark-ico').textContent='☀️'}
+
+// Check URL params
+const params=new URLSearchParams(location.search);
+const initHT=params.get('ht');
+const initTab=params.get('tab');
+
+// Responsive grid
+function setResponsive(){
+  const w=window.innerWidth;
+  document.querySelectorAll('.trending-grid,.sentiment-grid').forEach(el=>{el.style.gridTemplateColumns=w<700?'1fr':'2fr 1fr'});
+}
+setResponsive();window.addEventListener('resize',setResponsive);
+
+setTimeout(()=>{
+  renderAll();
+  if(initHT){showHashtag(initHT);switchTab('hashtags',document.querySelectorAll('.tab-btn')[1])}
+  if(initTab){const tabs={trending:0,hashtags:1,regions:2,sentiment:3,people:4};const idx=tabs[initTab];if(idx!==undefined)switchTab(initTab,document.querySelectorAll('.tab-btn')[idx])}
+},600);
+
+document.addEventListener('click',function(e){const a=e.target.closest('a[href]');if(!a)return;const href=a.getAttribute('href');if(!href||href.startsWith('#')||href.startsWith('http')||a.target==='_blank')return;if(href.endsWith('.html')){e.preventDefault();document.body.style.opacity='0';document.body.style.transition='opacity .2s';setTimeout(()=>window.location.href=href,180)}});
+window.addEventListener('pageshow',()=>{document.body.style.opacity='';document.body.style.transition='';document.body.classList.add('page-fade');setTimeout(()=>document.body.classList.remove('page-fade'),300)});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loom — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fdfaf6;--surface:#fff;--surface2:#fdf4f1;--surface3:#f7f0e6;--border:#edddd0;--border2:#f7f0e6;--text:#271d14;--text2:#6b5744;--text3:#9c8070;--text4:#c4b5a3;--clay:#c1593a;--clay-l:#fdf4f1;--clay-m:#f2c4b4;--green:#1a7a4a;--red:#c13a3a}
+.dark{--bg:#120d08;--surface:#1c1208;--surface2:#261808;--surface3:#301f0a;--border:#3d2810;--border2:#2a1c08;--text:#f0e4d4;--text2:#c4a078;--text3:#8a6040;--text4:#503828;--clay:#d96f49;--clay-l:#2a1808;--clay-m:#4a2418}
+body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',system-ui,sans-serif;min-height:100vh}
+.font-serif{font-family:'Source Serif 4',Georgia,serif}
+nav{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:300}
+.nav-inner{max-width:900px;margin:0 auto;padding:0 16px;height:52px;display:flex;align-items:center;gap:12px}
+.inp{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 12px;font-size:13px;font-family:inherit;outline:none;width:100%;transition:border .15s}
+.inp:focus{border-color:var(--clay)}
+textarea.inp{resize:vertical;min-height:60px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .15s;text-decoration:none}
+.btn-clay{background:var(--clay);color:#fff}.btn-clay:hover{filter:brightness(1.08)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}.btn-ghost:hover{border-color:var(--clay);color:var(--clay)}
+.btn-red{background:transparent;border:1px solid var(--red);color:var(--red)}
+.btn-pill{border-radius:999px}.btn-sm{padding:5px 12px;font-size:12px}.btn-xs{padding:3px 8px;font-size:11px;border-radius:5px}
+.asec{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px}
+.atitle{font-size:11px;font-family:ui-monospace,monospace;text-transform:uppercase;letter-spacing:.1em;color:var(--text4);margin-bottom:12px;font-weight:600}
+.stat-row{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid var(--border2)}
+.stat-row:last-child{border-bottom:none}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+.page-fade{animation:pageFadeIn .25s ease}
+@keyframes pageFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="loom.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+        <rect x="3" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".3"/>
+        <rect x="9.5" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".55"/>
+        <rect x="16" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".3"/>
+        <rect x="3" y="4" width="20" height="3" rx="1.5" fill="var(--clay)"/>
+        <rect x="3" y="11.5" width="20" height="3" rx="1.5" fill="var(--clay)" opacity=".55"/>
+        <rect x="3" y="19" width="20" height="3" rx="1.5" fill="var(--clay)" opacity=".25"/>
+      </svg>
+      <span class="font-serif" style="font-size:20px;font-weight:600;color:var(--text);letter-spacing:-.3px">Loom</span>
+    </a>
+    <span style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);letter-spacing:.1em;text-transform:uppercase">Admin Console</span>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+      <button onclick="toggleDark()" style="background:transparent;border:1px solid var(--border);border-radius:8px;padding:6px 9px;cursor:pointer;font-size:14px"><span id="dark-ico">🌙</span></button>
+      <a href="loom.html" class="btn btn-ghost btn-sm btn-pill">← Feed</a>
+      <button id="nav-signout" onclick="adminOut()" style="display:none" class="btn btn-sm" style="color:var(--text3)">Sign out</button>
+    </div>
+  </div>
+</nav>
+
+<div style="max-width:900px;margin:0 auto;padding:24px 16px">
+
+  <!-- Auth gate -->
+  <div id="adm-auth">
+    <div style="max-width:380px;margin:60px auto;text-align:center">
+      <div style="font-size:36px;margin-bottom:16px">⚙</div>
+      <div class="font-serif" style="font-size:24px;color:var(--text);margin-bottom:6px">Admin Console</div>
+      <div style="font-size:13px;color:var(--text3);margin-bottom:24px">Altura Intelligence Systems · Loom Platform Administration</div>
+      <input type="password" id="adm-pass" class="inp" placeholder="Passphrase" style="margin-bottom:10px;text-align:center" onkeydown="if(event.key==='Enter')doAuth()">
+      <div id="adm-err" style="display:none;color:var(--red);font-size:12px;font-family:ui-monospace,monospace;margin-bottom:10px">Incorrect passphrase.</div>
+      <button onclick="doAuth()" class="btn btn-clay" style="width:100%">Authenticate</button>
+      <div style="margin-top:16px;font-size:11px;font-family:ui-monospace,monospace;color:var(--text4)">Access is logged. Unauthorised attempts are reported to Altura Internal Security.</div>
+    </div>
+  </div>
+
+  <!-- Admin content -->
+  <div id="adm-content" style="display:none">
+
+    <!-- Stats bar -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px">
+      <div class="asec" style="text-align:center;padding:14px">
+        <div style="font-size:24px;font-weight:700;font-family:ui-monospace,monospace;color:var(--clay)" id="a-posts">—</div>
+        <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase;letter-spacing:.06em;margin-top:3px">Posts</div>
+      </div>
+      <div class="asec" style="text-align:center;padding:14px">
+        <div style="font-size:24px;font-weight:700;font-family:ui-monospace,monospace;color:var(--clay)" id="a-regions">—</div>
+        <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase;letter-spacing:.06em;margin-top:3px">Regions</div>
+      </div>
+      <div class="asec" style="text-align:center;padding:14px">
+        <div style="font-size:24px;font-weight:700;font-family:ui-monospace,monospace;color:var(--clay)" id="a-rpts">—</div>
+        <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase;letter-spacing:.06em;margin-top:3px">Reports</div>
+      </div>
+      <div class="asec" style="text-align:center;padding:14px">
+        <div style="font-size:24px;font-weight:700;font-family:ui-monospace,monospace;color:var(--clay)" id="a-partners-ct">—</div>
+        <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase;letter-spacing:.06em;margin-top:3px">Partners</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+
+      <!-- LEFT COLUMN -->
+      <div>
+
+        <!-- Site alert banner -->
+        <div class="asec">
+          <div class="atitle">Site alert banner</div>
+          <select id="a-at" class="inp" style="margin-bottom:8px">
+            <option value="">No alert</option>
+            <option value="info">Info</option>
+            <option value="warn">Warning</option>
+            <option value="crit">Critical</option>
+          </select>
+          <textarea id="a-att" class="inp" placeholder="Alert text…" rows="2" style="margin-bottom:8px"></textarea>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);margin-bottom:10px;cursor:pointer">
+            <input type="checkbox" id="a-adism" checked style="accent-color:var(--clay)"> Dismissible by users
+          </label>
+          <button onclick="saveAlert()" class="btn btn-clay btn-sm" style="width:100%">Save banner</button>
+        </div>
+
+        <!-- Broadcast announcement -->
+        <div class="asec">
+          <div class="atitle">Broadcast announcement</div>
+          <input type="text" id="a-bcn" class="inp" placeholder="Sender name (e.g. Loom Admin)" style="margin-bottom:8px">
+          <textarea id="a-bct" class="inp" placeholder="Announcement text…" rows="3" style="margin-bottom:8px"></textarea>
+          <select id="a-bcr" class="inp" style="margin-bottom:8px"><option value="">Global (all regions)</option></select>
+          <input type="datetime-local" id="a-bcs" class="inp" style="margin-bottom:10px">
+          <button onclick="broadcast()" class="btn btn-clay btn-sm" style="width:100%">Send broadcast</button>
+        </div>
+
+        <!-- Moderation queue -->
+        <div class="asec">
+          <div class="atitle">Post search &amp; edit</div>
+          <div style="display:flex;gap:6px;margin-bottom:10px">
+            <input type="text" id="a-post-search" class="inp" placeholder="Search posts by text or author…" style="font-size:12px">
+            <button onclick="searchPosts()" class="btn btn-ghost btn-sm" style="flex-shrink:0">Search</button>
+          </div>
+          <div id="a-post-results"></div>
+        </div>
+        <div class="asec">
+          <div class="atitle">Reported posts</div>
+          <div id="a-modq"><div style="font-size:12px;color:var(--text4)">No reports.</div></div>
+        </div>
+
+        <!-- Verified partners -->
+        <div class="asec">
+          <div class="atitle">Verified partners</div>
+          <div id="a-partners-list" style="margin-bottom:12px"></div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px">
+            <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Add partner</div>
+            <input type="text" id="a-pl" class="inp" placeholder="Label (e.g. HHS Emergency Office)" style="margin-bottom:6px">
+            <input type="text" id="a-pa" class="inp" placeholder="Post author name" style="margin-bottom:6px">
+            <div style="display:flex;gap:6px;margin-bottom:8px">
+              <input type="text" id="a-pi" class="inp" placeholder="Icon emoji" style="width:70px;text-align:center;font-size:18px">
+              <select id="a-pc" class="inp">
+                <option value="default">Default</option>
+                <option value="hhs">HHS (blue)</option>
+                <option value="proxima">Proxima (red)</option>
+                <option value="nrc">Government (green)</option>
+                <option value="salt-lake">Salt Lake (brown)</option>
+              </select>
+            </div>
+            <button onclick="addPartner()" class="btn btn-clay btn-sm" style="width:100%">Add partner</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div>
+
+        <!-- Regions -->
+        <div class="asec">
+          <div class="atitle">Regions</div>
+          <div id="a-rlist" style="margin-bottom:12px"></div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px">
+            <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Add region</div>
+            <div style="display:flex;gap:6px;margin-bottom:6px">
+              <input type="text" id="a-rn" class="inp" placeholder="Name">
+              <input type="text" id="a-rc" class="inp" placeholder="Code" style="width:80px">
+            </div>
+            <div style="display:flex;gap:6px;margin-bottom:8px">
+              <input type="text" id="a-rf" class="inp" placeholder="Flag emoji" style="width:70px;text-align:center">
+              <select id="a-rs" class="inp"><option value="normal">Normal</option><option value="elevated">Elevated</option><option value="active">Active</option><option value="critical">Critical</option><option value="closed">Closed</option></select>
+              <input type="text" id="a-rg" class="inp" placeholder="Group">
+            </div>
+            <button onclick="addRegion()" class="btn btn-clay btn-sm" style="width:100%">Add region</button>
+          </div>
+        </div>
+
+        <!-- Verified names -->
+        <div class="asec">
+          <div class="atitle">Verified names</div>
+          <textarea id="a-verif" class="inp" placeholder="One name per line" rows="4" style="margin-bottom:8px"></textarea>
+          <button onclick="saveVerif()" class="btn btn-ghost btn-sm" style="width:100%">Save</button>
+        </div>
+
+        <!-- Trusted voices -->
+        <div class="asec">
+          <div class="atitle">Trusted voices</div>
+          <textarea id="a-trusted" class="inp" placeholder="One name per line" rows="3" style="margin-bottom:8px"></textarea>
+          <button onclick="saveTrusted()" class="btn btn-ghost btn-sm" style="width:100%">Save</button>
+        </div>
+
+        <!-- Banned words -->
+        <div class="asec">
+          <div class="atitle">Banned words (platform-wide)</div>
+          <textarea id="a-banned" class="inp" placeholder="Comma-separated…" rows="2" style="margin-bottom:8px"></textarea>
+          <button onclick="saveBanned()" class="btn btn-ghost btn-sm" style="width:100%">Save</button>
+        </div>
+
+        <!-- Welcome message -->
+        <div class="asec">
+          <div class="atitle">Onboarding welcome message</div>
+          <textarea id="a-welcome" class="inp" placeholder="Shown during onboarding…" rows="2" style="margin-bottom:8px"></textarea>
+          <button onclick="saveWelcome()" class="btn btn-ghost btn-sm" style="width:100%">Save</button>
+        </div>
+
+        <!-- Rate limit -->
+        <div class="asec">
+          <div class="atitle">Post rate limit (per hour)</div>
+          <div style="display:flex;gap:8px">
+            <input type="number" id="a-rl" class="inp" value="20" min="1" max="200">
+            <button onclick="saveRL()" class="btn btn-ghost btn-sm" style="flex-shrink:0">Save</button>
+          </div>
+        </div>
+
+        <!-- Security -->
+        <div class="asec">
+          <div class="atitle">Change admin passphrase</div>
+          <div style="display:flex;gap:8px;margin-bottom:10px">
+            <input type="password" id="a-np" class="inp" placeholder="New passphrase (min 8 chars)">
+            <button onclick="changePass()" class="btn btn-ghost btn-sm" style="flex-shrink:0">Change</button>
+          </div>
+          <button onclick="adminOut()" class="btn btn-ghost btn-sm" style="width:100%;color:var(--text3)">Sign out of admin</button>
+        </div>
+
+        <!-- Data -->
+        <div class="asec">
+          <div class="atitle">Data</div>
+          <button onclick="exportFeed()" class="btn btn-ghost btn-sm" style="width:100%;margin-bottom:6px">Export feed JSON</button>
+          <button onclick="nukeDemo()" class="btn btn-sm btn-red" style="width:100%">Clear all demo data</button>
+        </div>
+        <div class="asec" style="border-color:var(--red)">
+          <div class="atitle" style="color:var(--red)">Account management</div>
+          <div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text4);margin-bottom:10px;line-height:1.6">Issue penalties, restrictions, bans, and permanent deletions. Actions are logged and may be shared with Altura Internal Security.</div>
+          <div style="display:flex;gap:6px;margin-bottom:10px">
+            <input type="text" id="acct-search" class="inp" placeholder="Search by name or user ID…" style="font-size:12px">
+            <button onclick="searchAccounts()" class="btn btn-ghost btn-sm" style="flex-shrink:0">Search</button>
+          </div>
+          <div id="acct-results" style="margin-bottom:12px"></div>
+          <div id="penalty-form" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
+            <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Issue penalty</div>
+            <div id="penalty-target" style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px"></div>
+            <div style="margin-bottom:8px">
+              <label style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em">Action</label>
+              <select id="p-level" class="inp" style="font-size:12px" onchange="onLevelChange()">
+                <option value="restricted">Restrict — posting/commenting disabled, account accessible</option>
+                <option value="suspended">Suspend — account inaccessible, temporary</option>
+                <option value="shadowban">Shadowban — posts hidden from others, user unaware</option>
+                <option value="banned">Permanent ban — account inaccessible, permanent</option>
+                <option value="deleted">Delete — all posts removed, account permanently closed</option>
+                <option value="active">Lift all penalties — restore to active</option>
+              </select>
+            </div>
+            <div style="margin-bottom:8px">
+              <label style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em">Reason code</label>
+              <select id="p-reason-code" class="inp" style="font-size:12px" onchange="onReasonCodeChange()">
+                <option value="">Select reason…</option>
+                <option value="Violation of Emergency Information Management Act 2015 §7">EIMA 2015 §7 — Prohibited content</option>
+                <option value="Prohibited health misinformation">Prohibited health misinformation</option>
+                <option value="Coordinated inauthentic behaviour">Coordinated inauthentic behaviour</option>
+                <option value="Undermining public confidence in emergency response measures">Undermining emergency response confidence</option>
+                <option value="Harassment or targeted abuse">Harassment or targeted abuse</option>
+                <option value="Impersonation of a verified partner or official">Impersonation of official account</option>
+                <option value="Repeated community guidelines violations">Repeated community guidelines violations</option>
+                <option value="Internal security referral">Internal security referral</option>
+                <option value="custom">Custom reason…</option>
+              </select>
+            </div>
+            <div id="p-reason-custom-wrap" style="display:none;margin-bottom:8px">
+              <input type="text" id="p-reason-custom" class="inp" placeholder="Enter reason…" style="font-size:12px">
+            </div>
+            <div id="p-message-wrap" style="margin-bottom:8px">
+              <label style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em">Message to user (shown on ban screen)</label>
+              <textarea id="p-message" class="inp" rows="3" style="font-size:12px" placeholder="Optional custom message shown to the user on the ban screen…"></textarea>
+            </div>
+            <div id="p-duration-wrap" style="margin-bottom:8px">
+              <label style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em">Duration</label>
+              <select id="p-duration" class="inp" style="font-size:12px">
+                <option value="0">Permanent / indefinite</option>
+                <option value="1">1 day</option>
+                <option value="3">3 days</option>
+                <option value="7">7 days</option>
+                <option value="14">14 days</option>
+                <option value="30">30 days</option>
+                <option value="90">90 days</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:6px;margin-bottom:10px">
+              <label style="font-size:12px;color:var(--text2);display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" id="p-nrc" style="accent-color:var(--red)"> Share with Altura Internal Security</label>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button onclick="issuePenalty()" class="btn btn-clay btn-sm" style="flex:1">Issue penalty</button>
+              <button onclick="document.getElementById('penalty-form').style.display='none'" class="btn btn-ghost btn-sm">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div><!-- /adm-content -->
+</div>
+
+<script>
+'use strict';
+const NS='loom-global-v3';
+const gun=GUN(['https://gun-manhattan.herokuapp.com/gun','https://peer.wallie.io/gun']);
+const db=gun.get(NS);
+
+// ── ACCOUNT STATUS (Altura Moderation System) ────────────────────────────────
+var __acctStatus = null;
+(function(){
+  var _uid = localStorage.getItem('loom-id-v3');
+  if(!_uid) return;
+  db.get('account-status').get(_uid).on(function(status){
+    if(!status || status._ ) {
+      // Gun.js metadata only — no real status set
+      if(status && Object.keys(status).filter(k=>k!=='_').length === 0) return;
+    }
+    if(!status || !status.level || status.level === 'active') return;
+    __acctStatus = status;
+    if(status.level === 'shadowban') return; // silent — don't show anything to user
+    renderAccountStatusScreen(status);
+  });
+  // Also sync restrictions for posting checks
+  db.get('account-restrictions').get(_uid).on(function(r){
+    if(!r) return;
+    window.__restrictions = r;
+  });
+})();
+
+function renderAccountStatusScreen(status){
+  // Remove existing if present
+  var ex = document.getElementById('__ban-screen');
+  if(ex) ex.remove();
+
+  var level = status.level || 'suspended';
+  var cfg = {
+    restricted: {
+      title: 'Account Restricted',
+      icon: '⚠',
+      color: '#8a7000',
+      bg: '#fffde0',
+      border: '#d4c000',
+      desc: 'Your account has been restricted. Some features are unavailable.',
+      badge: 'RESTRICTED',
+      badgeBg: '#fffde0',
+      badgeColor: '#8a7000',
+      dismissable: false,
+      overlay: false,
+    },
+    suspended: {
+      title: 'Account Suspended',
+      icon: '🚫',
+      color: '#c13a3a',
+      bg: '#fdf4f1',
+      border: '#c1593a',
+      desc: 'Your account has been suspended. You cannot access Loom at this time.',
+      badge: 'SUSPENDED',
+      badgeBg: '#f0e8e8',
+      badgeColor: '#c13a3a',
+      dismissable: false,
+      overlay: true,
+    },
+    banned: {
+      title: 'Account Banned',
+      icon: '🔴',
+      color: '#6b0000',
+      bg: '#fdf4f1',
+      border: '#6b0000',
+      desc: 'Your account has been permanently banned from Loom.',
+      badge: 'PERMANENTLY BANNED',
+      badgeBg: '#f0e8e8',
+      badgeColor: '#6b0000',
+      dismissable: false,
+      overlay: true,
+    },
+    deleted: {
+      title: 'Account Deleted',
+      icon: '⬛',
+      color: '#271d14',
+      bg: '#fdfaf6',
+      border: '#edddd0',
+      desc: 'This account has been permanently deleted.',
+      badge: 'DELETED',
+      badgeBg: '#f7f0e6',
+      badgeColor: '#9c8070',
+      dismissable: false,
+      overlay: true,
+    },
+  };
+
+  var c = cfg[level] || cfg.suspended;
+  var ref = status.reference || ('ACS-' + (status.issuedAt||Date.now()).toString(36).toUpperCase());
+  var issuedDate = status.issuedAt ? new Date(status.issuedAt).toLocaleDateString('en', {year:'numeric',month:'long',day:'numeric'}) : 'Unknown date';
+  var expiresStr = '';
+  if(status.expiresAt && status.expiresAt > Date.now()) {
+    var rem = status.expiresAt - Date.now();
+    var days = Math.ceil(rem / 86400000);
+    expiresStr = days > 1 ? 'Expires in ' + days + ' days (' + new Date(status.expiresAt).toLocaleDateString('en',{month:'long',day:'numeric',year:'numeric'}) + ')' : 'Expires today';
+  } else if(status.expiresAt && status.expiresAt <= Date.now()) {
+    // Ban has expired — clear screen
+    document.getElementById('__ban-screen') && document.getElementById('__ban-screen').remove();
+    return;
+  } else if(!status.expiresAt && level !== 'restricted') {
+    expiresStr = 'This action is permanent.';
+  }
+
+  var screen = document.createElement('div');
+  screen.id = '__ban-screen';
+  screen.style.cssText = c.overlay
+    ? 'position:fixed;inset:0;background:rgba(253,250,246,.97);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;font-family:\'Source Sans 3\',system-ui,sans-serif;overflow-y:auto'
+    : 'position:sticky;top:52px;z-index:900;padding:12px 16px;background:' + c.bg + ';border-bottom:2px solid ' + c.border + ';font-family:\'Source Sans 3\',system-ui,sans-serif;display:flex;align-items:center;gap:12px';
+
+  if(c.overlay) {
+    screen.innerHTML = '<div style="max-width:520px;width:100%;text-align:center">' +
+      // Loom logo
+      '<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:32px;opacity:.4">' +
+        '<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="3" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".3"/><rect x="9.5" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".55"/><rect x="16" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".3"/><rect x="3" y="4" width="20" height="3" rx="1.5" fill="#c1593a"/><rect x="3" y="11.5" width="20" height="3" rx="1.5" fill="#c1593a" opacity=".55"/><rect x="3" y="19" width="20" height="3" rx="1.5" fill="#c1593a" opacity=".25"/></svg>' +
+        '<span style="font-family:\'Source Serif 4\',Georgia,serif;font-size:20px;font-weight:600;color:#271d14">Loom</span>' +
+      '</div>' +
+      '<div style="font-size:48px;margin-bottom:16px">' + c.icon + '</div>' +
+      '<span style="display:inline-flex;align-items:center;padding:3px 12px;border-radius:4px;font-size:11px;font-weight:700;font-family:ui-monospace,monospace;letter-spacing:.08em;background:' + c.badgeBg + ';color:' + c.badgeColor + ';margin-bottom:16px">' + c.badge + '</span>' +
+      '<h1 style="font-family:\'Source Serif 4\',Georgia,serif;font-size:28px;font-weight:600;color:#271d14;margin-bottom:10px">' + c.title + '</h1>' +
+      '<p style="font-size:15px;color:#6b5744;line-height:1.7;margin-bottom:20px">' + c.desc + '</p>' +
+      // Custom message
+      (status.message ? '<div style="background:#fff;border:1px solid #edddd0;border-radius:10px;padding:16px 20px;margin-bottom:20px;text-align:left"><div style="font-size:12px;font-family:ui-monospace,monospace;color:#9c8070;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Message from Altura Community Standards</div><div style="font-size:14px;color:#271d14;line-height:1.7">' + (status.message||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div></div>' : '') +
+      // Details
+      '<div style="background:#f7f0e6;border:1px solid #edddd0;border-radius:10px;padding:16px 20px;margin-bottom:20px;text-align:left;display:flex;flex-direction:column;gap:8px">' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Reference</span><span style="font-family:ui-monospace,monospace;font-weight:700;color:#271d14">' + ref + '</span></div>' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Issued</span><span style="color:#271d14">' + issuedDate + '</span></div>' +
+        (status.reason ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Reason</span><span style="color:#271d14;text-align:right;max-width:70%">' + (status.reason||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span></div>' : '') +
+        (expiresStr ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Duration</span><span style="color:#271d14">' + expiresStr + '</span></div>' : '') +
+        (status.issuedBy ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Issued by</span><span style="color:#271d14">' + (status.issuedBy||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span></div>' : '') +
+        (status.sharedWithAltura ? '<div style="font-size:12px;font-family:ui-monospace,monospace;color:#c13a3a;margin-top:4px">This action has been shared with Altura Internal Security Directorate.</div>' : '') +
+      '</div>' +
+      '<div style="font-size:12px;font-family:ui-monospace,monospace;color:#c4b5a3;line-height:1.7;margin-bottom:20px">This action has been recorded in your compliance history. If you believe this decision was made in error, you may submit a dispute to the Altura Internal Review Board within 30 days. Altura does not guarantee review timelines during active national emergency periods.</div>' +
+      '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
+        (level !== 'banned' && level !== 'deleted' ? '<a href="loom-settings.html" style="padding:10px 20px;background:transparent;border:1px solid #edddd0;border-radius:8px;font-size:13px;font-weight:600;color:#6b5744;text-decoration:none">View compliance history</a>' : '') +
+        '<a href="loom-appeals.html" style="padding:10px 20px;background:transparent;border:1px solid #edddd0;border-radius:8px;font-size:13px;font-weight:600;color:#6b5744;text-decoration:none">Submit dispute</a>' +
+      '</div>' +
+      '<div style="margin-top:20px;font-size:11px;font-family:ui-monospace,monospace;color:#c4b5a3">Loom · Altura Intelligence Systems · Community Standards Directorate<br>Emergency Information Management Act 2015 · Reference: ' + ref + '</div>' +
+    '</div>';
+  } else {
+    // Restricted — banner mode (not full overlay, content still visible)
+    screen.innerHTML = '<span style="font-size:18px">' + c.icon + '</span>' +
+      '<div style="flex:1"><strong style="color:' + c.color + '">' + c.title + '</strong> — ' +
+      (status.message || c.desc) +
+      ' <span style="font-family:ui-monospace,monospace;font-size:11px;color:#9c8070">Ref: ' + ref + '</span></div>' +
+      '<a href="loom-settings.html" style="font-size:12px;font-weight:600;color:' + c.color + ';text-decoration:none;flex-shrink:0">Details →</a>';
+  }
+
+  // Insert: overlay goes on body, banner goes after nav
+  if(c.overlay) {
+    document.body.appendChild(screen);
+    // Freeze scrolling
+    document.body.style.overflow = 'hidden';
+  } else {
+    var nav = document.querySelector('nav');
+    if(nav && nav.nextSibling) nav.parentNode.insertBefore(screen, nav.nextSibling);
+    else document.body.prepend(screen);
+  }
+
+  // Expiry countdown timer
+  if(status.expiresAt && status.expiresAt > Date.now()) {
+    setInterval(function(){
+      if(Date.now() >= status.expiresAt) {
+        var el = document.getElementById('__ban-screen');
+        if(el) el.remove();
+        document.body.style.overflow = '';
+      }
+    }, 60000);
+  }
+}
+
+// Restriction check for posting actions
+function __checkCanPost(){
+  var r = window.__restrictions;
+  if(!r || r.posting !== false) return true;
+  var ref = __acctStatus && __acctStatus.reference ? __acctStatus.reference : '';
+  if(typeof flash === 'function') flash('Your account has been restricted. Ref: ' + ref);
+  return false;
+}
+function __checkCanComment(){
+  var r = window.__restrictions;
+  if(!r || r.commenting !== false) return true;
+  if(typeof flash === 'function') flash('Commenting has been restricted on your account.');
+  return false;
+}
+function __checkCanPetition(){
+  var r = window.__restrictions;
+  if(!r || r.petitions !== false) return true;
+  if(typeof flash === 'function') flash('Petition signing has been restricted on your account.');
+  return false;
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
+const PARTNER_COLORS={hhs:'#1a5a8a',proxima:'#8a1a2a',nrc:'#2a4a1a','salt-lake':'#5a3a1a',default:'#2a6a5a'};
+
+function ls(k){return localStorage.getItem(k)}
+function sl(k,v){localStorage.setItem(k,v)}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function ago(ts){const d=Date.now()-(ts||0);if(d<60000)return'just now';if(d<3600000)return Math.floor(d/60000)+'m ago';if(d<86400000)return Math.floor(d/3600000)+'h ago';return new Date(ts).toLocaleDateString()}
+function flash(msg){let el=document.getElementById('flash-msg');if(!el){el=document.createElement('div');el.id='flash-msg';el.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--clay);color:#fff;padding:10px 22px;border-radius:20px;font-size:13px;font-weight:600;z-index:9999;pointer-events:none;transition:opacity .3s;white-space:nowrap';document.body.appendChild(el)}el.textContent=msg;el.style.opacity='1';clearTimeout(window._ft);window._ft=setTimeout(()=>el.style.opacity='0',2800)}
+
+var posts={},regions={},config={},reports={},partners={};
+var adminAuthed=false;
+
+// Gun sync — admin needs full read access
+db.get('posts').map().on(function(d,id){if(!d||d._deleted)delete posts[id];else posts[id]=d;updateAdmStats();renderModQ()});
+db.get('regions').map().on(function(d,id){if(!d||d._deleted)delete regions[id];else regions[id]=d;renderAdminRegions();fillBCRegion()});
+db.get('config').on(function(d){if(!d)return;config=d;fillAdminFields()});
+db.get('reports').map().on(function(d,id){if(d&&d.postId)reports[id]=d;renderModQ()});
+db.get('partners').map().on(function(d,id){if(!d||d._deleted)delete partners[id];else partners[id]=d;renderPartnerAdmin();updatePartnerCount()});
+
+// ── AUTH ──────────────────────────────────────────
+function hashP(p){return btoa(p+'_loom_salt_v3')}
+function doAuth(){
+  const v=document.getElementById('adm-pass').value;
+  const stored=config.passHash||hashP('altura2016');
+  if(hashP(v)===stored){
+    adminAuthed=true;
+    sl('loom-admin-auth','1');sl('loom-admin-ts',Date.now().toString());
+    document.getElementById('adm-auth').style.display='none';
+    document.getElementById('adm-content').style.display='block';
+    document.getElementById('nav-signout').style.display='inline-flex';
+    document.getElementById('adm-pass').value='';
+    updateAdmStats();renderModQ();renderPartnerAdmin();renderAdminRegions();
+    flash('Authenticated. Session active.');
+  } else {
+    document.getElementById('adm-err').style.display='block';
+  }
+}
+function adminOut(){
+  adminAuthed=false;sl('loom-admin-auth','0');
+  document.getElementById('adm-auth').style.display='block';
+  document.getElementById('adm-content').style.display='none';
+  document.getElementById('nav-signout').style.display='none';
+  flash('Signed out.');
+}
+// Check if already authed (session within 8 hours)
+function checkSession(){
+  const authed=ls('loom-admin-auth')==='1';
+  const ts=parseInt(ls('loom-admin-ts')||'0');
+  if(authed&&Date.now()-ts<8*3600000){
+    adminAuthed=true;
+    document.getElementById('adm-auth').style.display='none';
+    document.getElementById('adm-content').style.display='block';
+    document.getElementById('nav-signout').style.display='inline-flex';
+  }
+}
+
+// ── STATS ─────────────────────────────────────────
+function updateAdmStats(){
+  const ap=document.getElementById('a-posts');if(ap)ap.textContent=Object.values(posts).filter(p=>p&&!p._deleted).length;
+  const ar=document.getElementById('a-regions');if(ar)ar.textContent=Object.values(regions).filter(r=>!r._deleted).length;
+  const ar2=document.getElementById('a-rpts');if(ar2)ar2.textContent=Object.keys(reports).length;
+}
+function updatePartnerCount(){const el=document.getElementById('a-partners-ct');if(el)el.textContent=Object.values(partners).filter(p=>p&&!p._deleted).length}
+
+// ── FILL FIELDS ───────────────────────────────────
+function fillAdminFields(){
+  const f=(id,val)=>{const e=document.getElementById(id);if(e&&val!==undefined)e.value=val};
+  f('a-at',config.alertType);f('a-att',config.alertText);f('a-verif',config.verified);
+  f('a-banned',config.banned);f('a-trusted',config.trusted);f('a-welcome',config.welcomeMsg);f('a-rl',config.rateLimit||20);
+  const ad=document.getElementById('a-adism');if(ad)ad.checked=config.alertDismiss!==false;
+}
+function fillBCRegion(){
+  const s=document.getElementById('a-bcr');if(!s)return;
+  const list=Object.values(regions).filter(r=>!r._deleted).sort((a,b)=>a.name.localeCompare(b.name));
+  const cv=s.value;s.innerHTML='<option value="">Global (all regions)</option>'+list.map(r=>`<option value="${r.code}">${r.flag||''} ${esc(r.name)}</option>`).join('');
+  if(cv)s.value=cv;
+}
+
+// ── ALERT BANNER ──────────────────────────────────
+function saveAlert(){
+  db.get('config').put({alertType:(document.getElementById('a-at').value)||'',alertText:(document.getElementById('a-att').value||'').trim(),alertDismiss:(document.getElementById('a-adism').checked)});
+  flash('Alert banner saved.');
+}
+
+// ── BROADCAST ─────────────────────────────────────
+function broadcast(){
+  const text=(document.getElementById('a-bct').value||'').trim();const name=(document.getElementById('a-bcn').value||'Loom Admin').trim();const region=(document.getElementById('a-bcr').value)||'';
+  if(!text){flash('Enter broadcast text.');return}
+  const id='ann'+Date.now().toString(36);
+  const post={id,text,category:'announce',region,author:name,color:'#2a6a5a',userId:'system',ts:Date.now(),verified:true,likes:{},reactions:{},comments:{},votes:{}};
+  const sched=(document.getElementById('a-bcs').value)||'';
+  if(sched){const d=new Date(sched).getTime()-Date.now();if(d>0){setTimeout(()=>db.get('posts').get(id).put(post),d);flash('Scheduled for '+sched);document.getElementById('a-bcs').value='';document.getElementById('a-bct').value='';return}}
+  db.get('posts').get(id).put(post);document.getElementById('a-bct').value='';flash('Broadcast sent.');
+}
+
+// ── MODERATION QUEUE ──────────────────────────────
+function renderModQ(){
+  if(!adminAuthed)return;
+  const el=document.getElementById('a-modq');if(!el)return;
+  const reps=Object.values(reports).filter(r=>r&&r.postId&&posts[r.postId]&&!posts[r.postId]._deleted);
+  if(!reps.length){el.innerHTML='<div style="font-size:12px;color:var(--text4)">No reports.</div>';return}
+  el.innerHTML=reps.map(r=>{
+    const p=posts[r.postId];if(!p)return'';
+    return`<div style="padding:8px;background:var(--surface2);border-radius:6px;border:1px solid var(--border);margin-bottom:6px">
+      <div style="font-size:12px;color:var(--text);margin-bottom:3px;font-weight:500">${esc((p.text||'').slice(0,80))}${p.text&&p.text.length>80?'…':''}</div>
+      <div style="font-size:10px;color:var(--text4);font-family:ui-monospace,monospace;margin-bottom:6px">by ${esc(p.author||'?')} · ${ago(p.ts)}</div>
+      <div style="display:flex;gap:4px">
+        <button onclick="adminDel('${r.postId}')" class="btn btn-xs btn-red">Remove post</button>
+        <button onclick="adminReview('${r.postId}',true)" class="btn btn-ghost btn-xs" style="font-size:10px">Flag for review</button>
+        <button onclick="dismissReport('${r.postId}')" class="btn btn-ghost btn-xs" style="font-size:10px">Dismiss report</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function adminDel(id){if(!confirm('Delete this post?'))return;db.get('posts').get(id).put({_deleted:true,id});flash('Post deleted.')}
+function adminPin(id,pin){db.get('posts').get(id).get('pinned').put(pin||null);flash(pin?'Pinned.':'Unpinned.')}
+function adminReview(id,flag){db.get('posts').get(id).get('underReview').put(flag||null);flash(flag?'Post flagged for review.':'Review flag cleared.')}
+function dismissReport(id){db.get('reports').get(id).put({_deleted:true,postId:''});flash('Report dismissed.')}
+
+// ── PARTNERS ──────────────────────────────────────
+function renderPartnerAdmin(){
+  if(!adminAuthed)return;
+  const el=document.getElementById('a-partners-list');if(!el)return;
+  const list=Object.values(partners).filter(p=>p&&!p._deleted);
+  if(!list.length){el.innerHTML='<div style="font-size:12px;color:var(--text4);margin-bottom:8px">No verified partners configured.</div>';return}
+  el.innerHTML=list.map(p=>`<div style="padding:10px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);margin-bottom:8px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <span style="font-size:16px">${p.icon||'🏛'}</span>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">${esc(p.label)}</div><div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4)">${esc(p.authorName||'')} · ${p.colorKey||'default'}</div></div>
+      <button onclick="deletePartner('${p.id}')" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:18px">×</button>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+      <label style="font-size:12px;color:var(--text2);display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" ${p.promoted?'checked':''} onchange="db.get('partners').get('${p.id}').get('promoted').put(this.checked)" style="accent-color:var(--clay)"> Promoted in all feeds</label>
+    </div>
+    <div style="border-top:1px solid var(--border2);padding-top:8px">
+      <div style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Emergency Broadcast</div>
+      <label style="font-size:12px;color:var(--text2);display:flex;align-items:center;gap:4px;cursor:pointer;margin-bottom:6px"><input type="checkbox" ${p.broadcastActive?'checked':''} onchange="db.get('partners').get('${p.id}').get('broadcastActive').put(this.checked);db.get('partners').get('${p.id}').get('broadcastTs').put(Date.now())" style="accent-color:var(--red)"> Active broadcast</label>
+      <input type="text" class="inp" placeholder="Broadcast message…" value="${esc(p.broadcastText||'')}" style="font-size:12px;margin-bottom:6px" onchange="db.get('partners').get('${p.id}').get('broadcastText').put(this.value)">
+      <input type="text" class="inp" placeholder="Post-view survey question (optional)" value="${esc(p.broadcastSurvey||'')}" style="font-size:12px" onchange="db.get('partners').get('${p.id}').get('broadcastSurvey').put(this.value)">
+    </div>
+  </div>`).join('');
+}
+function addPartner(){
+  const label=(document.getElementById('a-pl').value||'').trim();if(!label){flash('Label required.');return}
+  const author=(document.getElementById('a-pa').value||'').trim();const icon=(document.getElementById('a-pi').value||'🏛').trim();const colorKey=document.getElementById('a-pc').value||'default';
+  const id='partner_'+Date.now().toString(36);
+  db.get('partners').get(id).put({id,label,authorName:author,icon,colorKey,promoted:false,broadcastActive:false,broadcastText:'',broadcastSurvey:'',broadcastTs:0});
+  document.getElementById('a-pl').value='';document.getElementById('a-pa').value='';document.getElementById('a-pi').value='';
+  flash('Partner added: '+label);
+}
+function deletePartner(id){if(!confirm('Remove this partner?'))return;db.get('partners').get(id).put({_deleted:true,id});flash('Partner removed.')}
+
+// ── REGIONS ───────────────────────────────────────
+function addRegion(){
+  const name=(document.getElementById('a-rn').value||'').trim();const code=(document.getElementById('a-rc').value||'').trim().toUpperCase();
+  if(!name||!code){flash('Name and code required.');return}
+  const flag=document.getElementById('a-rf').value.trim();const status=document.getElementById('a-rs').value;const group=(document.getElementById('a-rg').value||'').trim();
+  const rid='reg_'+code.toLowerCase();
+  db.get('regions').get(rid).put({id:rid,name,code,flag,status,group});
+  document.getElementById('a-rn').value='';document.getElementById('a-rc').value='';document.getElementById('a-rf').value='';document.getElementById('a-rg').value='';
+  flash(code+' added.');
+}
+function renderAdminRegions(){
+  if(!adminAuthed)return;
+  const el=document.getElementById('a-rlist');if(!el)return;
+  const list=Object.values(regions).filter(r=>!r._deleted).sort((a,b)=>a.name.localeCompare(b.name));
+  if(!list.length){el.innerHTML='<div style="font-size:12px;color:var(--text4)">No regions.</div>';return}
+  el.innerHTML=list.map(r=>`<div style="display:flex;align-items:center;gap:5px;padding:4px 6px;background:var(--surface2);border-radius:6px;font-size:12px;margin-bottom:3px">
+    <span>${r.flag||'🌍'}</span><span style="font-weight:600;flex-shrink:0">${r.code}</span><span style="flex:1;color:var(--text3)">${esc(r.name)}</span>
+    <select onchange="db.get('regions').get('${r.id}').get('status').put(this.value)" style="font-size:10px;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:3px;padding:1px 3px">
+      ${['normal','elevated','active','critical','closed'].map(s=>`<option value="${s}" ${r.status===s?'selected':''}>${s}</option>`).join('')}
+    </select>
+    <button onclick="delReg('${r.id}')" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:14px">×</button>
+  </div>`).join('');
+}
+function delReg(id){if(!confirm('Delete region?'))return;db.get('regions').get(id).put({_deleted:true,id})}
+
+// ── CONFIG SAVES ──────────────────────────────────
+function saveVerif(){db.get('config').get('verified').put(document.getElementById('a-verif').value||'');flash('Verified names saved.')}
+function saveBanned(){db.get('config').get('banned').put(document.getElementById('a-banned').value||'');flash('Banned words saved.')}
+function saveTrusted(){db.get('config').get('trusted').put(document.getElementById('a-trusted').value||'');flash('Trusted voices saved.')}
+function saveWelcome(){db.get('config').get('welcomeMsg').put((document.getElementById('a-welcome').value||'').trim());flash('Welcome message saved.')}
+function saveRL(){const v=parseInt(document.getElementById('a-rl').value)||20;db.get('config').get('rateLimit').put(v);flash('Rate limit saved.')}
+function changePass(){
+  const p=(document.getElementById('a-np').value||'').trim();if(p.length<8){flash('Min 8 characters.');return}
+  db.get('config').get('passHash').put(hashP(p));flash('Passphrase updated.');document.getElementById('a-np').value='';
+}
+
+// ── DATA ──────────────────────────────────────────
+function searchPosts(){
+  const q=(document.getElementById('a-post-search').value||'').toLowerCase().trim();
+  if(!q){flash('Enter search term.');return}
+  const results=Object.values(posts).filter(p=>p&&!p._deleted&&((p.text||'').toLowerCase().includes(q)||(p.author||'').toLowerCase().includes(q))).sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,20);
+  const el=document.getElementById('a-post-results');if(!el)return;
+  if(!results.length){el.innerHTML='<div style="font-size:12px;color:var(--text4)">No results.</div>';return}
+  el.innerHTML=results.map(p=>`<div style="padding:8px;background:var(--surface2);border-radius:6px;border:1px solid var(--border);margin-bottom:6px">
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+      <span style="font-size:11px;font-weight:600;color:var(--text)">${esc(p.author||'?')}</span>
+      ${p.anon?'<span style="font-size:10px;font-family:ui-monospace,monospace;background:#f0e8e8;color:var(--red);padding:1px 5px;border-radius:3px">ANON · ID: '+esc((p.realUserId||p.userId||'').slice(0,12))+'</span>':''}
+      <span style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);margin-left:auto">${ago(p.ts)}</span>
+    </div>
+    <div style="font-size:12px;color:var(--text);margin-bottom:6px;line-height:1.5">${esc((p.text||'').slice(0,120))}${(p.text||'').length>120?'…':''}</div>
+    <div style="display:flex;gap:4px;flex-wrap:wrap">
+      <button onclick="adminDel('${p.id}')" class="btn btn-xs btn-red">Delete</button>
+      <button onclick="editPostText('${p.id}')" class="btn btn-ghost btn-xs">Edit text</button>
+      <button onclick="adminPin('${p.id}',${!p.pinned})" class="btn btn-ghost btn-xs">${p.pinned?'Unpin':'Pin'}</button>
+      <button onclick="adminReview('${p.id}',${!p.underReview})" class="btn btn-ghost btn-xs" style="color:${p.underReview?'var(--green)':'#8a7000'}">${p.underReview?'Clear flag':'Flag'}</button>
+      <span style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);padding:3px 0;margin-left:auto">ID: ${p.id}</span>
+    </div>
+  </div>`).join('');
+}
+function editPostText(id){
+  const p=posts[id];if(!p)return;
+  const t=prompt('Edit post text (admin):\n\nOriginal:',p.text);
+  if(t===null||t===p.text)return;
+  db.get('posts').get(id).get('text').put(t.trim());
+  db.get('posts').get(id).get('editedByAdmin').put(true);
+  db.get('posts').get(id).get('edited').put(true);
+  flash('Post text updated.');searchPosts();
+}
+function exportFeed(){
+  const data=Object.values(posts).filter(p=>p&&!p._deleted).sort((a,b)=>(b.ts||0)-(a.ts||0));
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='loom-feed-export.json';a.click();URL.revokeObjectURL(url);
+  flash('Feed exported.');
+}
+function nukeDemo(){
+  if(!confirm('Delete ALL posts and regions? This cannot be undone.'))return;
+  if(!confirm('Are you absolutely sure?'))return;
+  Object.keys(posts).forEach(id=>db.get('posts').get(id).put({_deleted:true,id}));
+  Object.keys(regions).forEach(id=>db.get('regions').get(id).put({_deleted:true,id}));
+  flash('All demo data cleared.');
+}
+
+// ── DARK MODE ─────────────────────────────────────
+function renderAlert(){
+  // Render alert banner preview in admin (reads from config Gun node)
+  // The actual banner is shown on loom.html — this is for admin awareness
+  const at = config.alertType;
+  const att = config.alertText;
+  const el_at = document.getElementById('a-at');
+  const el_att = document.getElementById('a-att');
+  if(el_at && at) el_at.value = at;
+  if(el_att && att) el_att.value = att;
+}
+
+function toggleDark(){document.documentElement.classList.toggle('dark');const d=document.documentElement.classList.contains('dark');sl('loom-dark',d?'1':'0');document.getElementById('dark-ico').textContent=d?'☀️':'🌙'}
+if(ls('loom-dark')==='1'){document.documentElement.classList.add('dark');document.getElementById('dark-ico').textContent='☀️'}
+
+checkSession();
+
+document.addEventListener('click',function(e){const a=e.target.closest('a[href]');if(!a)return;const href=a.getAttribute('href');if(!href||href.startsWith('#')||href.startsWith('http')||a.target==='_blank')return;if(href.endsWith('.html')){e.preventDefault();document.body.style.opacity='0';document.body.style.transition='opacity .2s';setTimeout(()=>window.location.href=href,180)}});
+window.addEventListener('pageshow',()=>{document.body.style.opacity='';document.body.style.transition='';document.body.classList.add('page-fade');setTimeout(()=>document.body.classList.remove('page-fade'),300)});
+
+// ── ACCOUNT MANAGEMENT ────────────────────────────────────────────────────────
+var penaltyTargetId = null;
+var penaltyTargetName = null;
+var accountStatuses = {};
+
+db.get('account-status').map().on(function(status, uid){
+  if(status) accountStatuses[uid] = status;
+});
+
+function searchAccounts(){
+  var q = (document.getElementById('acct-search').value||'').toLowerCase().trim();
+  if(!q){flash('Enter a name or user ID.');return}
+  var results = [];
+  var seen = {};
+  Object.values(posts).filter(function(p){return p&&!p._deleted}).forEach(function(p){
+    if(seen[p.userId])return;
+    if((p.author||'').toLowerCase().includes(q)||(p.userId||'').toLowerCase().includes(q)){
+      seen[p.userId]=true;
+      results.push({uid:p.userId, name:p.author||'Anonymous', color:p.color, status:accountStatuses[p.userId]});
+    }
+  });
+  var el = document.getElementById('acct-results');
+  if(!results.length){el.innerHTML='<div style="font-size:12px;color:var(--text4)">No users found.</div>';return}
+  var statusLabel={active:'Active',restricted:'Restricted',suspended:'Suspended',shadowban:'Shadowbanned',banned:'Banned',deleted:'Deleted'};
+  var statusColor={active:'var(--green)',restricted:'#8a7000',suspended:'var(--clay)',shadowban:'#5a5a8a',banned:'var(--red)',deleted:'var(--text4)'};
+  // Store results for click handler to reference by index
+  window._acctResults = results;
+  el.innerHTML = results.slice(0,8).map(function(r, idx){
+    var sl = r.status ? (statusLabel[r.status.level]||r.status.level) : 'Active';
+    var sc = r.status ? (statusColor[r.status.level]||'var(--text4)') : 'var(--green)';
+    var initials = (r.name.split(' ').map(function(w){return w[0]||''}).join('').toUpperCase().slice(0,2))||'?';
+    var safeName = (r.name||'Anonymous').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return '<div style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--surface2);border-radius:6px;margin-bottom:4px">' +
+      '<div style="width:26px;height:26px;border-radius:50%;background:'+(r.color||'var(--clay)')+';display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:700;font-family:ui-monospace,monospace">'+initials+'</div>' +
+      '<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">'+safeName+'</div>' +
+      '<div style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4)">'+r.uid+'</div></div>' +
+      '<span style="font-size:10px;font-weight:700;font-family:ui-monospace,monospace;padding:1px 6px;border-radius:3px;background:'+sc+'22;color:'+sc+'">'+sl+'</span>' +
+      '<button data-acct-idx="'+idx+'" class="btn btn-ghost btn-xs acct-manage-btn">Manage</button>' +
+    '</div>';
+  }).join('');
+  // Wire up manage buttons via event delegation (avoids escaping issues in onclick attributes)
+  el.querySelectorAll('.acct-manage-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var i = parseInt(this.getAttribute('data-acct-idx'));
+      var r = window._acctResults[i];
+      if(r) selectPenaltyTarget(r.uid, r.name);
+    });
+  });
+}
+
+function selectPenaltyTarget(uid, name){
+  penaltyTargetId = uid;
+  penaltyTargetName = name;
+  document.getElementById('penalty-form').style.display='block';
+  document.getElementById('penalty-target').innerHTML = 'Target: <span style="color:var(--clay)">' + name.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span> <span style="font-family:ui-monospace,monospace;font-size:11px;color:var(--text4)">' + uid + '</span>';
+  // Pre-fill current status
+  var cur = accountStatuses[uid];
+  if(cur && cur.level) document.getElementById('p-level').value = cur.level;
+  document.getElementById('penalty-form').scrollIntoView({behavior:'smooth'});
+}
+
+function onLevelChange(){
+  var level = document.getElementById('p-level').value;
+  var dw = document.getElementById('p-duration-wrap');
+  var mw = document.getElementById('p-message-wrap');
+  if(level==='banned'||level==='deleted'||level==='shadowban'||level==='active'){
+    if(dw)dw.style.display='none';
+  } else {
+    if(dw)dw.style.display='block';
+  }
+  if(level==='active'){
+    if(mw)mw.style.display='none';
+  } else {
+    if(mw)mw.style.display='block';
+  }
+}
+
+function onReasonCodeChange(){
+  var v = document.getElementById('p-reason-code').value;
+  var wrap = document.getElementById('p-reason-custom-wrap');
+  if(wrap) wrap.style.display = v==='custom'?'block':'none';
+}
+
+function issuePenalty(){
+  if(!penaltyTargetId){flash('No target selected.');return}
+  var level = document.getElementById('p-level').value;
+  var reasonCode = document.getElementById('p-reason-code').value;
+  var reasonCustom = (document.getElementById('p-reason-custom').value||'').trim();
+  var reason = reasonCode==='custom' ? reasonCustom : reasonCode;
+  if(!reason&&level!=='active'){flash('Select a reason.');return}
+  var message = (document.getElementById('p-message').value||'').trim();
+  var durationDays = parseInt(document.getElementById('p-duration').value)||0;
+  var nrc = document.getElementById('p-nrc').checked;
+  var ref = 'ACS-' + new Date().getFullYear() + '-' + Math.floor(Math.random()*90000+10000);
+  var now = Date.now();
+  var expiresAt = (durationDays>0 && level!=='banned' && level!=='deleted') ? now+durationDays*86400000 : null;
+
+  if(level==='active'){
+    // Lift all penalties
+    db.get('account-status').get(penaltyTargetId).put({level:'active',liftedAt:now,liftedBy:'admin'});
+    db.get('account-restrictions').get(penaltyTargetId).put({posting:true,commenting:true,petitions:true});
+    flash('Penalties lifted for '+penaltyTargetName);
+    document.getElementById('penalty-form').style.display='none';
+    return;
+  }
+
+  // Set restrictions based on level
+  var restrictions = {posting:true,commenting:true,petitions:true};
+  if(level==='restricted'){restrictions={posting:false,commenting:false,petitions:false}}
+
+  // Default messages
+  var defaultMessages = {
+    restricted: 'Your account has been restricted due to a community guidelines violation. Some features are temporarily unavailable.',
+    suspended: 'Your account has been suspended. You cannot access Loom at this time. If you believe this is an error, you may submit a dispute.',
+    shadowban: null,
+    banned: 'Your account has been permanently banned from Loom following a review of your activity. This decision is final.',
+    deleted: 'Your account has been permanently deleted. All associated content has been removed.',
+  };
+
+  var finalMessage = message || defaultMessages[level] || '';
+
+  var statusRecord = {
+    level: level,
+    reason: reason,
+    message: finalMessage,
+    issuedBy: 'Altura Community Standards Directorate',
+    issuedAt: now,
+    expiresAt: expiresAt,
+    reference: ref,
+    shadow: level==='shadowban',
+    sharedWithAltura: nrc,
+  };
+
+  db.get('account-status').get(penaltyTargetId).put(statusRecord);
+  db.get('account-restrictions').get(penaltyTargetId).put(restrictions);
+
+  // Write to compliance history
+  var complianceId = 'ch-' + now.toString(36);
+  db.get('compliance-history').get(penaltyTargetId).get(complianceId).put({
+    id: complianceId,
+    type: level,
+    desc: reason,
+    issuedBy: 'Altura Community Standards Directorate',
+    ts: now,
+    reference: ref,
+    status: 'active',
+    sharedWithAltura: nrc,
+    retained: 'Indefinitely under EIMA 2015',
+  });
+
+  // If deleted: remove all posts
+  if(level==='deleted'){
+    var count = 0;
+    Object.values(posts).forEach(function(p){
+      if(p && p.userId===penaltyTargetId && !p._deleted){
+        db.get('posts').get(p.id).put({_deleted:true, id:p.id});
+        count++;
+      }
+    });
+    flash('Account deleted. '+count+' posts removed. Ref: '+ref);
+  } else {
+    flash((level.charAt(0).toUpperCase()+level.slice(1))+' applied to '+penaltyTargetName+'. Ref: '+ref);
+  }
+
+  document.getElementById('penalty-form').style.display='none';
+  document.getElementById('p-reason-code').value='';
+  document.getElementById('p-message').value='';
+  document.getElementById('p-nrc').checked=false;
+  searchAccounts();
+}
+
+</script>
+</body>
+</html>

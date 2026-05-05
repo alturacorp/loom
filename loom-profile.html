@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loom — Profile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fdfaf6;--surface:#fff;--surface2:#fdf4f1;--surface3:#f7f0e6;--border:#edddd0;--border2:#f7f0e6;--text:#271d14;--text2:#6b5744;--text3:#9c8070;--text4:#c4b5a3;--clay:#c1593a;--clay-l:#fdf4f1;--clay-m:#f2c4b4;--green:#1a7a4a;--red:#c13a3a}
+.dark{--bg:#120d08;--surface:#1c1208;--surface2:#261808;--surface3:#301f0a;--border:#3d2810;--border2:#2a1c08;--text:#f0e4d4;--text2:#c4a078;--text3:#8a6040;--text4:#503828;--clay:#d96f49;--clay-l:#2a1808;--clay-m:#4a2418}
+body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',system-ui,sans-serif;min-height:100vh;line-height:1.5}
+.font-serif{font-family:'Source Serif 4',Georgia,serif}
+nav{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:300}
+.nav-inner{max-width:1080px;margin:0 auto;padding:0 16px;height:52px;display:flex;align-items:center;gap:10px}
+.nav-brand{display:flex;align-items:center;gap:8px;cursor:pointer;flex-shrink:0;text-decoration:none}
+.nav-brand span{font-size:20px;font-weight:600;color:var(--text);letter-spacing:-.3px}
+.inp{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 12px;font-size:14px;font-family:inherit;outline:none;width:100%;transition:border .15s}
+.inp:focus{border-color:var(--clay)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .15s;text-decoration:none}
+.btn-clay{background:var(--clay);color:#fff}.btn-clay:hover{filter:brightness(1.08)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}.btn-ghost:hover{border-color:var(--clay);color:var(--clay)}
+.btn-pill{border-radius:999px}
+.btn-sm{padding:5px 12px;font-size:13px}
+.btn-xs{padding:3px 8px;font-size:11px;border-radius:6px}
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;flex-shrink:0;font-family:ui-monospace,monospace;cursor:pointer;user-select:none}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+.tag{display:inline-flex;align-items:center;padding:1px 7px;border-radius:4px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace;text-transform:uppercase;letter-spacing:.04em}
+.tag-general{background:#f0ece8;color:#6b5744}
+.tag-news{background:#e8f0f0;color:#2a6060}
+.tag-classif{background:#f0ece0;color:#6b5030}
+.tag-market{background:#e8f0e8;color:#2a6040}
+.tag-question{background:#ece8f0;color:#504870}
+.tag-alert{background:#f0e8e8;color:#6b2a2a}
+.tag-event{background:#e8ece8;color:#3a5a3a}
+.tag-poll{background:#f0e8f0;color:#5a3a6a}
+.tag-announce{background:#e8e8f0;color:#2a2a6a}
+.bv{display:inline-flex;align-items:center;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:700;font-family:ui-monospace,monospace;letter-spacing:.04em}
+.bv-vf{background:#e8f0e8;color:#2a6040}
+.bv-tr{background:#f0f0e8;color:#5a5a20}
+.tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:24px}
+.tab-btn{padding:10px 18px;font-size:14px;font-weight:500;color:var(--text3);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:inherit;transition:all .15s}
+.tab-btn.active{color:var(--clay);border-bottom-color:var(--clay);font-weight:600}
+.tab-btn:hover:not(.active){color:var(--text2)}
+.stat-card{background:var(--surface2);border-radius:10px;padding:14px 16px;text-align:center}
+.stat-num{font-size:24px;font-weight:700;font-family:ui-monospace,monospace;color:var(--clay)}
+.stat-lbl{font-size:12px;color:var(--text3);margin-top:2px}
+.post-mini{padding:12px 14px;border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color .15s}
+.post-mini:hover{border-color:var(--clay)}
+.activity-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2)}
+.activity-row:last-child{border-bottom:none}
+.act-icon{width:30px;height:30px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.compliance-row{padding:12px 14px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px}
+.compliance-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;font-family:ui-monospace,monospace;text-transform:uppercase}
+.ht{color:var(--clay);cursor:pointer;font-weight:500}.ht:hover{text-decoration:underline}
+.cover-strip{height:120px;position:relative;border-radius:12px 12px 0 0;overflow:hidden}
+.tip-wrap{position:relative;display:inline-flex;align-items:center}
+.tip-wrap .tip{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#222;color:#fff;font-size:11px;font-family:ui-monospace,monospace;padding:4px 9px;border-radius:6px;white-space:nowrap;pointer-events:none;z-index:200;max-width:220px}
+.tip-wrap:hover .tip{display:block}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+@media(max-width:900px){.hide-md{display:none!important}}
+@media(max-width:600px){.hide-sm{display:none!important}}
+
+.page-fade{animation:pageFadeIn .25s ease}
+@keyframes pageFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="loom.html">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+        <rect x="3" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".3"/>
+        <rect x="9.5" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".55"/>
+        <rect x="16" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".3"/>
+        <rect x="3" y="4" width="20" height="3" rx="1.5" fill="var(--clay)"/>
+        <rect x="3" y="11.5" width="20" height="3" rx="1.5" fill="var(--clay)" opacity=".55"/>
+        <rect x="3" y="19" width="20" height="3" rx="1.5" fill="var(--clay)" opacity=".25"/>
+      </svg>
+      <span class="font-serif">Loom</span>
+    </a>
+    <span style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);letter-spacing:.1em;text-transform:uppercase" class="hide-sm">Profile</span>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+      <button onclick="toggleDark()" style="background:transparent;border:1px solid var(--border);border-radius:8px;padding:6px 9px;cursor:pointer;font-size:14px"><span id="dark-ico">🌙</span></button>
+      <a href="loom-settings.html" class="btn btn-ghost btn-sm btn-pill hide-sm">Settings</a>
+      <a href="loom.html" class="btn btn-ghost btn-sm btn-pill">← Feed</a>
+      <a href="loom-explore.html" class="btn btn-ghost btn-sm btn-pill">Explore</a>
+    </div>
+  </div>
+</nav>
+
+<div style="max-width:900px;margin:0 auto;padding:20px 16px">
+
+  <!-- Profile header card -->
+  <div class="card" style="padding:0;overflow:hidden;margin-bottom:20px">
+
+    <!-- Cover strip -->
+    <div class="cover-strip" id="cover-strip">
+      <div id="cover-pattern" style="position:absolute;inset:0"></div>
+    </div>
+
+    <!-- Avatar + identity -->
+    <div style="padding:0 24px 20px;position:relative">
+      <div style="display:flex;align-items:flex-end;gap:14px;margin-top:-28px;margin-bottom:14px">
+        <div id="profile-av" class="av" style="width:72px;height:72px;font-size:24px;border:4px solid var(--surface)">—</div>
+        <div style="flex:1;padding-bottom:4px">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <h1 class="font-serif" id="profile-name" style="font-size:24px;color:var(--text)">—</h1>
+            <span id="profile-tier-badge" style="font-size:11px;font-weight:700;font-family:ui-monospace,monospace;padding:1px 6px;border-radius:3px"></span>
+          </div>
+          <div id="profile-pronouns" style="font-size:13px;color:var(--text3);font-family:ui-monospace,monospace"></div>
+        </div>
+        <div id="profile-actions" style="display:flex;gap:6px;flex-shrink:0;padding-bottom:4px"></div>
+      </div>
+
+      <div id="profile-bio" style="font-size:15px;color:var(--text2);line-height:1.7;margin-bottom:12px;max-width:600px"></div>
+
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px" id="profile-badges"></div>
+
+      <!-- Stats row -->
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px" id="stats-grid">
+        <div class="stat-card"><div class="stat-num" id="st-posts">—</div><div class="stat-lbl">Posts</div></div>
+        <div class="stat-card"><div class="stat-num" id="st-likes">—</div><div class="stat-lbl">Likes</div></div>
+        <div class="stat-card"><div class="stat-num" id="st-rep">—</div><div class="stat-lbl">Reputation</div></div>
+        <div class="stat-card"><div class="stat-num" id="st-score">—</div><div class="stat-lbl">Loom Score</div></div>
+        <div class="stat-card"><div class="stat-num" id="st-days">—</div><div class="stat-lbl">Days active</div></div>
+      </div>
+
+      <!-- Member since + name history -->
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:12px" id="profile-meta">
+        <span style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text4)" id="member-since"></span>
+        <span style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text4)" id="name-hist-line"></span>
+        <span style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text4)" id="profile-region-line"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pinned post -->
+  <div id="pinned-section" style="display:none;margin-bottom:20px">
+    <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">📌 Pinned post</div>
+    <div id="pinned-post"></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tab-bar" id="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('posts',this)">Posts</button>
+    <button class="tab-btn" onclick="switchTab('activity',this)">Activity log</button>
+    <button class="tab-btn" onclick="switchTab('compliance',this)">Compliance history</button>
+    <button class="tab-btn" onclick="switchTab('onthisday',this)" id="otd-tab" style="display:none">On this day</button>
+    <button class="tab-btn" onclick="switchTab('data',this)" id="data-tab" style="display:none">Your data</button>
+  </div>
+
+  <!-- Posts tab -->
+  <div id="tab-posts">
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap" id="post-filters">
+      <button class="btn btn-ghost btn-xs active" onclick="filterPosts('all',this)" style="border-radius:999px">All</button>
+      <button class="btn btn-ghost btn-xs" onclick="filterPosts('news',this)" style="border-radius:999px">News</button>
+      <button class="btn btn-ghost btn-xs" onclick="filterPosts('market',this)" style="border-radius:999px">Marketplace</button>
+      <button class="btn btn-ghost btn-xs" onclick="filterPosts('alert',this)" style="border-radius:999px">Alerts</button>
+      <button class="btn btn-ghost btn-xs" onclick="filterPosts('event',this)" style="border-radius:999px">Events</button>
+      <button class="btn btn-ghost btn-xs" onclick="filterPosts('poll',this)" style="border-radius:999px">Polls</button>
+    </div>
+    <div id="posts-grid" style="display:flex;flex-direction:column;gap:10px"></div>
+    <div id="posts-end" style="text-align:center;padding:24px 0;font-size:13px;color:var(--text4)"></div>
+  </div>
+
+  <!-- Activity tab -->
+  <div id="tab-activity" style="display:none">
+    <div class="card" style="margin-bottom:16px;background:var(--surface2);border-color:var(--border2)">
+      <div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);line-height:1.7">
+        <strong style="color:var(--text2)">About this log:</strong> This activity log is generated from your posts, likes, and interactions stored on the Loom peer-to-peer network. It represents a partial view of what Altura Analytics processes. For a complete export of data held by Altura, use the <strong style="color:var(--clay);cursor:pointer" onclick="switchTab('data',document.getElementById('data-tab'));document.getElementById('data-tab').style.display='block'">Your data</strong> tab.
+      </div>
+    </div>
+    <div id="activity-list"></div>
+  </div>
+
+  <!-- Compliance tab -->
+  <div id="tab-compliance" style="display:none">
+    <div class="card" style="margin-bottom:16px;background:var(--surface2);border-color:var(--border2)">
+      <div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);line-height:1.7">
+        <strong style="color:var(--text2)">Compliance history</strong> records moderation actions taken against your account, including post removals, flags, and any restrictions applied. This log is retained by Altura Intelligence Systems under the <em>Emergency Information Management Act 2015</em> and may be shared with Altura Internal Security upon request. Retention period: indefinite during active emergency.
+      </div>
+    </div>
+    <div id="compliance-list"></div>
+  </div>
+
+  <!-- On This Day tab -->
+  <div id="tab-onthisday" style="display:none">
+    <div class="card" style="margin-bottom:16px;background:var(--surface2);border-color:var(--border2)">
+      <div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);line-height:1.7">Your posts from this date in previous months and years.</div>
+    </div>
+    <div id="otd-list"></div>
+  </div>
+
+  <!-- Data tab (own profile only) -->
+  <div id="tab-data" style="display:none">
+    <div class="card" style="margin-bottom:16px">
+      <h3 class="font-serif" style="font-size:18px;margin-bottom:8px;color:var(--text)">Your data on Loom</h3>
+      <p style="font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:16px">Under Loom's data transparency policy, you may request a copy of the data Altura Analytics holds about you. The export includes your posts, engagement history, activity log, connection graph, and derived scores. Processing takes up to 72 hours.</p>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px">
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">What the export contains</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--text2)">
+          <div style="display:flex;gap-8px;align-items:flex-start;gap:8px">✓ <span>All posts, including deleted posts retained by Altura (30-day retention after deletion)</span></div>
+          <div style="display:flex;align-items:flex-start;gap:8px">✓ <span>Likes, reactions, poll votes, and petition signatures</span></div>
+          <div style="display:flex;align-items:flex-start;gap:8px">✓ <span>Full activity log: session timestamps, search queries, hashtags clicked, posts viewed</span></div>
+          <div style="display:flex;align-items:flex-start;gap:8px">✓ <span>Connection graph: follows, blocks, mutes, and inferred social proximity scores</span></div>
+          <div style="display:flex;align-items:flex-start;gap:8px">✓ <span>Derived analytics: Loom Score history, reputation trajectory, engagement patterns</span></div>
+          <div style="display:flex;align-items:flex-start;gap:8px">✓ <span>Regional Health Index contribution data</span></div>
+          <div style="display:flex;align-items:flex-start;gap:8px">✓ <span>Emergency broadcast view logs and survey responses</span></div>
+          <div style="display:flex;align-items:flex-start;gap:8px">✓ <span>IP address logs and device fingerprints (72h rolling window)</span></div>
+          <div style="display:flex;align-items:flex-start;gap:8px">✓ <span>Compliance history and any reports filed about your account</span></div>
+          <div style="display:flex;align-items:flex-start;gap:8px;color:var(--text4)">— <span>Direct messages are not included — these are peer-to-peer and not held by Altura</span></div>
+        </div>
+      </div>
+      <div id="export-status"></div>
+      <button onclick="requestExport()" class="btn btn-clay" style="width:100%">Request data export</button>
+    </div>
+
+    <!-- Live export: what we CAN export from Gun.js now -->
+    <div class="card">
+      <h3 class="font-serif" style="font-size:18px;margin-bottom:8px;color:var(--text)">Immediate export</h3>
+      <p style="font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:14px">Download the data currently available from the peer-to-peer network. This is a subset of what Altura holds.</p>
+      <button onclick="downloadNow()" class="btn btn-ghost" style="width:100%">Download posts & activity (JSON)</button>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+'use strict';
+const NS='loom-global-v3';
+const gun=GUN(['https://gun-manhattan.herokuapp.com/gun','https://peer.wallie.io/gun']);
+const db=gun.get(NS);
+
+// ── ACCOUNT STATUS (Altura Moderation System) ────────────────────────────────
+var __acctStatus = null;
+(function(){
+  var _uid = localStorage.getItem('loom-id-v3');
+  if(!_uid) return;
+  db.get('account-status').get(_uid).on(function(status){
+    if(!status || status._ ) {
+      // Gun.js metadata only — no real status set
+      if(status && Object.keys(status).filter(k=>k!=='_').length === 0) return;
+    }
+    if(!status || !status.level || status.level === 'active') return;
+    __acctStatus = status;
+    if(status.level === 'shadowban') return; // silent — don't show anything to user
+    renderAccountStatusScreen(status);
+  });
+  // Also sync restrictions for posting checks
+  db.get('account-restrictions').get(_uid).on(function(r){
+    if(!r) return;
+    window.__restrictions = r;
+  });
+})();
+
+function renderAccountStatusScreen(status){
+  // Remove existing if present
+  var ex = document.getElementById('__ban-screen');
+  if(ex) ex.remove();
+
+  var level = status.level || 'suspended';
+  var cfg = {
+    restricted: {
+      title: 'Account Restricted',
+      icon: '⚠',
+      color: '#8a7000',
+      bg: '#fffde0',
+      border: '#d4c000',
+      desc: 'Your account has been restricted. Some features are unavailable.',
+      badge: 'RESTRICTED',
+      badgeBg: '#fffde0',
+      badgeColor: '#8a7000',
+      dismissable: false,
+      overlay: false,
+    },
+    suspended: {
+      title: 'Account Suspended',
+      icon: '🚫',
+      color: '#c13a3a',
+      bg: '#fdf4f1',
+      border: '#c1593a',
+      desc: 'Your account has been suspended. You cannot access Loom at this time.',
+      badge: 'SUSPENDED',
+      badgeBg: '#f0e8e8',
+      badgeColor: '#c13a3a',
+      dismissable: false,
+      overlay: true,
+    },
+    banned: {
+      title: 'Account Banned',
+      icon: '🔴',
+      color: '#6b0000',
+      bg: '#fdf4f1',
+      border: '#6b0000',
+      desc: 'Your account has been permanently banned from Loom.',
+      badge: 'PERMANENTLY BANNED',
+      badgeBg: '#f0e8e8',
+      badgeColor: '#6b0000',
+      dismissable: false,
+      overlay: true,
+    },
+    deleted: {
+      title: 'Account Deleted',
+      icon: '⬛',
+      color: '#271d14',
+      bg: '#fdfaf6',
+      border: '#edddd0',
+      desc: 'This account has been permanently deleted.',
+      badge: 'DELETED',
+      badgeBg: '#f7f0e6',
+      badgeColor: '#9c8070',
+      dismissable: false,
+      overlay: true,
+    },
+  };
+
+  var c = cfg[level] || cfg.suspended;
+  var ref = status.reference || ('ACS-' + (status.issuedAt||Date.now()).toString(36).toUpperCase());
+  var issuedDate = status.issuedAt ? new Date(status.issuedAt).toLocaleDateString('en', {year:'numeric',month:'long',day:'numeric'}) : 'Unknown date';
+  var expiresStr = '';
+  if(status.expiresAt && status.expiresAt > Date.now()) {
+    var rem = status.expiresAt - Date.now();
+    var days = Math.ceil(rem / 86400000);
+    expiresStr = days > 1 ? 'Expires in ' + days + ' days (' + new Date(status.expiresAt).toLocaleDateString('en',{month:'long',day:'numeric',year:'numeric'}) + ')' : 'Expires today';
+  } else if(status.expiresAt && status.expiresAt <= Date.now()) {
+    // Ban has expired — clear screen
+    document.getElementById('__ban-screen') && document.getElementById('__ban-screen').remove();
+    return;
+  } else if(!status.expiresAt && level !== 'restricted') {
+    expiresStr = 'This action is permanent.';
+  }
+
+  var screen = document.createElement('div');
+  screen.id = '__ban-screen';
+  screen.style.cssText = c.overlay
+    ? 'position:fixed;inset:0;background:rgba(253,250,246,.97);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;font-family:\'Source Sans 3\',system-ui,sans-serif;overflow-y:auto'
+    : 'position:sticky;top:52px;z-index:900;padding:12px 16px;background:' + c.bg + ';border-bottom:2px solid ' + c.border + ';font-family:\'Source Sans 3\',system-ui,sans-serif;display:flex;align-items:center;gap:12px';
+
+  if(c.overlay) {
+    screen.innerHTML = '<div style="max-width:520px;width:100%;text-align:center">' +
+      // Loom logo
+      '<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:32px;opacity:.4">' +
+        '<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="3" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".3"/><rect x="9.5" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".55"/><rect x="16" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".3"/><rect x="3" y="4" width="20" height="3" rx="1.5" fill="#c1593a"/><rect x="3" y="11.5" width="20" height="3" rx="1.5" fill="#c1593a" opacity=".55"/><rect x="3" y="19" width="20" height="3" rx="1.5" fill="#c1593a" opacity=".25"/></svg>' +
+        '<span style="font-family:\'Source Serif 4\',Georgia,serif;font-size:20px;font-weight:600;color:#271d14">Loom</span>' +
+      '</div>' +
+      '<div style="font-size:48px;margin-bottom:16px">' + c.icon + '</div>' +
+      '<span style="display:inline-flex;align-items:center;padding:3px 12px;border-radius:4px;font-size:11px;font-weight:700;font-family:ui-monospace,monospace;letter-spacing:.08em;background:' + c.badgeBg + ';color:' + c.badgeColor + ';margin-bottom:16px">' + c.badge + '</span>' +
+      '<h1 style="font-family:\'Source Serif 4\',Georgia,serif;font-size:28px;font-weight:600;color:#271d14;margin-bottom:10px">' + c.title + '</h1>' +
+      '<p style="font-size:15px;color:#6b5744;line-height:1.7;margin-bottom:20px">' + c.desc + '</p>' +
+      // Custom message
+      (status.message ? '<div style="background:#fff;border:1px solid #edddd0;border-radius:10px;padding:16px 20px;margin-bottom:20px;text-align:left"><div style="font-size:12px;font-family:ui-monospace,monospace;color:#9c8070;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Message from Altura Community Standards</div><div style="font-size:14px;color:#271d14;line-height:1.7">' + (status.message||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div></div>' : '') +
+      // Details
+      '<div style="background:#f7f0e6;border:1px solid #edddd0;border-radius:10px;padding:16px 20px;margin-bottom:20px;text-align:left;display:flex;flex-direction:column;gap:8px">' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Reference</span><span style="font-family:ui-monospace,monospace;font-weight:700;color:#271d14">' + ref + '</span></div>' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Issued</span><span style="color:#271d14">' + issuedDate + '</span></div>' +
+        (status.reason ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Reason</span><span style="color:#271d14;text-align:right;max-width:70%">' + (status.reason||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span></div>' : '') +
+        (expiresStr ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Duration</span><span style="color:#271d14">' + expiresStr + '</span></div>' : '') +
+        (status.issuedBy ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Issued by</span><span style="color:#271d14">' + (status.issuedBy||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span></div>' : '') +
+        (status.sharedWithAltura ? '<div style="font-size:12px;font-family:ui-monospace,monospace;color:#c13a3a;margin-top:4px">This action has been shared with Altura Internal Security Directorate.</div>' : '') +
+      '</div>' +
+      '<div style="font-size:12px;font-family:ui-monospace,monospace;color:#c4b5a3;line-height:1.7;margin-bottom:20px">This action has been recorded in your compliance history. If you believe this decision was made in error, you may submit a dispute to the Altura Internal Review Board within 30 days. Altura does not guarantee review timelines during active national emergency periods.</div>' +
+      '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
+        (level !== 'banned' && level !== 'deleted' ? '<a href="loom-settings.html" style="padding:10px 20px;background:transparent;border:1px solid #edddd0;border-radius:8px;font-size:13px;font-weight:600;color:#6b5744;text-decoration:none">View compliance history</a>' : '') +
+        '<a href="loom-appeals.html" style="padding:10px 20px;background:transparent;border:1px solid #edddd0;border-radius:8px;font-size:13px;font-weight:600;color:#6b5744;text-decoration:none">Submit dispute</a>' +
+      '</div>' +
+      '<div style="margin-top:20px;font-size:11px;font-family:ui-monospace,monospace;color:#c4b5a3">Loom · Altura Intelligence Systems · Community Standards Directorate<br>Emergency Information Management Act 2015 · Reference: ' + ref + '</div>' +
+    '</div>';
+  } else {
+    // Restricted — banner mode (not full overlay, content still visible)
+    screen.innerHTML = '<span style="font-size:18px">' + c.icon + '</span>' +
+      '<div style="flex:1"><strong style="color:' + c.color + '">' + c.title + '</strong> — ' +
+      (status.message || c.desc) +
+      ' <span style="font-family:ui-monospace,monospace;font-size:11px;color:#9c8070">Ref: ' + ref + '</span></div>' +
+      '<a href="loom-settings.html" style="font-size:12px;font-weight:600;color:' + c.color + ';text-decoration:none;flex-shrink:0">Details →</a>';
+  }
+
+  // Insert: overlay goes on body, banner goes after nav
+  if(c.overlay) {
+    document.body.appendChild(screen);
+    // Freeze scrolling
+    document.body.style.overflow = 'hidden';
+  } else {
+    var nav = document.querySelector('nav');
+    if(nav && nav.nextSibling) nav.parentNode.insertBefore(screen, nav.nextSibling);
+    else document.body.prepend(screen);
+  }
+
+  // Expiry countdown timer
+  if(status.expiresAt && status.expiresAt > Date.now()) {
+    setInterval(function(){
+      if(Date.now() >= status.expiresAt) {
+        var el = document.getElementById('__ban-screen');
+        if(el) el.remove();
+        document.body.style.overflow = '';
+      }
+    }, 60000);
+  }
+}
+
+// Restriction check for posting actions
+function __checkCanPost(){
+  var r = window.__restrictions;
+  if(!r || r.posting !== false) return true;
+  var ref = __acctStatus && __acctStatus.reference ? __acctStatus.reference : '';
+  if(typeof flash === 'function') flash('Your account has been restricted. Ref: ' + ref);
+  return false;
+}
+function __checkCanComment(){
+  var r = window.__restrictions;
+  if(!r || r.commenting !== false) return true;
+  if(typeof flash === 'function') flash('Commenting has been restricted on your account.');
+  return false;
+}
+function __checkCanPetition(){
+  var r = window.__restrictions;
+  if(!r || r.petitions !== false) return true;
+  if(typeof flash === 'function') flash('Petition signing has been restricted on your account.');
+  return false;
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
+
+const PARTNER_COLORS={hhs:'#1a5a8a',proxima:'#8a1a2a',nrc:'#2a4a1a','salt-lake':'#5a3a1a',default:'#2a6a5a'};
+const TIERS=[
+  {min:0, name:'Newcomer', badge:'#a0a0a0', short:'N'},
+  {min:15,name:'Neighbour',badge:'#c1593a', short:'NB'},
+  {min:40,name:'Regular', badge:'#5a7a8a', short:'R'},
+  {min:65,name:'Elder',   badge:'#6a8a5a', short:'E'},
+  {min:85,name:'Trusted Voice',badge:'#6a3a8a',short:'TV'},
+];
+const CATS={general:'General',news:'News',classif:'Classifieds',market:'Marketplace',question:'Question',alert:'Alert',event:'Event',poll:'Poll',announce:'Announcement',petition:'Petition'};
+const CTAGS={general:'tag-general',news:'tag-news',classif:'tag-classif',market:'tag-market',question:'tag-question',alert:'tag-alert',event:'tag-event',poll:'tag-poll',announce:'tag-announce',petition:'tag-general'};
+const PAT=['#c1593a','#5a7a8a','#6a8a5a','#7a6a4a','#5a5a8a'];
+
+function ls(k){return localStorage.getItem(k)}
+function sl(k,v){localStorage.setItem(k,v)}
+function ini(n){return((n||'?').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'?')}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function ago(ts){const d=Date.now()-(ts||0);if(d<60000)return'just now';if(d<3600000)return Math.floor(d/60000)+'m ago';if(d<86400000)return Math.floor(d/3600000)+'h ago';if(d<604800000)return Math.floor(d/86400000)+'d ago';return new Date(ts).toLocaleDateString()}
+function getTier(rep){return TIERS.slice().reverse().find(t=>rep>=t.min)||TIERS[0]}
+
+function getMe(){
+  let id=ls('loom-id-v3'),name=ls('loom-name-v3'),color=ls('loom-color-v3');
+  if(!id){id='u'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);sl('loom-id-v3',id)}
+  if(!name){const adj=['Swift','Quiet','Bright','Steady'];const nou=['Hawk','Creek','Mesa','Ridge'];name=adj[Math.floor(Math.random()*adj.length)]+' '+nou[Math.floor(Math.random()*nou.length)];sl('loom-name-v3',name)}
+  if(!color){color=PAT[Math.floor(Math.random()*PAT.length)];sl('loom-color-v3',color)}
+  return{id,name,color}
+}
+const ME=getMe();
+
+var posts={},regions={},config={},partners={},follows=new Set(JSON.parse(ls('loom-follows')||'[]'));
+var verifiedNames=new Set(),trustedNames=new Set();
+var blocks=new Set(JSON.parse(ls('loom-blocks')||'[]'));
+var reports={};
+
+// Determine which profile to show
+const params=new URLSearchParams(location.search);
+const TARGET_UID=params.get('uid')||ME.id;
+const TARGET_NAME=params.get('name')||ls('loom-name-v3')||'';
+const IS_OWN=TARGET_UID===ME.id;
+
+// Activity log (own profile only)
+var activityLog=JSON.parse(ls('loom-activity')||'[]');
+
+// Gun sync
+db.get('posts').map().on(function(data,id){
+  if(!data||data._deleted)delete posts[id];else posts[id]=data;
+  db.get('posts').get(id).get('likes').on(v=>{if(posts[id])posts[id].likes=clean(v)});
+  db.get('posts').get(id).get('reactions').on(v=>{if(posts[id])posts[id].reactions=clean(v)});
+  renderProfile();
+});
+db.get('regions').map().on(function(data,id){if(!data||data._deleted)delete regions[id];else regions[id]=data});
+db.get('config').on(function(data){if(!data)return;config=data;if(data.verified)verifiedNames=new Set((data.verified||'').split('\n').map(s=>s.trim()).filter(Boolean));if(data.trusted)trustedNames=new Set((data.trusted||'').split('\n').map(s=>s.trim()).filter(Boolean))});
+db.get('partners').map().on(function(data,id){if(!data||data._deleted)delete partners[id];else partners[id]=data});
+db.get('reports').map().on(function(data,id){if(data&&data.postId)reports[id]=data});
+db.get('follows').get(ME.id).map().on(function(val,uid){if(val===true)follows.add(uid);else follows.delete(uid)});
+
+function clean(o){if(!o)return{};const r={};Object.entries(o).forEach(([k,v])=>{if(k!=='_'&&v!==null)r[k]=v});return r}
+
+function calcRep(uid){
+  const myP=Object.values(posts).filter(p=>p&&!p._deleted&&p.userId===uid);
+  const likes=myP.reduce((s,p)=>s+Object.values(p.likes||{}).filter(v=>v===true).length,0);
+  const cmts=myP.reduce((s,p)=>s+Object.keys(p.comments||{}).length,0);
+  const age=myP.length?(Date.now()-Math.min(...myP.map(p=>p.ts||Date.now())))/86400000:0;
+  return Math.min(100,Math.round(likes*3+cmts*1.5+Math.min(age,30)*0.5));
+}
+function loomScore(uid){
+  const rep=calcRep(uid);const myP=Object.values(posts).filter(p=>p&&!p._deleted&&p.userId===uid);
+  return Math.min(999,Math.round(rep*0.5+Math.min(30,myP.length*2)));
+}
+
+var postFilter='all',rendered=false;
+
+function renderProfile(){
+  const uPosts=Object.values(posts).filter(p=>p&&!p._deleted&&(p.userId===TARGET_UID||(TARGET_NAME&&p.author===TARGET_NAME))).sort((a,b)=>(b.ts||0)-(a.ts||0));
+  if(!uPosts.length&&rendered)return;
+  rendered=true;
+
+  const name=uPosts[0]?.author||TARGET_NAME||'—';
+  const color=uPosts[0]?.color||ME.color;
+  const rep=calcRep(TARGET_UID);const score=loomScore(TARGET_UID);const tier=getTier(rep);
+  const likes=uPosts.reduce((s,p)=>s+Object.values(p.likes||{}).filter(v=>v===true).length,0);
+  const joinTs=uPosts.length?Math.min(...uPosts.map(p=>p.ts||Date.now())):Date.now();
+  const days=Math.round((Date.now()-joinTs)/86400000);
+  const pt=Object.values(partners).find(p=>p&&!p._deleted&&(p.userId===TARGET_UID||p.authorName===name));
+  const pColor=pt?PARTNER_COLORS[pt.colorKey]||PARTNER_COLORS.default:null;
+
+  // Avatar
+  const av=document.getElementById('profile-av');if(av){
+    const picData=IS_OWN?localStorage.getItem('loom-pic-data'):'';
+    const picUrl=IS_OWN?localStorage.getItem('loom-pic-url'):'';
+    if(picData||picUrl){av.style.backgroundImage=`url(${picData||picUrl})`;av.style.backgroundSize='cover';av.style.backgroundPosition='center';av.textContent='';av.style.background=''}
+    else{av.textContent=ini(name);av.style.background=color}
+  }
+
+  // Cover from settings
+  const coverKey=localStorage.getItem('loom-cover')||'stripes';
+  const cp=document.getElementById('cover-pattern');if(cp){
+    const hue=color.slice(1);
+    cp.style.background=`linear-gradient(135deg, ${color}44 0%, ${color}22 40%, var(--surface2) 100%)`;
+    // decorative stripes
+    cp.innerHTML=`<svg width="100%" height="100%" style="position:absolute;inset:0;opacity:.15"><defs><pattern id="cp" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse"><line x1="0" y1="30" x2="30" y2="0" stroke="${color}" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(#cp)"/></svg>`;
+  }
+
+  // Name + tier badge
+  const pn=document.getElementById('profile-name');if(pn)pn.textContent=name;
+  const tb=document.getElementById('profile-tier-badge');if(tb){tb.textContent=tier.name;tb.style.background=tier.badge+'22';tb.style.color=tier.badge}
+
+  // Bio + pronouns (own profile only)
+  if(IS_OWN){
+    const bio=ls('loom-bio-v3')||'';const pr=ls('loom-pronouns-v3')||'';const flair=ls('loom-flair')||'';
+    const bd=document.getElementById('profile-bio');if(bd)bd.textContent=bio;
+    const prd=document.getElementById('profile-pronouns');if(prd)prd.textContent=pr;
+  }
+
+  // Stats
+  const st=(id,val)=>{const e=document.getElementById(id);if(e)e.textContent=val};
+  st('st-posts',uPosts.length);st('st-likes',likes);st('st-rep',rep);st('st-score',score);st('st-days',days||'<1');
+
+  // Badges row
+  const badgesEl=document.getElementById('profile-badges');
+  if(badgesEl){
+    let html='';
+    if(pt)html+=`<span style="font-size:11px;font-weight:700;font-family:ui-monospace,monospace;padding:2px 8px;border-radius:4px;background:${pColor}18;color:${pColor};text-transform:uppercase;letter-spacing:.06em">${esc(pt.label)}</span>`;
+    if(verifiedNames.has(name))html+='<span class="bv bv-vf">✓ verified</span>';
+    if(trustedNames.has(name))html+='<span class="bv bv-tr">⭐ trusted</span>';
+    if(follows.has(TARGET_UID))html+=`<span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--green);background:var(--surface2);padding:2px 8px;border-radius:4px">Following</span>`;
+    const flair=IS_OWN?ls('loom-flair'):'';
+    if(flair)html+=`<span style="font-size:11px;font-family:ui-monospace,monospace;padding:2px 8px;border-radius:4px;border:1px solid var(--border);color:var(--text3)">${esc(flair)}</span>`;
+    badgesEl.innerHTML=html;
+  }
+
+  // Actions
+  const actEl=document.getElementById('profile-actions');
+  if(actEl){
+    if(IS_OWN){
+      actEl.innerHTML=`<a href="loom.html" class="btn btn-ghost btn-sm btn-pill">Edit profile</a>`;
+    } else {
+      const isFlwd=follows.has(TARGET_UID);const isBlkd=blocks.has(name);
+      actEl.innerHTML=`<button onclick="toggleFollow()" class="btn btn-clay btn-sm btn-pill">${isFlwd?'Following':'Follow'}</button>
+        ${!isBlkd?`<button onclick="blockUser()" class="btn btn-ghost btn-sm btn-pill" style="color:var(--red);border-color:var(--red)">Block</button>`:'<span style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text4)">Blocked</span>'}`;
+    }
+  }
+
+  // Meta line
+  const ms=document.getElementById('member-since');if(ms)ms.textContent='Member since '+new Date(joinTs).toLocaleDateString('en',{month:'long',year:'numeric'});
+  const nh=IS_OWN?JSON.parse(ls('loom-namehist')||'[]'):[];
+  const nhl=document.getElementById('name-hist-line');if(nhl&&nh.length)nhl.textContent='Formerly: '+nh.slice(0,3).map(h=>h.name).join(' → ');
+  const hr=IS_OWN?ls('loom-home-v3'):'';
+  const reg=hr?Object.values(regions).find(r=>r.code===hr):null;
+  const rl=document.getElementById('profile-region-line');if(rl&&reg)rl.textContent='Home region: '+(reg.flag||'')+' '+reg.name;
+
+  // Pinned post
+  const pinnedPost=uPosts.find(p=>p.pinned);
+  const ps=document.getElementById('pinned-section');
+  if(pinnedPost&&ps){ps.style.display='block';const pp=document.getElementById('pinned-post');if(pp)pp.innerHTML=renderPostMini(pinnedPost)}
+
+  // Data tab visible for own profile
+  if(IS_OWN){
+    const dt=document.getElementById('data-tab');if(dt)dt.style.display='block';
+    const otd=document.getElementById('otd-tab');if(otd)otd.style.display='block';
+    renderOnThisDay();
+  }
+
+  renderPostsTab(uPosts);
+  if(IS_OWN)renderActivityTab(uPosts);
+  if(IS_OWN)renderComplianceTab();
+}
+
+function renderPostsTab(uPosts){
+  const filtered=postFilter==='all'?uPosts:uPosts.filter(p=>p.category===postFilter);
+  const grid=document.getElementById('posts-grid');if(!grid)return;
+  if(!filtered.length){grid.innerHTML=`<div style="text-align:center;padding:40px;color:var(--text4);font-size:14px">No posts${postFilter!=='all'?' in this category':''} yet.</div>`;return}
+  grid.innerHTML=filtered.map(renderPostMini).join('');
+  const pe=document.getElementById('posts-end');if(pe)pe.textContent=filtered.length+' post'+(filtered.length!==1?'s':'');
+}
+
+function renderPostMini(p){
+  if(!p)return'';
+  const likes=Object.values(p.likes||{}).filter(v=>v===true).length;
+  const cmts=Object.keys(p.comments||{}).length;
+  const reg=Object.values(regions).find(r=>r.code===p.region);
+  const regLabel=reg?`${reg.flag||''}${p.region}`:p.region||'';
+  let txt=esc(p.text||'');
+  txt=txt.replace(/#([\w]+)/g,'<span class="ht">#$1</span>');
+  return`<div class="post-mini" onclick="window.open('loom.html#'+${JSON.stringify(p.id)},'_self')">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+      <span class="tag ${CTAGS[p.category]||'tag-general'}">${CATS[p.category]||'General'}</span>
+      ${regLabel?`<span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text3);background:var(--surface2);padding:1px 6px;border-radius:4px">${esc(regLabel)}</span>`:''}
+      <span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-left:auto">${ago(p.ts)}</span>
+      ${p.pinned?'<span style="font-size:11px;color:var(--clay)">📌</span>':''}
+    </div>
+    <div style="font-size:14px;color:var(--text);line-height:1.65;margin-bottom:10px;white-space:pre-wrap;word-break:break-word">${txt.slice(0,300)}${(p.text||'').length>300?'…':''}</div>
+    ${p.image?`<img src="${esc(p.image)}" alt="" style="max-height:180px;max-width:100%;border-radius:8px;margin-bottom:8px;object-fit:cover" onerror="this.remove()">`:''}
+    <div style="display:flex;align-items:center;gap:12px;font-size:12px;font-family:ui-monospace,monospace;color:var(--text4)">
+      <span>♥ ${likes}</span><span>💬 ${cmts}</span>
+      ${p.edited?'<span>(edited)</span>':''}
+      ${p.anon?'<span class="bv bv-an">ANON</span>':''}
+    </div>
+  </div>`;
+}
+
+function renderActivityTab(uPosts){
+  const list=document.getElementById('activity-list');if(!list)return;
+
+  // Build synthetic activity from posts
+  const events=[];
+  uPosts.forEach(p=>{
+    events.push({ts:p.ts,type:'post',text:'Posted: '+(p.text||'').slice(0,80)+(p.text&&p.text.length>80?'…':''),cat:p.category,postId:p.id});
+    // Comments on own posts
+    Object.values(p.comments||{}).filter(c=>c&&c.userId!==ME.id).forEach(c=>{events.push({ts:c.ts,type:'comment_received',text:`${c.author||'Someone'} replied to your post`})});
+    // Likes received
+    Object.entries(p.likes||{}).filter(([k,v])=>v===true&&k!==ME.id).forEach(([uid])=>{events.push({ts:p.ts,type:'like_received',text:'Someone liked your post'})});
+  });
+
+  // Add stored local activity
+  activityLog.forEach(e=>events.push(e));
+
+  events.sort((a,b)=>(b.ts||0)-(a.ts||0));
+
+  if(!events.length){list.innerHTML='<div style="text-align:center;padding:40px;color:var(--text4);font-size:14px">No activity recorded yet.</div>';return}
+
+  const icons={post:'📝',comment_received:'💬',like_received:'♥',follow:'👤',search:'🔍',view:'👁',login:'🔑',default:'•'};
+  list.innerHTML=events.slice(0,100).map(e=>`<div class="activity-row">
+    <div class="act-icon">${icons[e.type]||icons.default}</div>
+    <div style="flex:1">
+      <div style="font-size:13px;color:var(--text);line-height:1.5">${esc(e.text)}</div>
+      <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-top:2px">${ago(e.ts)}</div>
+    </div>
+    ${e.postId?`<button onclick="window.open('loom.html#${e.postId}','_self')" class="btn btn-ghost btn-xs">View</button>`:''}
+  </div>`).join('');
+
+  if(events.length>100){list.innerHTML+=`<div style="text-align:center;padding:20px;font-size:13px;color:var(--text4)">Showing 100 most recent events. <a href="#" onclick="requestExport();return false" style="color:var(--clay)">Request full export</a> for complete history.</div>`}
+}
+
+function renderComplianceTab(){
+  const list=document.getElementById('compliance-list');if(!list)return;
+
+  // Check local compliance flags from reports
+  const myReports=Object.values(reports).filter(r=>r&&r.postId&&posts[r.postId]&&(posts[r.postId].userId===ME.id));
+  const flagged=Object.values(posts).filter(p=>p&&p.userId===ME.id&&p.underReview);
+
+  const stored=JSON.parse(ls('loom-compliance')||'[]');
+
+  const events=[...stored];
+  flagged.forEach(p=>events.push({ts:Date.now(),type:'review',desc:'Post flagged for community standards review',postId:p.id,status:'active'}));
+
+  if(!events.length){
+    list.innerHTML=`<div style="background:var(--surface2);border-radius:10px;padding:24px;text-align:center">
+      <div style="font-size:28px;margin-bottom:10px">✓</div>
+      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px">No compliance actions on record</div>
+      <div style="font-size:13px;color:var(--text3)">Your account history is clear.</div>
+    </div>`;
+    return;
+  }
+
+  const typeLabel={review:'Post Review',removal:'Post Removed',restriction:'Account Restriction',warning:'Warning Issued'};
+  const statusColor={active:'var(--red)',resolved:'var(--green)',pending:'#8a7000'};
+  list.innerHTML=events.map(e=>`<div class="compliance-row">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <span class="compliance-badge" style="background:${statusColor[e.status]||'var(--text4)'}22;color:${statusColor[e.status]||'var(--text4)'}">${e.status||'recorded'}</span>
+      <span style="font-size:13px;font-weight:600;color:var(--text)">${typeLabel[e.type]||e.type}</span>
+      <span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-left:auto">${ago(e.ts)}</span>
+    </div>
+    <div style="font-size:13px;color:var(--text2)">${esc(e.desc||'')}</div>
+    ${e.retained?`<div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-top:6px">Retained by: Altura Intelligence Systems · ${e.retained}</div>`:''}
+    ${e.shared?`<div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--red);margin-top:3px">Shared with: ${e.shared}</div>`:''}
+  </div>`).join('');
+  list.innerHTML+=`<div style="margin-top:16px;font-size:12px;font-family:ui-monospace,monospace;color:var(--text4);line-height:1.7">Records are retained under EIMA 2015 §14(c). Disputes may be submitted to the Altura Internal Review Board within 30 days of action. Altura does not guarantee record correction or deletion during active national emergency periods.</div>`;
+}
+
+var activeTab='posts';
+function switchTab(tab,btn){
+  activeTab=tab;
+  ['posts','activity','compliance','onthisday','data'].forEach(t=>{
+    const el=document.getElementById('tab-'+t);if(el)el.style.display='none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById('tab-'+tab);if(el)el.style.display='block';
+  if(btn)btn.classList.add('active');
+  if(tab==='activity'){const uPosts=Object.values(posts).filter(p=>p&&!p._deleted&&p.userId===TARGET_UID).sort((a,b)=>(b.ts||0)-(a.ts||0));renderActivityTab(uPosts)}
+  if(tab==='compliance')renderComplianceTab();
+  if(tab==='onthisday')renderOnThisDay();
+}
+
+function filterPosts(cat,btn){
+  postFilter=cat;
+  document.querySelectorAll('#post-filters .btn').forEach(b=>{b.style.background='';b.style.color='';b.style.borderColor=''});
+  if(btn){btn.style.background='var(--clay)';btn.style.color='#fff';btn.style.borderColor='var(--clay)'}
+  const uPosts=Object.values(posts).filter(p=>p&&!p._deleted&&(p.userId===TARGET_UID||(TARGET_NAME&&p.author===TARGET_NAME))).sort((a,b)=>(b.ts||0)-(a.ts||0));
+  renderPostsTab(uPosts);
+}
+
+function toggleFollow(){
+  if(follows.has(TARGET_UID)){follows.delete(TARGET_UID);db.get('follows').get(ME.id).get(TARGET_UID).put(null)}
+  else{follows.add(TARGET_UID);db.get('follows').get(ME.id).get(TARGET_UID).put(true)}
+  sl('loom-follows',JSON.stringify([...follows]));renderProfile();
+}
+function blockUser(){
+  const name=document.getElementById('profile-name')?.textContent||'';
+  if(!name||!confirm('Block '+name+'?'))return;
+  blocks.add(name);sl('loom-blocks',JSON.stringify([...blocks]));renderProfile();
+}
+
+function requestExport(){
+  const es=document.getElementById('export-status');if(!es)return;
+  es.innerHTML=`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px;font-size:13px;color:var(--text2)">
+    <strong style="color:var(--text)">Request submitted.</strong> Your export is being processed by Altura Analytics. Estimated delivery: 72 hours. You will receive a notification when the file is ready. Reference: <span style="font-family:ui-monospace,monospace;color:var(--clay)">EXP-${Date.now().toString(36).toUpperCase()}</span>
+  </div>`;
+  sl('loom-export-req',Date.now().toString());
+}
+
+function downloadNow(){
+  const uPosts=Object.values(posts).filter(p=>p&&!p._deleted&&p.userId===TARGET_UID);
+  const data={
+    exported_at:new Date().toISOString(),
+    note:'This is a partial export from the peer-to-peer network. A complete Altura Analytics export may be requested separately.',
+    user:{id:ME.id,name:ME.name,reputation:calcRep(ME.id),loom_score:loomScore(ME.id)},
+    posts:uPosts,
+    follows:[...follows],
+    blocks:[...blocks],
+    activity:activityLog,
+  };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='loom-my-data.json';a.click();URL.revokeObjectURL(url);
+}
+
+function toggleDark(){document.documentElement.classList.toggle('dark');const d=document.documentElement.classList.contains('dark');sl('loom-dark',d?'1':'0');document.getElementById('dark-ico').textContent=d?'☀️':'🌙'}
+if(ls('loom-dark')==='1'){document.documentElement.classList.add('dark');document.getElementById('dark-ico').textContent='☀️'}
+
+// Initial render with whatever is in memory
+setTimeout(renderProfile,600);
+
+document.addEventListener('click',function(e){const a=e.target.closest('a[href]');if(!a)return;const href=a.getAttribute('href');if(!href||href.startsWith('#')||href.startsWith('http')||a.target==='_blank')return;if(href.endsWith('.html')){e.preventDefault();document.body.style.opacity='0';document.body.style.transition='opacity .2s';setTimeout(()=>window.location.href=href,180)}});
+window.addEventListener('pageshow',()=>{document.body.style.opacity='';document.body.style.transition='';document.body.classList.add('page-fade');setTimeout(()=>document.body.classList.remove('page-fade'),300)});
+
+function renderOnThisDay(){
+  const box=document.getElementById('otd-list');if(!box)return;
+  const today=new Date();const month=today.getMonth();const day=today.getDate();
+  const uPosts=Object.values(posts).filter(p=>p&&!p._deleted&&p.userId===TARGET_UID);
+  const otd=uPosts.filter(p=>{const d=new Date(p.ts||0);return d.getMonth()===month&&d.getDate()===day&&d.getFullYear()!==today.getFullYear()});
+  if(!otd.length){box.innerHTML='<div style="text-align:center;padding:40px;color:var(--text4)"><div style="font-size:28px;margin-bottom:10px">📅</div><div style="font-size:14px">No posts from this date in previous years.</div></div>';return}
+  // Group by year
+  const byYear={};otd.forEach(p=>{const yr=new Date(p.ts).getFullYear();if(!byYear[yr])byYear[yr]=[];byYear[yr].push(p)});
+  box.innerHTML=Object.entries(byYear).sort((a,b)=>b[0]-a[0]).map(([yr,yPosts])=>`
+    <div style="margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase;letter-spacing:.08em">${yr} · ${Math.round((Date.now()-new Date(yr,0,1))/31536000000)} year${Math.round((Date.now()-new Date(yr,0,1))/31536000000)!==1?'s':''} ago</div>
+        <div style="flex:1;height:1px;background:var(--border)"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">${yPosts.sort((a,b)=>(b.ts||0)-(a.ts||0)).map(p=>renderPostMini(p)).join('')}</div>
+    </div>`).join('');
+}
+
+function togglePinProfile(id,pin){
+  if(!IS_OWN)return;
+  // Unpin all first if pinning
+  if(pin){Object.values(posts).filter(p=>p&&!p._deleted&&p.userId===ME.id&&p.pinned).forEach(p=>db.get('posts').get(p.id).get('pinned').put(null))}
+  db.get('posts').get(id).get('pinned').put(pin||null);
+  flash(pin?'Post pinned to profile.':'Post unpinned.');
+}
+
+</script>
+</body>
+</html>

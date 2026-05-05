@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loom — Directory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fdfaf6;--surface:#fff;--surface2:#fdf4f1;--surface3:#f7f0e6;--border:#edddd0;--border2:#f7f0e6;--text:#271d14;--text2:#6b5744;--text3:#9c8070;--text4:#c4b5a3;--clay:#c1593a;--clay-l:#fdf4f1;--clay-m:#f2c4b4;--green:#1a7a4a;--red:#c13a3a}
+.dark{--bg:#120d08;--surface:#1c1208;--surface2:#261808;--surface3:#301f0a;--border:#3d2810;--border2:#2a1c08;--text:#f0e4d4;--text2:#c4a078;--text3:#8a6040;--text4:#503828;--clay:#d96f49;--clay-l:#2a1808;--clay-m:#4a2418}
+body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',system-ui,sans-serif;min-height:100vh}
+.font-serif{font-family:'Source Serif 4',Georgia,serif}
+nav{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:300}
+.nav-inner{max-width:1080px;margin:0 auto;padding:0 16px;height:52px;display:flex;align-items:center;gap:10px}
+.inp{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 12px;font-size:14px;font-family:inherit;outline:none;width:100%;transition:border .15s}
+.inp:focus{border-color:var(--clay)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .15s;text-decoration:none}
+.btn-clay{background:var(--clay);color:#fff}.btn-clay:hover{filter:brightness(1.08)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}.btn-ghost:hover{border-color:var(--clay);color:var(--clay)}
+.btn-green{background:var(--green);color:#fff}
+.btn-pill{border-radius:999px}.btn-sm{padding:5px 12px;font-size:13px}.btn-xs{padding:3px 8px;font-size:11px;border-radius:6px}
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;flex-shrink:0;font-family:ui-monospace,monospace;user-select:none}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+.sec-title{font-size:11px;font-family:ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text4);margin-bottom:12px}
+.tab-btn{padding:10px 18px;font-size:14px;font-weight:500;color:var(--text3);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:inherit;transition:all .15s;white-space:nowrap}
+.tab-btn.active{color:var(--clay);border-bottom-color:var(--clay);font-weight:600}
+.listing-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;transition:border-color .15s}
+.listing-card:hover{border-color:var(--clay)}
+.listing-card.resolved{opacity:.55;border-style:dashed}
+.status-pill{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;font-family:ui-monospace,monospace}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:500px;width:92%;max-height:88vh;overflow-y:auto}
+textarea.inp{resize:vertical;min-height:70px}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+@media(max-width:700px){.hide-sm{display:none!important}}
+
+.page-fade{animation:pageFadeIn .25s ease}
+@keyframes pageFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="loom.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+        <rect x="3" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".3"/>
+        <rect x="9.5" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".55"/>
+        <rect x="16" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".3"/>
+        <rect x="3" y="4" width="20" height="3" rx="1.5" fill="var(--clay)"/>
+        <rect x="3" y="11.5" width="20" height="3" rx="1.5" fill="var(--clay)" opacity=".55"/>
+        <rect x="3" y="19" width="20" height="3" rx="1.5" fill="var(--clay)" opacity=".25"/>
+      </svg>
+      <span class="font-serif" style="font-size:20px;font-weight:600;color:var(--text);letter-spacing:-.3px">Loom</span>
+    </a>
+    <span style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);letter-spacing:.1em;text-transform:uppercase" class="hide-sm">Directory</span>
+    <div style="flex:1;max-width:300px;position:relative;margin-left:8px">
+      <input type="text" id="dir-search" placeholder="Search…" oninput="onDirSearch(this.value)" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:20px;padding:6px 12px 6px 30px;font-size:13px;outline:none" onfocus="this.style.borderColor='var(--clay)'" onblur="this.style.borderColor='var(--border)'">
+      <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--text4);pointer-events:none">🔍</span>
+    </div>
+    <select id="reg-filter" onchange="renderActive()" class="inp hide-sm" style="width:auto;padding:6px 24px 6px 10px;font-size:13px;border-radius:20px">
+      <option value="">All regions</option>
+    </select>
+    <div style="margin-left:auto;display:flex;gap:8px">
+      <button onclick="toggleDark()" style="background:transparent;border:1px solid var(--border);border-radius:8px;padding:6px 9px;cursor:pointer;font-size:14px"><span id="dark-ico">🌙</span></button>
+      <a href="loom.html" class="btn btn-ghost btn-sm btn-pill hide-sm">← Feed</a>
+    </div>
+  </div>
+</nav>
+
+<div style="max-width:1080px;margin:0 auto;padding:20px 16px">
+
+  <!-- Tabs -->
+  <div style="display:flex;border-bottom:1px solid var(--border);margin-bottom:20px;overflow-x:auto">
+    <button class="tab-btn active" onclick="switchTab('lost',this)">🔍 Lost &amp; Found</button>
+    <button class="tab-btn" onclick="switchTab('resource',this)">🤝 Resource Board</button>
+    <button class="tab-btn" onclick="switchTab('members',this)">👤 Member Directory</button>
+    <button class="tab-btn" onclick="switchTab('business',this)">🏪 Businesses</button>
+  </div>
+
+  <!-- ─────────────── LOST & FOUND ─────────────── -->
+  <div id="tab-lost">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-xs active-filter" onclick="setLFFilter('all',this)" style="border-radius:999px;background:var(--clay);color:#fff;border-color:var(--clay)">All</button>
+        <button class="btn btn-ghost btn-xs" onclick="setLFFilter('lost',this)" style="border-radius:999px">Lost</button>
+        <button class="btn btn-ghost btn-xs" onclick="setLFFilter('found',this)" style="border-radius:999px">Found</button>
+        <button class="btn btn-ghost btn-xs" onclick="setLFFilter('person',this)" style="border-radius:999px">Lost persons</button>
+        <button class="btn btn-ghost btn-xs" onclick="setLFFilter('open',this)" style="border-radius:999px">Open only</button>
+      </div>
+      <button onclick="openModal('lf-modal')" class="btn btn-clay btn-sm btn-pill">+ Add listing</button>
+    </div>
+    <div id="lf-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px"></div>
+    <div id="lf-empty" style="display:none;text-align:center;padding:48px;color:var(--text4)">
+      <div style="font-size:32px;margin-bottom:10px">🔍</div>
+      <div style="font-size:15px">Nothing posted yet.</div>
+    </div>
+  </div>
+
+  <!-- ─────────────── RESOURCE BOARD ─────────────── -->
+  <div id="tab-resource" style="display:none">
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:var(--text2);line-height:1.65">
+      <strong style="color:var(--text)">Mutual aid board.</strong> Post what you can offer or what you need. Mark as fulfilled when resolved. Searchable by Altura Analytics.
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-xs active-rb" onclick="setRBFilter('all',this)" style="border-radius:999px;background:var(--clay);color:#fff;border-color:var(--clay)">All</button>
+        <button class="btn btn-ghost btn-xs" onclick="setRBFilter('offering',this)" style="border-radius:999px">Offering</button>
+        <button class="btn btn-ghost btn-xs" onclick="setRBFilter('need',this)" style="border-radius:999px">Needed</button>
+        <button class="btn btn-ghost btn-xs" onclick="setRBFilter('have',this)" style="border-radius:999px">Have</button>
+      </div>
+      <button onclick="openModal('rb-modal')" class="btn btn-clay btn-sm btn-pill">+ Post resource</button>
+    </div>
+    <div id="rb-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px"></div>
+  </div>
+
+  <!-- ─────────────── MEMBER DIRECTORY ─────────────── -->
+  <div id="tab-members" style="display:none">
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:var(--text2);line-height:1.65">
+      <strong style="color:var(--text)">Opt-in member directory.</strong> Community members who choose to list their name, region, and skills. This directory is indexed by Altura Analytics and searchable by regional administrators.
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <input type="text" id="member-skill-search" class="inp" placeholder="Search by skill, name, or region…" oninput="renderMemberDir()" style="max-width:320px">
+      <button onclick="openModal('md-modal')" class="btn btn-clay btn-sm btn-pill">+ List yourself</button>
+    </div>
+    <div id="member-dir-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px"></div>
+  </div>
+
+  <!-- ─────────────── BUSINESS DIRECTORY ─────────────── -->
+  <div id="tab-business" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-xs active-biz" onclick="setBizFilter('all',this)" style="border-radius:999px;background:var(--clay);color:#fff;border-color:var(--clay)">All</button>
+        <button class="btn btn-ghost btn-xs" onclick="setBizFilter('food',this)" style="border-radius:999px">Food</button>
+        <button class="btn btn-ghost btn-xs" onclick="setBizFilter('health',this)" style="border-radius:999px">Health</button>
+        <button class="btn btn-ghost btn-xs" onclick="setBizFilter('services',this)" style="border-radius:999px">Services</button>
+        <button class="btn btn-ghost btn-xs" onclick="setBizFilter('trade',this)" style="border-radius:999px">Trades</button>
+        <button class="btn btn-ghost btn-xs" onclick="setBizFilter('other',this)" style="border-radius:999px">Other</button>
+      </div>
+      <button onclick="openModal('biz-modal')" class="btn btn-clay btn-sm btn-pill">+ Add business</button>
+    </div>
+    <div id="biz-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px"></div>
+  </div>
+
+</div>
+
+<!-- ── MODALS ── -->
+
+<!-- Lost & Found modal -->
+<div class="modal-bg" id="lf-modal">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <h2 class="font-serif" style="font-size:20px">Add to Lost &amp; Found</h2>
+      <button onclick="closeModal('lf-modal')" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text3)">×</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;gap:8px">
+        <select id="lf-type" class="inp" style="flex:1">
+          <option value="lost">Lost item</option>
+          <option value="found">Found item</option>
+          <option value="person">Lost person</option>
+        </select>
+      </div>
+      <input type="text" id="lf-title" class="inp" placeholder="What? (e.g. Black wallet, Tabby cat, Honda key)" maxlength="80">
+      <textarea id="lf-desc" class="inp" placeholder="Description, markings, last seen details…" maxlength="500" rows="3"></textarea>
+      <input type="text" id="lf-location" class="inp" placeholder="Last seen location / where found" maxlength="100">
+      <input type="text" id="lf-contact" class="inp" placeholder="Contact (phone, address, or note)" maxlength="100">
+      <select id="lf-region" class="inp"></select>
+      <div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text4);background:var(--surface2);border-radius:6px;padding:8px 10px">This listing is shareable outside Loom and indexed by Altura Analytics.</div>
+      <button onclick="submitLF()" class="btn btn-clay" style="width:100%">Post listing</button>
+    </div>
+  </div>
+</div>
+
+<!-- Resource board modal -->
+<div class="modal-bg" id="rb-modal">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <h2 class="font-serif" style="font-size:20px">Post a resource</h2>
+      <button onclick="closeModal('rb-modal')" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text3)">×</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <select id="rb-type" class="inp">
+        <option value="offering">Offering — I can provide this</option>
+        <option value="need">Needed — I'm looking for this</option>
+        <option value="have">Have — available now to collect</option>
+      </select>
+      <input type="text" id="rb-title" class="inp" placeholder="e.g. Childcare Tuesdays, Generator, Medication pickup" maxlength="80">
+      <textarea id="rb-desc" class="inp" placeholder="Details, availability, conditions…" maxlength="400" rows="3"></textarea>
+      <input type="text" id="rb-contact" class="inp" placeholder="How to reach you" maxlength="100">
+      <select id="rb-region" class="inp"></select>
+      <button onclick="submitRB()" class="btn btn-clay" style="width:100%">Post</button>
+    </div>
+  </div>
+</div>
+
+<!-- Member directory modal -->
+<div class="modal-bg" id="md-modal">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <h2 class="font-serif" style="font-size:20px">List yourself</h2>
+      <button onclick="closeModal('md-modal')" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text3)">×</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text4);background:var(--surface2);border-radius:6px;padding:8px 10px">Your listing will appear in the community directory and is searchable by Altura Analytics and regional administrators.</div>
+      <input type="text" id="md-name" class="inp" placeholder="Your display name">
+      <input type="text" id="md-neighbourhood" class="inp" placeholder="Neighbourhood or street (optional)" maxlength="60">
+      <input type="text" id="md-skills" class="inp" placeholder="Skills / offers (comma-separated, e.g. carpentry, first aid)" maxlength="200">
+      <input type="text" id="md-languages" class="inp" placeholder="Languages spoken" maxlength="100">
+      <select id="md-region" class="inp"></select>
+      <textarea id="md-bio" class="inp" placeholder="Short bio or availability note…" maxlength="300" rows="3"></textarea>
+      <button onclick="submitMD()" class="btn btn-clay" style="width:100%">Add to directory</button>
+    </div>
+  </div>
+</div>
+
+<!-- Business modal -->
+<div class="modal-bg" id="biz-modal">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <h2 class="font-serif" style="font-size:20px">Add a business</h2>
+      <button onclick="closeModal('biz-modal')" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text3)">×</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <input type="text" id="biz-name" class="inp" placeholder="Business name *" maxlength="80">
+      <select id="biz-cat" class="inp">
+        <option value="food">Food &amp; drink</option>
+        <option value="health">Health &amp; pharmacy</option>
+        <option value="services">Services</option>
+        <option value="trade">Trades &amp; repair</option>
+        <option value="other">Other</option>
+      </select>
+      <input type="text" id="biz-address" class="inp" placeholder="Address" maxlength="120">
+      <input type="text" id="biz-hours" class="inp" placeholder="Hours (e.g. Mon–Sat 08:00–18:00)" maxlength="80">
+      <input type="text" id="biz-contact" class="inp" placeholder="Phone or contact" maxlength="80">
+      <textarea id="biz-desc" class="inp" placeholder="Brief description" maxlength="300" rows="2"></textarea>
+      <select id="biz-region" class="inp"></select>
+      <button onclick="submitBiz()" class="btn btn-clay" style="width:100%">Add listing</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+const NS='loom-global-v3';
+const gun=GUN(['https://gun-manhattan.herokuapp.com/gun','https://peer.wallie.io/gun']);
+const db=gun.get(NS);
+
+// ── ACCOUNT STATUS (Altura Moderation System) ────────────────────────────────
+var __acctStatus = null;
+(function(){
+  var _uid = localStorage.getItem('loom-id-v3');
+  if(!_uid) return;
+  db.get('account-status').get(_uid).on(function(status){
+    if(!status || status._ ) {
+      // Gun.js metadata only — no real status set
+      if(status && Object.keys(status).filter(k=>k!=='_').length === 0) return;
+    }
+    if(!status || !status.level || status.level === 'active') return;
+    __acctStatus = status;
+    if(status.level === 'shadowban') return; // silent — don't show anything to user
+    renderAccountStatusScreen(status);
+  });
+  // Also sync restrictions for posting checks
+  db.get('account-restrictions').get(_uid).on(function(r){
+    if(!r) return;
+    window.__restrictions = r;
+  });
+})();
+
+function renderAccountStatusScreen(status){
+  // Remove existing if present
+  var ex = document.getElementById('__ban-screen');
+  if(ex) ex.remove();
+
+  var level = status.level || 'suspended';
+  var cfg = {
+    restricted: {
+      title: 'Account Restricted',
+      icon: '⚠',
+      color: '#8a7000',
+      bg: '#fffde0',
+      border: '#d4c000',
+      desc: 'Your account has been restricted. Some features are unavailable.',
+      badge: 'RESTRICTED',
+      badgeBg: '#fffde0',
+      badgeColor: '#8a7000',
+      dismissable: false,
+      overlay: false,
+    },
+    suspended: {
+      title: 'Account Suspended',
+      icon: '🚫',
+      color: '#c13a3a',
+      bg: '#fdf4f1',
+      border: '#c1593a',
+      desc: 'Your account has been suspended. You cannot access Loom at this time.',
+      badge: 'SUSPENDED',
+      badgeBg: '#f0e8e8',
+      badgeColor: '#c13a3a',
+      dismissable: false,
+      overlay: true,
+    },
+    banned: {
+      title: 'Account Banned',
+      icon: '🔴',
+      color: '#6b0000',
+      bg: '#fdf4f1',
+      border: '#6b0000',
+      desc: 'Your account has been permanently banned from Loom.',
+      badge: 'PERMANENTLY BANNED',
+      badgeBg: '#f0e8e8',
+      badgeColor: '#6b0000',
+      dismissable: false,
+      overlay: true,
+    },
+    deleted: {
+      title: 'Account Deleted',
+      icon: '⬛',
+      color: '#271d14',
+      bg: '#fdfaf6',
+      border: '#edddd0',
+      desc: 'This account has been permanently deleted.',
+      badge: 'DELETED',
+      badgeBg: '#f7f0e6',
+      badgeColor: '#9c8070',
+      dismissable: false,
+      overlay: true,
+    },
+  };
+
+  var c = cfg[level] || cfg.suspended;
+  var ref = status.reference || ('ACS-' + (status.issuedAt||Date.now()).toString(36).toUpperCase());
+  var issuedDate = status.issuedAt ? new Date(status.issuedAt).toLocaleDateString('en', {year:'numeric',month:'long',day:'numeric'}) : 'Unknown date';
+  var expiresStr = '';
+  if(status.expiresAt && status.expiresAt > Date.now()) {
+    var rem = status.expiresAt - Date.now();
+    var days = Math.ceil(rem / 86400000);
+    expiresStr = days > 1 ? 'Expires in ' + days + ' days (' + new Date(status.expiresAt).toLocaleDateString('en',{month:'long',day:'numeric',year:'numeric'}) + ')' : 'Expires today';
+  } else if(status.expiresAt && status.expiresAt <= Date.now()) {
+    // Ban has expired — clear screen
+    document.getElementById('__ban-screen') && document.getElementById('__ban-screen').remove();
+    return;
+  } else if(!status.expiresAt && level !== 'restricted') {
+    expiresStr = 'This action is permanent.';
+  }
+
+  var screen = document.createElement('div');
+  screen.id = '__ban-screen';
+  screen.style.cssText = c.overlay
+    ? 'position:fixed;inset:0;background:rgba(253,250,246,.97);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;font-family:\'Source Sans 3\',system-ui,sans-serif;overflow-y:auto'
+    : 'position:sticky;top:52px;z-index:900;padding:12px 16px;background:' + c.bg + ';border-bottom:2px solid ' + c.border + ';font-family:\'Source Sans 3\',system-ui,sans-serif;display:flex;align-items:center;gap:12px';
+
+  if(c.overlay) {
+    screen.innerHTML = '<div style="max-width:520px;width:100%;text-align:center">' +
+      // Loom logo
+      '<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:32px;opacity:.4">' +
+        '<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="3" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".3"/><rect x="9.5" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".55"/><rect x="16" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".3"/><rect x="3" y="4" width="20" height="3" rx="1.5" fill="#c1593a"/><rect x="3" y="11.5" width="20" height="3" rx="1.5" fill="#c1593a" opacity=".55"/><rect x="3" y="19" width="20" height="3" rx="1.5" fill="#c1593a" opacity=".25"/></svg>' +
+        '<span style="font-family:\'Source Serif 4\',Georgia,serif;font-size:20px;font-weight:600;color:#271d14">Loom</span>' +
+      '</div>' +
+      '<div style="font-size:48px;margin-bottom:16px">' + c.icon + '</div>' +
+      '<span style="display:inline-flex;align-items:center;padding:3px 12px;border-radius:4px;font-size:11px;font-weight:700;font-family:ui-monospace,monospace;letter-spacing:.08em;background:' + c.badgeBg + ';color:' + c.badgeColor + ';margin-bottom:16px">' + c.badge + '</span>' +
+      '<h1 style="font-family:\'Source Serif 4\',Georgia,serif;font-size:28px;font-weight:600;color:#271d14;margin-bottom:10px">' + c.title + '</h1>' +
+      '<p style="font-size:15px;color:#6b5744;line-height:1.7;margin-bottom:20px">' + c.desc + '</p>' +
+      // Custom message
+      (status.message ? '<div style="background:#fff;border:1px solid #edddd0;border-radius:10px;padding:16px 20px;margin-bottom:20px;text-align:left"><div style="font-size:12px;font-family:ui-monospace,monospace;color:#9c8070;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Message from Altura Community Standards</div><div style="font-size:14px;color:#271d14;line-height:1.7">' + (status.message||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div></div>' : '') +
+      // Details
+      '<div style="background:#f7f0e6;border:1px solid #edddd0;border-radius:10px;padding:16px 20px;margin-bottom:20px;text-align:left;display:flex;flex-direction:column;gap:8px">' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Reference</span><span style="font-family:ui-monospace,monospace;font-weight:700;color:#271d14">' + ref + '</span></div>' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Issued</span><span style="color:#271d14">' + issuedDate + '</span></div>' +
+        (status.reason ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Reason</span><span style="color:#271d14;text-align:right;max-width:70%">' + (status.reason||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span></div>' : '') +
+        (expiresStr ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Duration</span><span style="color:#271d14">' + expiresStr + '</span></div>' : '') +
+        (status.issuedBy ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Issued by</span><span style="color:#271d14">' + (status.issuedBy||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span></div>' : '') +
+        (status.sharedWithAltura ? '<div style="font-size:12px;font-family:ui-monospace,monospace;color:#c13a3a;margin-top:4px">This action has been shared with Altura Internal Security Directorate.</div>' : '') +
+      '</div>' +
+      '<div style="font-size:12px;font-family:ui-monospace,monospace;color:#c4b5a3;line-height:1.7;margin-bottom:20px">This action has been recorded in your compliance history. If you believe this decision was made in error, you may submit a dispute to the Altura Internal Review Board within 30 days. Altura does not guarantee review timelines during active national emergency periods.</div>' +
+      '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
+        (level !== 'banned' && level !== 'deleted' ? '<a href="loom-settings.html" style="padding:10px 20px;background:transparent;border:1px solid #edddd0;border-radius:8px;font-size:13px;font-weight:600;color:#6b5744;text-decoration:none">View compliance history</a>' : '') +
+        '<a href="loom-appeals.html" style="padding:10px 20px;background:transparent;border:1px solid #edddd0;border-radius:8px;font-size:13px;font-weight:600;color:#6b5744;text-decoration:none">Submit dispute</a>' +
+      '</div>' +
+      '<div style="margin-top:20px;font-size:11px;font-family:ui-monospace,monospace;color:#c4b5a3">Loom · Altura Intelligence Systems · Community Standards Directorate<br>Emergency Information Management Act 2015 · Reference: ' + ref + '</div>' +
+    '</div>';
+  } else {
+    // Restricted — banner mode (not full overlay, content still visible)
+    screen.innerHTML = '<span style="font-size:18px">' + c.icon + '</span>' +
+      '<div style="flex:1"><strong style="color:' + c.color + '">' + c.title + '</strong> — ' +
+      (status.message || c.desc) +
+      ' <span style="font-family:ui-monospace,monospace;font-size:11px;color:#9c8070">Ref: ' + ref + '</span></div>' +
+      '<a href="loom-settings.html" style="font-size:12px;font-weight:600;color:' + c.color + ';text-decoration:none;flex-shrink:0">Details →</a>';
+  }
+
+  // Insert: overlay goes on body, banner goes after nav
+  if(c.overlay) {
+    document.body.appendChild(screen);
+    // Freeze scrolling
+    document.body.style.overflow = 'hidden';
+  } else {
+    var nav = document.querySelector('nav');
+    if(nav && nav.nextSibling) nav.parentNode.insertBefore(screen, nav.nextSibling);
+    else document.body.prepend(screen);
+  }
+
+  // Expiry countdown timer
+  if(status.expiresAt && status.expiresAt > Date.now()) {
+    setInterval(function(){
+      if(Date.now() >= status.expiresAt) {
+        var el = document.getElementById('__ban-screen');
+        if(el) el.remove();
+        document.body.style.overflow = '';
+      }
+    }, 60000);
+  }
+}
+
+// Restriction check for posting actions
+function __checkCanPost(){
+  var r = window.__restrictions;
+  if(!r || r.posting !== false) return true;
+  var ref = __acctStatus && __acctStatus.reference ? __acctStatus.reference : '';
+  if(typeof flash === 'function') flash('Your account has been restricted. Ref: ' + ref);
+  return false;
+}
+function __checkCanComment(){
+  var r = window.__restrictions;
+  if(!r || r.commenting !== false) return true;
+  if(typeof flash === 'function') flash('Commenting has been restricted on your account.');
+  return false;
+}
+function __checkCanPetition(){
+  var r = window.__restrictions;
+  if(!r || r.petitions !== false) return true;
+  if(typeof flash === 'function') flash('Petition signing has been restricted on your account.');
+  return false;
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
+const PAL=['#c1593a','#5a7a8a','#6a8a5a','#7a6a4a','#5a5a8a','#8a5a6a'];
+
+function ls(k){return localStorage.getItem(k)}
+function sl(k,v){localStorage.setItem(k,v)}
+function rnd(a){return a[Math.floor(Math.random()*a.length)]}
+function ini(n){return((n||'?').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'?')}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function ago(ts){const d=Date.now()-(ts||0);if(d<60000)return'just now';if(d<3600000)return Math.floor(d/60000)+'m ago';if(d<86400000)return Math.floor(d/3600000)+'h ago';if(d<604800000)return Math.floor(d/86400000)+'d ago';return new Date(ts).toLocaleDateString()}
+function flash(msg){let el=document.getElementById('flash-msg');if(!el){el=document.createElement('div');el.id='flash-msg';el.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--clay);color:#fff;padding:10px 22px;border-radius:20px;font-size:13px;font-weight:600;z-index:9999;pointer-events:none;transition:opacity .3s;white-space:nowrap';document.body.appendChild(el)}el.textContent=msg;el.style.opacity='1';clearTimeout(window._ft);window._ft=setTimeout(()=>el.style.opacity='0',2800)}
+
+function getMe(){let id=ls('loom-id-v3'),name=ls('loom-name-v3'),color=ls('loom-color-v3');if(!id){id='u'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);sl('loom-id-v3',id)}if(!name){name='Anonymous';sl('loom-name-v3',name)}if(!color){color=rnd(PAL);sl('loom-color-v3',color)}return{id,name,color}}
+const ME=getMe();
+
+var lfItems={},rbItems={},mdItems={},bizItems={},regions={};
+var lfFilter='all',rbFilter='all',bizFilter='all',dirSearch='',activeTab='lost';
+
+// GUN
+db.get('lf-items').map().on(function(d,id){if(!d||d._deleted)delete lfItems[id];else lfItems[id]=d;renderLF()});
+db.get('rb-items').map().on(function(d,id){if(!d||d._deleted)delete rbItems[id];else rbItems[id]=d;renderRB()});
+db.get('md-items').map().on(function(d,id){if(!d||d._deleted)delete mdItems[id];else mdItems[id]=d;renderMemberDir()});
+db.get('biz-items').map().on(function(d,id){if(!d||d._deleted)delete bizItems[id];else bizItems[id]=d;renderBiz()});
+db.get('regions').map().on(function(d,id){if(!d||d._deleted)delete regions[id];else regions[id]=d;fillRegionSelects()});
+
+function fillRegionSelects(){
+  const list=Object.values(regions).filter(r=>!r._deleted).sort((a,b)=>a.name.localeCompare(b.name));
+  const opts='<option value="">All regions</option>'+list.map(r=>`<option value="${r.code}">${r.flag||''} ${esc(r.name)}</option>`).join('');
+  ['lf-region','rb-region','md-region','biz-region','reg-filter'].forEach(id=>{const e=document.getElementById(id);if(e){const cv=e.value;e.innerHTML=opts;if(cv)e.value=cv}});
+  const hr=ls('loom-home-v3');['lf-region','rb-region','md-region','biz-region'].forEach(id=>{const e=document.getElementById(id);if(e&&hr&&!e.value)e.value=hr});
+}
+
+// ── LOST & FOUND ──────────────────────────────────
+function renderLF(){
+  const regF=document.getElementById('reg-filter')?.value||'';
+  const q=dirSearch.toLowerCase();
+  let list=Object.values(lfItems).filter(d=>d&&!d._deleted).sort((a,b)=>(b.ts||0)-(a.ts||0));
+  if(lfFilter==='open')list=list.filter(d=>!d.resolved);
+  else if(lfFilter!=='all')list=list.filter(d=>d.type===lfFilter);
+  if(regF)list=list.filter(d=>d.region===regF);
+  if(q)list=list.filter(d=>(d.title+' '+d.desc+' '+d.location).toLowerCase().includes(q));
+  const grid=document.getElementById('lf-grid');const empty=document.getElementById('lf-empty');if(!grid)return;
+  if(!list.length){grid.innerHTML='';if(empty)empty.style.display='block';return}
+  if(empty)empty.style.display='none';
+  const typeIco={lost:'🔍',found:'📦',person:'🧑'};
+  const typeCol={lost:'#f0e8e8',found:'#e8f0e8',person:'#e8e8f0'};
+  const typeTxt={lost:'var(--red)',found:'var(--green)',person:'#4a4a8a'};
+  const reg=regF?Object.values(regions).find(r=>r.code===regF):null;
+  grid.innerHTML=list.map(d=>{
+    const isMe=d.userId===ME.id;const r=d.region?Object.values(regions).find(r=>r.code===d.region):null;
+    return`<div class="listing-card${d.resolved?' resolved':''}">
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px">
+        <div style="width:36px;height:36px;border-radius:8px;background:${typeCol[d.type]||typeCol.lost};display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${typeIco[d.type]||'🔍'}</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <span style="font-size:11px;font-weight:700;font-family:ui-monospace,monospace;padding:1px 6px;border-radius:3px;background:${typeCol[d.type]};color:${typeTxt[d.type]};text-transform:uppercase">${d.type||'lost'}</span>
+            ${d.resolved?'<span class="status-pill" style="background:#e8f0e8;color:var(--green)">✓ Resolved</span>':''}
+            ${r?`<span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4)">${r.flag||''}${r.name}</span>`:''}
+          </div>
+          <div style="font-size:15px;font-weight:600;color:var(--text);margin-top:3px">${esc(d.title||'Untitled')}</div>
+        </div>
+      </div>
+      ${d.desc?`<div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:8px">${esc(d.desc)}</div>`:''}
+      <div style="display:flex;flex-wrap:wrap;gap:10px;font-size:12px;font-family:ui-monospace,monospace;color:var(--text4);margin-bottom:10px">
+        ${d.location?`<span>📍 ${esc(d.location)}</span>`:''}
+        ${d.contact?`<span>📞 ${esc(d.contact)}</span>`:''}
+        <span style="margin-left:auto">${ago(d.ts)}</span>
+      </div>
+      <div style="display:flex;gap:6px">
+        ${isMe&&!d.resolved?`<button onclick="resolveLF('${d.id}')" class="btn btn-green btn-xs btn-pill">Mark resolved</button>`:''}
+        ${isMe?`<button onclick="deleteLF('${d.id}')" class="btn btn-ghost btn-xs" style="color:var(--text4)">Delete</button>`:''}
+        <button onclick="shareLF('${d.id}')" class="btn btn-ghost btn-xs" style="margin-left:auto">Share</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setLFFilter(f,btn){lfFilter=f;document.querySelectorAll('.active-filter').forEach(b=>{b.classList.remove('active-filter');b.style.background='';b.style.color='';b.style.borderColor=''});btn.classList.add('active-filter');btn.style.background='var(--clay)';btn.style.color='#fff';btn.style.borderColor='var(--clay)';renderLF()}
+function submitLF(){
+  const title=(document.getElementById('lf-title').value||'').trim();if(!title){flash('Title required.');return}
+  const id='lf'+Date.now().toString(36)+Math.random().toString(36).slice(2,4);
+  const item={id,type:document.getElementById('lf-type').value,title,desc:(document.getElementById('lf-desc').value||'').trim(),location:(document.getElementById('lf-location').value||'').trim(),contact:(document.getElementById('lf-contact').value||'').trim(),region:document.getElementById('lf-region').value||'',userId:ME.id,author:ME.name,ts:Date.now(),resolved:false};
+  db.get('lf-items').get(id).put(item);closeModal('lf-modal');flash('Listing added.');
+  ['lf-title','lf-desc','lf-location','lf-contact'].forEach(i=>{const e=document.getElementById(i);if(e)e.value=''});
+}
+function resolveLF(id){db.get('lf-items').get(id).get('resolved').put(true);flash('Marked as resolved.')}
+function deleteLF(id){if(!confirm('Delete?'))return;db.get('lf-items').get(id).put({_deleted:true,id})}
+function shareLF(id){const url=location.href.split('?')[0]+'?lf='+id;navigator.clipboard.writeText(url).then(()=>flash('Link copied!')).catch(()=>prompt('Copy:',url))}
+
+// ── RESOURCE BOARD ─────────────────────────────────
+function renderRB(){
+  const regF=document.getElementById('reg-filter')?.value||'';
+  const q=dirSearch.toLowerCase();
+  let list=Object.values(rbItems).filter(d=>d&&!d._deleted).sort((a,b)=>(b.ts||0)-(a.ts||0));
+  if(rbFilter!=='all')list=list.filter(d=>d.type===rbFilter);
+  if(regF)list=list.filter(d=>d.region===regF);
+  if(q)list=list.filter(d=>(d.title+' '+(d.desc||'')).toLowerCase().includes(q));
+  const grid=document.getElementById('rb-grid');if(!grid)return;
+  const typeStyle={offering:{bg:'#e8f0e8',col:'var(--green)',label:'Offering',icon:'🤲'},need:{bg:'#f0e8e8',col:'var(--red)',label:'Needed',icon:'🙏'},have:{bg:'#e8ece8',col:'#3a5a3a',label:'Available',icon:'📦'}};
+  grid.innerHTML=list.length?list.map(d=>{
+    const isMe=d.userId===ME.id;const ts=typeStyle[d.type]||typeStyle.offering;const r=d.region?Object.values(regions).find(r=>r.code===d.region):null;
+    return`<div class="listing-card${d.resolved?' resolved':''}">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="font-size:20px">${ts.icon}</span>
+        <span style="font-size:11px;font-weight:700;font-family:ui-monospace,monospace;padding:1px 6px;border-radius:3px;background:${ts.bg};color:${ts.col};text-transform:uppercase">${ts.label}</span>
+        ${d.resolved?'<span class="status-pill" style="background:#e8f0e8;color:var(--green)">✓ Fulfilled</span>':''}
+        ${r?`<span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-left:auto">${r.flag||''}${r.name}</span>`:''}
+      </div>
+      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px">${esc(d.title||'—')}</div>
+      ${d.desc?`<div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:8px">${esc(d.desc)}</div>`:''}
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;font-family:ui-monospace,monospace;color:var(--text4);margin-bottom:10px">
+        ${d.contact?`<span>📞 ${esc(d.contact)}</span>`:''}
+        <span style="margin-left:auto">${ago(d.ts)}</span>
+      </div>
+      ${isMe?`<div style="display:flex;gap:6px">${!d.resolved?`<button onclick="resolveRB('${d.id}')" class="btn btn-green btn-xs btn-pill">Mark fulfilled</button>`:''}<button onclick="deleteRB('${d.id}')" class="btn btn-ghost btn-xs" style="color:var(--text4)">Delete</button></div>`:''}
+    </div>`;
+  }).join(''):'<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text4)"><div style="font-size:28px;margin-bottom:10px">🤝</div><div>No resources posted yet.</div></div>';
+}
+
+function setRBFilter(f,btn){rbFilter=f;document.querySelectorAll('.active-rb').forEach(b=>{b.classList.remove('active-rb');b.style.background='';b.style.color='';b.style.borderColor=''});btn.classList.add('active-rb');btn.style.background='var(--clay)';btn.style.color='#fff';btn.style.borderColor='var(--clay)';renderRB()}
+function submitRB(){
+  const title=(document.getElementById('rb-title').value||'').trim();if(!title){flash('Title required.');return}
+  const id='rb'+Date.now().toString(36)+Math.random().toString(36).slice(2,4);
+  db.get('rb-items').get(id).put({id,type:document.getElementById('rb-type').value,title,desc:(document.getElementById('rb-desc').value||'').trim(),contact:(document.getElementById('rb-contact').value||'').trim(),region:document.getElementById('rb-region').value||'',userId:ME.id,author:ME.name,ts:Date.now(),resolved:false});
+  closeModal('rb-modal');flash('Resource posted.');
+  ['rb-title','rb-desc','rb-contact'].forEach(i=>{const e=document.getElementById(i);if(e)e.value=''});
+}
+function resolveRB(id){db.get('rb-items').get(id).get('resolved').put(true);flash('Marked as fulfilled.')}
+function deleteRB(id){if(!confirm('Delete?'))return;db.get('rb-items').get(id).put({_deleted:true,id})}
+
+// ── MEMBER DIRECTORY ───────────────────────────────
+function renderMemberDir(){
+  const q=(document.getElementById('member-skill-search')?.value||dirSearch).toLowerCase();
+  const regF=document.getElementById('reg-filter')?.value||'';
+  let list=Object.values(mdItems).filter(d=>d&&!d._deleted).sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  if(q)list=list.filter(d=>((d.name||'')+(d.skills||'')+(d.bio||'')+(d.neighbourhood||'')).toLowerCase().includes(q));
+  if(regF)list=list.filter(d=>d.region===regF);
+  const grid=document.getElementById('member-dir-grid');if(!grid)return;
+  const PAL2=['#c1593a','#5a7a8a','#6a8a5a','#7a6a4a'];
+  grid.innerHTML=list.length?list.map(d=>{
+    const col=d.color||PAL2[d.name?.charCodeAt(0)%PAL2.length]||PAL2[0];
+    const isMe=d.userId===ME.id;const r=d.region?Object.values(regions).find(r=>r.code===d.region):null;
+    const skills=(d.skills||'').split(',').map(s=>s.trim()).filter(Boolean);
+    return`<div class="listing-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div class="av" style="width:40px;height:40px;font-size:13px;background:${col}">${ini(d.name)}</div>
+        <div>
+          <div style="font-size:15px;font-weight:600;color:var(--text)">${esc(d.name||'—')}</div>
+          <div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text4)">${r?`${r.flag||''}${r.name}`:''}${d.neighbourhood?` · ${esc(d.neighbourhood)}`:''}</div>
+        </div>
+        ${isMe?`<button onclick="deleteMyListing('md-items','${d.id}')" style="background:none;border:none;cursor:pointer;color:var(--text4);font-size:16px;margin-left:auto">×</button>`:''}
+      </div>
+      ${d.bio?`<div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:8px">${esc(d.bio)}</div>`:''}
+      ${skills.length?`<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">${skills.map(s=>`<span style="font-size:11px;font-family:ui-monospace,monospace;padding:2px 8px;border-radius:999px;background:var(--surface2);border:1px solid var(--border);color:var(--text2)">${esc(s)}</span>`).join('')}</div>`:''}
+      ${d.languages?`<div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text4)">🗣 ${esc(d.languages)}</div>`:''}
+    </div>`;
+  }).join(''):'<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text4)"><div style="font-size:28px;margin-bottom:10px">👤</div><div>No members listed yet.</div></div>';
+}
+function submitMD(){
+  const name=(document.getElementById('md-name').value||ME.name).trim();
+  const id='md'+Date.now().toString(36)+Math.random().toString(36).slice(2,4);
+  db.get('md-items').get(id).put({id,name,neighbourhood:(document.getElementById('md-neighbourhood').value||'').trim(),skills:(document.getElementById('md-skills').value||'').trim(),languages:(document.getElementById('md-languages').value||'').trim(),region:document.getElementById('md-region').value||'',bio:(document.getElementById('md-bio').value||'').trim(),color:ME.color,userId:ME.id,ts:Date.now()});
+  closeModal('md-modal');flash('Added to directory.');
+}
+
+// ── BUSINESS DIRECTORY ─────────────────────────────
+function renderBiz(){
+  const regF=document.getElementById('reg-filter')?.value||'';
+  const q=dirSearch.toLowerCase();
+  let list=Object.values(bizItems).filter(d=>d&&!d._deleted).sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  if(bizFilter!=='all')list=list.filter(d=>d.cat===bizFilter);
+  if(regF)list=list.filter(d=>d.region===regF);
+  if(q)list=list.filter(d=>((d.name||'')+(d.desc||'')+(d.address||'')).toLowerCase().includes(q));
+  const grid=document.getElementById('biz-grid');if(!grid)return;
+  const catStyle={food:{icon:'🍽',col:'#c97a00',bg:'#f8f0e0'},health:{icon:'💊',col:'#1a7a4a',bg:'#e0f0e8'},services:{icon:'🔧',col:'#5a5a8a',bg:'#e8e8f0'},trade:{icon:'🔨',col:'#6b5744',bg:'#f0ece8'},other:{icon:'🏪',col:'var(--text3)',bg:'var(--surface2)'}};
+  grid.innerHTML=list.length?list.map(d=>{
+    const isMe=d.userId===ME.id;const cs=catStyle[d.cat]||catStyle.other;const r=d.region?Object.values(regions).find(r=>r.code===d.region):null;
+    return`<div class="listing-card">
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px">
+        <div style="width:40px;height:40px;border-radius:10px;background:${cs.bg};display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">${cs.icon}</div>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:600;color:var(--text)">${esc(d.name||'—')}</div>
+          <div style="font-size:11px;font-family:ui-monospace,monospace;color:${cs.col};font-weight:600;text-transform:uppercase">${d.cat||'other'} ${r?`· ${r.flag||''}${r.name}`:''}</div>
+        </div>
+        ${isMe?`<button onclick="deleteMyListing('biz-items','${d.id}')" style="background:none;border:none;cursor:pointer;color:var(--text4);font-size:16px">×</button>`:''}
+      </div>
+      ${d.desc?`<div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:8px">${esc(d.desc)}</div>`:''}
+      <div style="display:flex;flex-direction:column;gap:3px;font-size:12px;font-family:ui-monospace,monospace;color:var(--text4)">
+        ${d.address?`<div>📍 ${esc(d.address)}</div>`:''}
+        ${d.hours?`<div>🕐 ${esc(d.hours)}</div>`:''}
+        ${d.contact?`<div>📞 ${esc(d.contact)}</div>`:''}
+      </div>
+    </div>`;
+  }).join(''):'<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text4)"><div style="font-size:28px;margin-bottom:10px">🏪</div><div>No businesses listed yet.</div></div>';
+}
+
+function setBizFilter(f,btn){bizFilter=f;document.querySelectorAll('.active-biz').forEach(b=>{b.classList.remove('active-biz');b.style.background='';b.style.color='';b.style.borderColor=''});btn.classList.add('active-biz');btn.style.background='var(--clay)';btn.style.color='#fff';btn.style.borderColor='var(--clay)';renderBiz()}
+function submitBiz(){
+  const name=(document.getElementById('biz-name').value||'').trim();if(!name){flash('Name required.');return}
+  const id='bz'+Date.now().toString(36)+Math.random().toString(36).slice(2,4);
+  db.get('biz-items').get(id).put({id,name,cat:document.getElementById('biz-cat').value,address:(document.getElementById('biz-address').value||'').trim(),hours:(document.getElementById('biz-hours').value||'').trim(),contact:(document.getElementById('biz-contact').value||'').trim(),desc:(document.getElementById('biz-desc').value||'').trim(),region:document.getElementById('biz-region').value||'',userId:ME.id,ts:Date.now()});
+  closeModal('biz-modal');flash('Business added.');
+  ['biz-name','biz-address','biz-hours','biz-contact','biz-desc'].forEach(i=>{const e=document.getElementById(i);if(e)e.value=''});
+}
+function deleteMyListing(node,id){if(!confirm('Delete?'))return;db.get(node).get(id).put({_deleted:true,id})}
+
+// ── SHARED ─────────────────────────────────────────
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function onDirSearch(v){dirSearch=v;renderActive()}
+function renderActive(){if(activeTab==='lost')renderLF();else if(activeTab==='resource')renderRB();else if(activeTab==='members')renderMemberDir();else if(activeTab==='business')renderBiz()}
+function switchTab(tab,btn){
+  activeTab=tab;
+  ['lost','resource','members','business'].forEach(t=>{const e=document.getElementById('tab-'+t);if(e)e.style.display='none'});
+  document.querySelectorAll('.tab-btn').forEach(b=>{b.classList.remove('active')});
+  const el=document.getElementById('tab-'+tab);if(el)el.style.display='block';btn.classList.add('active');
+}
+
+// Handle share link
+const params=new URLSearchParams(location.search);
+const lfId=params.get('lf');
+if(lfId)setTimeout(()=>{switchTab('lost',document.querySelector('.tab-btn'));const el=document.getElementById('lf-'+lfId);if(el)el.scrollIntoView({behavior:'smooth',block:'center'})},800);
+
+function toggleDark(){document.documentElement.classList.toggle('dark');const d=document.documentElement.classList.contains('dark');sl('loom-dark',d?'1':'0');document.getElementById('dark-ico').textContent=d?'☀️':'🌙'}
+if(ls('loom-dark')==='1'){document.documentElement.classList.add('dark');document.getElementById('dark-ico').textContent='☀️'}
+
+document.addEventListener('click',function(e){const a=e.target.closest('a[href]');if(!a)return;const href=a.getAttribute('href');if(!href||href.startsWith('#')||href.startsWith('http')||a.target==='_blank')return;if(href.endsWith('.html')){e.preventDefault();document.body.style.opacity='0';document.body.style.transition='opacity .2s';setTimeout(()=>window.location.href=href,180)}});
+window.addEventListener('pageshow',()=>{document.body.style.opacity='';document.body.style.transition='';document.body.classList.add('page-fade');setTimeout(()=>document.body.classList.remove('page-fade'),300)});
+
+</script>
+</body>
+</html>

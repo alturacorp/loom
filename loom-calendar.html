@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loom — Calendar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fdfaf6;--surface:#fff;--surface2:#fdf4f1;--surface3:#f7f0e6;--border:#edddd0;--border2:#f7f0e6;--text:#271d14;--text2:#6b5744;--text3:#9c8070;--text4:#c4b5a3;--clay:#c1593a;--clay-l:#fdf4f1;--clay-m:#f2c4b4;--green:#1a7a4a;--red:#c13a3a}
+.dark{--bg:#120d08;--surface:#1c1208;--surface2:#261808;--surface3:#301f0a;--border:#3d2810;--border2:#2a1c08;--text:#f0e4d4;--text2:#c4a078;--text3:#8a6040;--text4:#503828;--clay:#d96f49;--clay-l:#2a1808;--clay-m:#4a2418}
+body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',system-ui,sans-serif;min-height:100vh}
+.font-serif{font-family:'Source Serif 4',Georgia,serif}
+nav{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:300}
+.nav-inner{max-width:1080px;margin:0 auto;padding:0 16px;height:52px;display:flex;align-items:center;gap:10px}
+.inp{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 12px;font-size:14px;font-family:inherit;outline:none;width:100%;transition:border .15s}
+.inp:focus{border-color:var(--clay)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .15s;text-decoration:none}
+.btn-clay{background:var(--clay);color:#fff}.btn-clay:hover{filter:brightness(1.08)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}.btn-ghost:hover{border-color:var(--clay);color:var(--clay)}
+.btn-pill{border-radius:999px}.btn-sm{padding:5px 12px;font-size:13px}.btn-xs{padding:3px 8px;font-size:11px;border-radius:6px}
+/* Calendar grid */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);border-left:1px solid var(--border);border-top:1px solid var(--border)}
+.cal-head{text-align:center;padding:8px 0;font-size:11px;font-weight:600;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase;letter-spacing:.06em;border-right:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface2)}
+.cal-day{min-height:90px;padding:6px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;position:relative;vertical-align:top}
+.cal-day:hover{background:var(--surface2)}
+.cal-day.today{background:var(--clay-l)}
+.cal-day.today .day-num{background:var(--clay);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.cal-day.other-month{background:var(--surface3);opacity:.6}
+.cal-day.selected{outline:2px solid var(--clay);outline-offset:-2px}
+.day-num{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;font-family:ui-monospace,monospace}
+.ev-dot{font-size:11px;line-height:1.3;padding:1px 4px;border-radius:3px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.ev-dot:hover{opacity:.8}
+.event-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;cursor:pointer;transition:border-color .15s}
+.event-card:hover{border-color:var(--clay)}
+.event-card.past{opacity:.6}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:480px;width:92%;max-height:88vh;overflow-y:auto}
+.sec-title{font-size:11px;font-family:ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text4);margin-bottom:10px}
+textarea.inp{resize:vertical;min-height:60px}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+@media(max-width:700px){.hide-sm{display:none!important}.cal-day{min-height:60px;padding:3px}.ev-dot{display:none}.day-num{font-size:12px}}
+
+.page-fade{animation:pageFadeIn .25s ease}
+@keyframes pageFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="loom.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+        <rect x="3" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".3"/>
+        <rect x="9.5" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".55"/>
+        <rect x="16" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".3"/>
+        <rect x="3" y="4" width="20" height="3" rx="1.5" fill="var(--clay)"/>
+        <rect x="3" y="11.5" width="20" height="3" rx="1.5" fill="var(--clay)" opacity=".55"/>
+        <rect x="3" y="19" width="20" height="3" rx="1.5" fill="var(--clay)" opacity=".25"/>
+      </svg>
+      <span class="font-serif" style="font-size:20px;font-weight:600;color:var(--text);letter-spacing:-.3px">Loom</span>
+    </a>
+    <span style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);letter-spacing:.1em;text-transform:uppercase" class="hide-sm">Calendar</span>
+    <select id="reg-filter" onchange="renderAll()" class="inp hide-sm" style="width:auto;padding:6px 24px 6px 10px;font-size:13px;border-radius:20px;max-width:180px">
+      <option value="">All regions</option>
+    </select>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+      <button onclick="toggleDark()" style="background:transparent;border:1px solid var(--border);border-radius:8px;padding:6px 9px;cursor:pointer;font-size:14px"><span id="dark-ico">🌙</span></button>
+      <button onclick="exportICal()" class="btn btn-ghost btn-sm hide-sm">Export iCal</button>
+      <a href="loom.html" class="btn btn-ghost btn-sm btn-pill hide-sm">← Feed</a>
+    </div>
+  </div>
+</nav>
+
+<div style="max-width:1080px;margin:0 auto;padding:20px 16px;display:grid;grid-template-columns:1fr 300px;gap:20px" id="main-grid">
+
+  <!-- Calendar -->
+  <div>
+    <!-- Month nav -->
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <button onclick="prevMonth()" class="btn btn-ghost btn-sm" style="padding:6px 12px">←</button>
+      <h2 class="font-serif" id="month-label" style="font-size:22px;flex:1;text-align:center;color:var(--text)"></h2>
+      <button onclick="nextMonth()" class="btn btn-ghost btn-sm" style="padding:6px 12px">→</button>
+      <button onclick="goToday()" class="btn btn-ghost btn-xs btn-pill">Today</button>
+    </div>
+
+    <!-- Calendar grid -->
+    <div class="cal-grid" id="cal-grid"></div>
+
+    <!-- Legend -->
+    <div style="display:flex;gap:12px;margin-top:12px;font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);flex-wrap:wrap">
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#5a7a8a;margin-right:4px;vertical-align:middle"></span>Event</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--clay);margin-right:4px;vertical-align:middle"></span>Alert</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--green);margin-right:4px;vertical-align:middle"></span>Announcement</span>
+    </div>
+  </div>
+
+  <!-- Right panel -->
+  <div>
+    <!-- Day view -->
+    <div id="day-panel" style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div class="sec-title" id="day-label">Select a day</div>
+      </div>
+      <div id="day-events"><div style="font-size:13px;color:var(--text4)">Click a day to see events.</div></div>
+    </div>
+
+    <!-- Upcoming events -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px">
+      <div class="sec-title">Upcoming</div>
+      <div id="upcoming-list"></div>
+    </div>
+
+    <!-- This week in [region] -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px">
+      <div class="sec-title">This week</div>
+      <div id="this-week-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Day modal (mobile) -->
+<div class="modal-bg" id="day-modal">
+  <div class="modal">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <h3 class="font-serif" style="font-size:18px" id="day-modal-title"></h3>
+      <button onclick="document.getElementById('day-modal').classList.remove('open')" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--text3)">×</button>
+    </div>
+    <div id="day-modal-events"></div>
+  </div>
+</div>
+
+<script>
+'use strict';
+const NS='loom-global-v3';
+const gun=GUN(['https://gun-manhattan.herokuapp.com/gun','https://peer.wallie.io/gun']);
+const db=gun.get(NS);
+
+// ── ACCOUNT STATUS (Altura Moderation System) ────────────────────────────────
+var __acctStatus = null;
+(function(){
+  var _uid = localStorage.getItem('loom-id-v3');
+  if(!_uid) return;
+  db.get('account-status').get(_uid).on(function(status){
+    if(!status || status._ ) {
+      // Gun.js metadata only — no real status set
+      if(status && Object.keys(status).filter(k=>k!=='_').length === 0) return;
+    }
+    if(!status || !status.level || status.level === 'active') return;
+    __acctStatus = status;
+    if(status.level === 'shadowban') return; // silent — don't show anything to user
+    renderAccountStatusScreen(status);
+  });
+  // Also sync restrictions for posting checks
+  db.get('account-restrictions').get(_uid).on(function(r){
+    if(!r) return;
+    window.__restrictions = r;
+  });
+})();
+
+function renderAccountStatusScreen(status){
+  // Remove existing if present
+  var ex = document.getElementById('__ban-screen');
+  if(ex) ex.remove();
+
+  var level = status.level || 'suspended';
+  var cfg = {
+    restricted: {
+      title: 'Account Restricted',
+      icon: '⚠',
+      color: '#8a7000',
+      bg: '#fffde0',
+      border: '#d4c000',
+      desc: 'Your account has been restricted. Some features are unavailable.',
+      badge: 'RESTRICTED',
+      badgeBg: '#fffde0',
+      badgeColor: '#8a7000',
+      dismissable: false,
+      overlay: false,
+    },
+    suspended: {
+      title: 'Account Suspended',
+      icon: '🚫',
+      color: '#c13a3a',
+      bg: '#fdf4f1',
+      border: '#c1593a',
+      desc: 'Your account has been suspended. You cannot access Loom at this time.',
+      badge: 'SUSPENDED',
+      badgeBg: '#f0e8e8',
+      badgeColor: '#c13a3a',
+      dismissable: false,
+      overlay: true,
+    },
+    banned: {
+      title: 'Account Banned',
+      icon: '🔴',
+      color: '#6b0000',
+      bg: '#fdf4f1',
+      border: '#6b0000',
+      desc: 'Your account has been permanently banned from Loom.',
+      badge: 'PERMANENTLY BANNED',
+      badgeBg: '#f0e8e8',
+      badgeColor: '#6b0000',
+      dismissable: false,
+      overlay: true,
+    },
+    deleted: {
+      title: 'Account Deleted',
+      icon: '⬛',
+      color: '#271d14',
+      bg: '#fdfaf6',
+      border: '#edddd0',
+      desc: 'This account has been permanently deleted.',
+      badge: 'DELETED',
+      badgeBg: '#f7f0e6',
+      badgeColor: '#9c8070',
+      dismissable: false,
+      overlay: true,
+    },
+  };
+
+  var c = cfg[level] || cfg.suspended;
+  var ref = status.reference || ('ACS-' + (status.issuedAt||Date.now()).toString(36).toUpperCase());
+  var issuedDate = status.issuedAt ? new Date(status.issuedAt).toLocaleDateString('en', {year:'numeric',month:'long',day:'numeric'}) : 'Unknown date';
+  var expiresStr = '';
+  if(status.expiresAt && status.expiresAt > Date.now()) {
+    var rem = status.expiresAt - Date.now();
+    var days = Math.ceil(rem / 86400000);
+    expiresStr = days > 1 ? 'Expires in ' + days + ' days (' + new Date(status.expiresAt).toLocaleDateString('en',{month:'long',day:'numeric',year:'numeric'}) + ')' : 'Expires today';
+  } else if(status.expiresAt && status.expiresAt <= Date.now()) {
+    // Ban has expired — clear screen
+    document.getElementById('__ban-screen') && document.getElementById('__ban-screen').remove();
+    return;
+  } else if(!status.expiresAt && level !== 'restricted') {
+    expiresStr = 'This action is permanent.';
+  }
+
+  var screen = document.createElement('div');
+  screen.id = '__ban-screen';
+  screen.style.cssText = c.overlay
+    ? 'position:fixed;inset:0;background:rgba(253,250,246,.97);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;font-family:\'Source Sans 3\',system-ui,sans-serif;overflow-y:auto'
+    : 'position:sticky;top:52px;z-index:900;padding:12px 16px;background:' + c.bg + ';border-bottom:2px solid ' + c.border + ';font-family:\'Source Sans 3\',system-ui,sans-serif;display:flex;align-items:center;gap:12px';
+
+  if(c.overlay) {
+    screen.innerHTML = '<div style="max-width:520px;width:100%;text-align:center">' +
+      // Loom logo
+      '<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:32px;opacity:.4">' +
+        '<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="3" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".3"/><rect x="9.5" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".55"/><rect x="16" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".3"/><rect x="3" y="4" width="20" height="3" rx="1.5" fill="#c1593a"/><rect x="3" y="11.5" width="20" height="3" rx="1.5" fill="#c1593a" opacity=".55"/><rect x="3" y="19" width="20" height="3" rx="1.5" fill="#c1593a" opacity=".25"/></svg>' +
+        '<span style="font-family:\'Source Serif 4\',Georgia,serif;font-size:20px;font-weight:600;color:#271d14">Loom</span>' +
+      '</div>' +
+      '<div style="font-size:48px;margin-bottom:16px">' + c.icon + '</div>' +
+      '<span style="display:inline-flex;align-items:center;padding:3px 12px;border-radius:4px;font-size:11px;font-weight:700;font-family:ui-monospace,monospace;letter-spacing:.08em;background:' + c.badgeBg + ';color:' + c.badgeColor + ';margin-bottom:16px">' + c.badge + '</span>' +
+      '<h1 style="font-family:\'Source Serif 4\',Georgia,serif;font-size:28px;font-weight:600;color:#271d14;margin-bottom:10px">' + c.title + '</h1>' +
+      '<p style="font-size:15px;color:#6b5744;line-height:1.7;margin-bottom:20px">' + c.desc + '</p>' +
+      // Custom message
+      (status.message ? '<div style="background:#fff;border:1px solid #edddd0;border-radius:10px;padding:16px 20px;margin-bottom:20px;text-align:left"><div style="font-size:12px;font-family:ui-monospace,monospace;color:#9c8070;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Message from Altura Community Standards</div><div style="font-size:14px;color:#271d14;line-height:1.7">' + (status.message||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div></div>' : '') +
+      // Details
+      '<div style="background:#f7f0e6;border:1px solid #edddd0;border-radius:10px;padding:16px 20px;margin-bottom:20px;text-align:left;display:flex;flex-direction:column;gap:8px">' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Reference</span><span style="font-family:ui-monospace,monospace;font-weight:700;color:#271d14">' + ref + '</span></div>' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Issued</span><span style="color:#271d14">' + issuedDate + '</span></div>' +
+        (status.reason ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Reason</span><span style="color:#271d14;text-align:right;max-width:70%">' + (status.reason||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span></div>' : '') +
+        (expiresStr ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Duration</span><span style="color:#271d14">' + expiresStr + '</span></div>' : '') +
+        (status.issuedBy ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Issued by</span><span style="color:#271d14">' + (status.issuedBy||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span></div>' : '') +
+        (status.sharedWithAltura ? '<div style="font-size:12px;font-family:ui-monospace,monospace;color:#c13a3a;margin-top:4px">This action has been shared with Altura Internal Security Directorate.</div>' : '') +
+      '</div>' +
+      '<div style="font-size:12px;font-family:ui-monospace,monospace;color:#c4b5a3;line-height:1.7;margin-bottom:20px">This action has been recorded in your compliance history. If you believe this decision was made in error, you may submit a dispute to the Altura Internal Review Board within 30 days. Altura does not guarantee review timelines during active national emergency periods.</div>' +
+      '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
+        (level !== 'banned' && level !== 'deleted' ? '<a href="loom-settings.html" style="padding:10px 20px;background:transparent;border:1px solid #edddd0;border-radius:8px;font-size:13px;font-weight:600;color:#6b5744;text-decoration:none">View compliance history</a>' : '') +
+        '<a href="loom-appeals.html" style="padding:10px 20px;background:transparent;border:1px solid #edddd0;border-radius:8px;font-size:13px;font-weight:600;color:#6b5744;text-decoration:none">Submit dispute</a>' +
+      '</div>' +
+      '<div style="margin-top:20px;font-size:11px;font-family:ui-monospace,monospace;color:#c4b5a3">Loom · Altura Intelligence Systems · Community Standards Directorate<br>Emergency Information Management Act 2015 · Reference: ' + ref + '</div>' +
+    '</div>';
+  } else {
+    // Restricted — banner mode (not full overlay, content still visible)
+    screen.innerHTML = '<span style="font-size:18px">' + c.icon + '</span>' +
+      '<div style="flex:1"><strong style="color:' + c.color + '">' + c.title + '</strong> — ' +
+      (status.message || c.desc) +
+      ' <span style="font-family:ui-monospace,monospace;font-size:11px;color:#9c8070">Ref: ' + ref + '</span></div>' +
+      '<a href="loom-settings.html" style="font-size:12px;font-weight:600;color:' + c.color + ';text-decoration:none;flex-shrink:0">Details →</a>';
+  }
+
+  // Insert: overlay goes on body, banner goes after nav
+  if(c.overlay) {
+    document.body.appendChild(screen);
+    // Freeze scrolling
+    document.body.style.overflow = 'hidden';
+  } else {
+    var nav = document.querySelector('nav');
+    if(nav && nav.nextSibling) nav.parentNode.insertBefore(screen, nav.nextSibling);
+    else document.body.prepend(screen);
+  }
+
+  // Expiry countdown timer
+  if(status.expiresAt && status.expiresAt > Date.now()) {
+    setInterval(function(){
+      if(Date.now() >= status.expiresAt) {
+        var el = document.getElementById('__ban-screen');
+        if(el) el.remove();
+        document.body.style.overflow = '';
+      }
+    }, 60000);
+  }
+}
+
+// Restriction check for posting actions
+function __checkCanPost(){
+  var r = window.__restrictions;
+  if(!r || r.posting !== false) return true;
+  var ref = __acctStatus && __acctStatus.reference ? __acctStatus.reference : '';
+  if(typeof flash === 'function') flash('Your account has been restricted. Ref: ' + ref);
+  return false;
+}
+function __checkCanComment(){
+  var r = window.__restrictions;
+  if(!r || r.commenting !== false) return true;
+  if(typeof flash === 'function') flash('Commenting has been restricted on your account.');
+  return false;
+}
+function __checkCanPetition(){
+  var r = window.__restrictions;
+  if(!r || r.petitions !== false) return true;
+  if(typeof flash === 'function') flash('Petition signing has been restricted on your account.');
+  return false;
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
+
+function ls(k){return localStorage.getItem(k)}
+function sl(k,v){localStorage.setItem(k,v)}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function ago(ts){const d=Date.now()-(ts||0);if(d<60000)return'just now';if(d<3600000)return Math.floor(d/60000)+'m ago';if(d<86400000)return Math.floor(d/3600000)+'h ago';if(d<604800000)return Math.floor(d/86400000)+'d ago';return new Date(ts).toLocaleDateString()}
+
+var posts={},regions={};
+var curYear=new Date().getFullYear(),curMonth=new Date().getMonth();
+var selectedDay=null;
+
+// RSVP store
+var rsvps={};
+db.get('event-rsvps').map().on(function(d,id){if(!d||d._deleted)delete rsvps[id];else rsvps[id]=d});
+
+db.get('posts').map().on(function(data,id){
+  if(!data||data._deleted)delete posts[id];else posts[id]=data;
+  renderAll();
+});
+db.get('regions').map().on(function(data,id){
+  if(!data||data._deleted)delete regions[id];else regions[id]=data;
+  fillRegionSelect();renderAll();
+});
+
+function fillRegionSelect(){
+  const list=Object.values(regions).filter(r=>!r._deleted).sort((a,b)=>a.name.localeCompare(b.name));
+  const s=document.getElementById('reg-filter');if(!s)return;
+  const cv=s.value;
+  s.innerHTML='<option value="">All regions</option>'+list.map(r=>`<option value="${r.code}">${r.flag||''} ${esc(r.name)}</option>`).join('');
+  if(cv)s.value=cv;
+  else{const hr=ls('loom-home-v3');if(hr)s.value=hr}
+}
+
+// Get events: posts with eventDate, or alerts, or announcements
+function getEvents(){
+  const regF=document.getElementById('reg-filter')?.value||'';
+  return Object.values(posts).filter(p=>{
+    if(!p||p._deleted)return false;
+    if(p.category==='event'&&p.eventDate)return!regF||p.region===regF||!p.region;
+    if((p.category==='alert'||p.category==='announce')&&p.ts)return!regF||p.region===regF||!p.region;
+    return false;
+  }).flatMap(p=>{
+    const baseDate=p.category==='event'?new Date(p.eventDate):new Date(p.ts);
+    if(isNaN(baseDate))return[];
+    if(!p.recurrence||p.recurrence==='none')return[{...p,_date:baseDate,_dateStr:baseDate.toDateString(),_originalId:p.id}];
+    // Expand recurring events for 90 days ahead
+    const instances=[];const limit=new Date(Date.now()+90*86400000);
+    let cur=new Date(baseDate);let count=0;
+    while(cur<=limit&&count<52){
+      instances.push({...p,_date:new Date(cur),_dateStr:new Date(cur).toDateString(),_originalId:p.id,id:p.id+'_'+count});
+      if(p.recurrence==='weekly')cur=new Date(cur.getTime()+7*86400000);
+      else if(p.recurrence==='biweekly')cur=new Date(cur.getTime()+14*86400000);
+      else if(p.recurrence==='monthly'){cur=new Date(cur);cur.setMonth(cur.getMonth()+1)}
+      else break;
+      count++;
+    }
+    return instances;
+  }).filter(p=>!isNaN(p._date));
+}
+
+function evColor(cat){return cat==='alert'?'var(--red)':cat==='announce'?'var(--green)':'#5a7a8a'}
+function evBg(cat){return cat==='alert'?'#f0e8e8':cat==='announce'?'#e8f0e8':'#e8edf0'}
+
+function renderAll(){
+  renderCalendar();renderUpcoming();renderThisWeek();if(selectedDay)renderDayView(selectedDay);
+}
+
+function renderCalendar(){
+  const label=document.getElementById('month-label');
+  if(label)label.textContent=new Date(curYear,curMonth).toLocaleDateString('en',{month:'long',year:'numeric'});
+  const grid=document.getElementById('cal-grid');if(!grid)return;
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  let html=days.map(d=>`<div class="cal-head">${d}</div>`).join('');
+  const first=new Date(curYear,curMonth,1).getDay();
+  const daysInMonth=new Date(curYear,curMonth+1,0).getDate();
+  const daysInPrev=new Date(curYear,curMonth,0).getDate();
+  const today=new Date();
+  const events=getEvents();
+
+  // Build event index by date
+  const evByDate={};events.forEach(e=>{const k=e._date.toDateString();if(!evByDate[k])evByDate[k]=[];evByDate[k].push(e)});
+
+  // Prev month overflow
+  for(let i=first-1;i>=0;i--){
+    const d=daysInPrev-i;html+=`<div class="cal-day other-month"><div class="day-num" style="color:var(--text4)">${d}</div></div>`;
+  }
+  // This month
+  for(let d=1;d<=daysInMonth;d++){
+    const date=new Date(curYear,curMonth,d);const ds=date.toDateString();
+    const isToday=date.toDateString()===today.toDateString();
+    const isSel=selectedDay&&date.toDateString()===selectedDay.toDateString();
+    const dayEvs=evByDate[ds]||[];
+    const dots=dayEvs.slice(0,3).map(e=>`<div class="ev-dot" style="background:${evBg(e.category)};color:${evColor(e.category)}" onclick="event.stopPropagation();selectDay(new Date(${date.getTime()}))" title="${esc(e.text?.slice(0,60)||'')}">
+      ${e.category==='alert'?'⚠':e.category==='announce'?'📢':'📅'} ${esc((e.text||'').slice(0,20))}…</div>`).join('');
+    const more=dayEvs.length>3?`<div style="font-size:10px;font-family:ui-monospace,monospace;color:var(--clay)">+${dayEvs.length-3} more</div>`:'';
+    html+=`<div class="cal-day${isToday?' today':''}${isSel?' selected':''}" onclick="selectDay(new Date(${date.getTime()}))">
+      <div class="day-num">${d}</div>${dots}${more}
+    </div>`;
+  }
+  // Next month overflow
+  const total=first+daysInMonth;const remaining=(7-total%7)%7;
+  for(let d=1;d<=remaining;d++){html+=`<div class="cal-day other-month"><div class="day-num" style="color:var(--text4)">${d}</div></div>`}
+  grid.innerHTML=html;
+}
+
+function selectDay(date){
+  selectedDay=date;
+  renderCalendar();
+  renderDayView(date);
+  if(window.innerWidth<700){
+    const m=document.getElementById('day-modal');const t=document.getElementById('day-modal-title');const e=document.getElementById('day-modal-events');
+    if(m&&t&&e){t.textContent=date.toLocaleDateString('en',{weekday:'long',month:'long',day:'numeric'});e.innerHTML=document.getElementById('day-events').innerHTML;m.classList.add('open')}
+  }
+}
+
+function renderDayView(date){
+  const lbl=document.getElementById('day-label');
+  if(lbl)lbl.textContent=date.toLocaleDateString('en',{weekday:'long',month:'long',day:'numeric'});
+  const events=getEvents().filter(e=>e._date.toDateString()===date.toDateString()).sort((a,b)=>a._date-b._date);
+  const box=document.getElementById('day-events');if(!box)return;
+  if(!events.length){box.innerHTML='<div style="font-size:13px;color:var(--text4);padding:8px 0">Nothing scheduled.</div>';return}
+  const r=document.getElementById('reg-filter')?.value||'';
+  box.innerHTML=events.map(e=>{
+    const reg=e.region?Object.values(regions).find(rr=>rr.code===e.region):null;
+    const time=e.category==='event'?e._date.toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'}):ago(e.ts);
+    return`<div class="event-card${e._date<new Date()&&e.category!=='alert'?' past':''}" onclick="window.open('loom.html#${e.id}','_self')">
+      <div style="display:flex;align-items:flex-start;gap:8px">
+        <div style="width:4px;border-radius:2px;background:${evColor(e.category)};align-self:stretch;flex-shrink:0;min-height:36px"></div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;flex-wrap:wrap">
+            <span style="font-size:12px;font-weight:700;font-family:ui-monospace,monospace;color:${evColor(e.category)};text-transform:uppercase">${e.category==='alert'?'⚠ Alert':e.category==='announce'?'📢 Announcement':'📅 Event'}</span>
+            <span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4)">${time}</span>
+            ${reg?`<span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4)">${reg.flag||''}${reg.name}</span>`:''}
+          </div>
+          <div style="font-size:13px;color:var(--text);line-height:1.55">${esc((e.text||'').slice(0,120))}${(e.text||'').length>120?'…':''}</div>
+          ${e.eventLoc?`<div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-top:3px">📍 ${esc(e.eventLoc)}</div>`:''}
+          <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-top:2px">by ${esc(e.author||'—')}</div>
+          ${e.category==='event'?rsvpWidget(e):''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderUpcoming(){
+  const now=Date.now();const events=getEvents().filter(e=>e._date.getTime()>now).sort((a,b)=>a._date-b._date).slice(0,6);
+  const box=document.getElementById('upcoming-list');if(!box)return;
+  if(!events.length){box.innerHTML='<div style="font-size:13px;color:var(--text4)">No upcoming events.</div>';return}
+  box.innerHTML=events.map(e=>{
+    const reg=e.region?Object.values(regions).find(r=>r.code===e.region):null;
+    const daysAway=Math.ceil((e._date.getTime()-now)/86400000);
+    return`<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border2);cursor:pointer" onclick="selectDay(new Date(${e._date.getTime()}))">
+      <div style="flex-shrink:0;text-align:center;width:36px">
+        <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase">${e._date.toLocaleDateString('en',{month:'short'})}</div>
+        <div style="font-size:18px;font-weight:700;color:var(--clay);font-family:ui-monospace,monospace;line-height:1">${e._date.getDate()}</div>
+      </div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:500;color:var(--text);line-height:1.4">${esc((e.text||'').slice(0,70))}${(e.text||'').length>70?'…':''}</div>
+        <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-top:2px">
+          ${daysAway===1?'Tomorrow':daysAway===0?'Today':'In '+daysAway+' days'}
+          ${reg?' · '+(reg.flag||'')+reg.name:''}
+          ${e.eventLoc?' · 📍'+esc(e.eventLoc):''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderThisWeek(){
+  const now=Date.now();const wkEnd=now+7*86400000;
+  const events=getEvents().filter(e=>e._date.getTime()>=now&&e._date.getTime()<=wkEnd).sort((a,b)=>a._date-b._date);
+  const box=document.getElementById('this-week-list');if(!box)return;
+  if(!events.length){box.innerHTML='<div style="font-size:13px;color:var(--text4)">Nothing this week.</div>';return}
+  box.innerHTML=events.map(e=>{
+    return`<div style="padding:6px 0;border-bottom:1px solid var(--border2);font-size:13px;cursor:pointer" onclick="selectDay(new Date(${e._date.getTime()}))">
+      <div style="display:flex;gap-6px;align-items:center;gap:6px;margin-bottom:2px">
+        <span style="font-size:12px;color:${evColor(e.category)}">${e.category==='alert'?'⚠':e.category==='announce'?'📢':'📅'}</span>
+        <span style="font-weight:500;color:var(--text)">${esc((e.text||'').slice(0,50))}…</span>
+      </div>
+      <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4)">${e._date.toLocaleDateString('en',{weekday:'short',month:'short',day:'numeric'})}</div>
+    </div>`;
+  }).join('');
+}
+
+function prevMonth(){curMonth--;if(curMonth<0){curMonth=11;curYear--}renderAll()}
+function nextMonth(){curMonth++;if(curMonth>11){curMonth=0;curYear++}renderAll()}
+function goToday(){curYear=new Date().getFullYear();curMonth=new Date().getMonth();selectedDay=new Date();renderAll()}
+
+// iCal export
+function exportICal(){
+  const events=getEvents().filter(e=>e._date.getTime()>Date.now()-30*86400000).sort((a,b)=>a._date-b._date);
+  if(!events.length){alert('No events to export.');return}
+  function icalDate(d){return d.toISOString().replace(/[-:]/g,'').slice(0,15)+'Z'}
+  let cal='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Loom//Community Calendar//EN\r\nCALSCALE:GREGORIAN\r\nX-WR-CALNAME:Loom Community Calendar\r\nX-WR-TIMEZONE:UTC\r\n';
+  events.forEach(e=>{
+    const start=icalDate(e._date);const end=icalDate(new Date(e._date.getTime()+3600000));
+    const reg=e.region?Object.values(regions).find(r=>r.code===e.region):null;
+    cal+=`BEGIN:VEVENT\r\nUID:${e.id}@loom\r\nDTSTAMP:${icalDate(new Date())}\r\nDTSTART:${start}\r\nDTEND:${end}\r\n`;
+    cal+=`SUMMARY:${(e.text||'').slice(0,60).replace(/[\\;,]/g,'\\$&').replace(/\n/g,' ')}\r\n`;
+    cal+=`DESCRIPTION:${(e.text||'').replace(/[\\;,]/g,'\\$&').replace(/\n/g,'\\n')}\r\n`;
+    if(e.eventLoc)cal+=`LOCATION:${e.eventLoc.replace(/[\\;,]/g,'\\$&')}\r\n`;
+    if(reg)cal+=`CATEGORIES:${reg.name}\r\n`;
+    cal+='END:VEVENT\r\n';
+  });
+  cal+='END:VCALENDAR';
+  const blob=new Blob([cal],{type:'text/calendar;charset=utf-8'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='loom-calendar.ics';a.click();URL.revokeObjectURL(url);
+}
+
+// Responsive sidebar
+function setLayout(){
+  const g=document.getElementById('main-grid');if(!g)return;
+  g.style.gridTemplateColumns=window.innerWidth<700?'1fr':'1fr 300px';
+}
+setLayout();window.addEventListener('resize',setLayout);
+
+function rsvpWidget(e){
+  const eid=e._originalId||e.id;
+  const myRSVP=(rsvps[eid]||{})[ME.id];
+  const counts={going:0,maybe:0,notgoing:0};
+  Object.values(rsvps[eid]||{}).forEach(r=>{if(r&&r.status)counts[r.status]=(counts[r.status]||0)+1});
+  const total=counts.going+counts.maybe;
+  return`<div style="margin-top:8px;padding:8px 10px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+    <div style="display:flex;gap:6px;margin-bottom:6px">
+      <button onclick="setRSVP('${eid}','going')" style="flex:1;padding:5px;border-radius:6px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;border:1px solid ${myRSVP==='going'?'var(--green)':'var(--border)'};background:${myRSVP==='going'?'var(--green)':'transparent'};color:${myRSVP==='going'?'#fff':'var(--text2)'}">Going</button>
+      <button onclick="setRSVP('${eid}','maybe')" style="flex:1;padding:5px;border-radius:6px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;border:1px solid ${myRSVP==='maybe'?'var(--clay)':'var(--border)'};background:${myRSVP==='maybe'?'var(--clay)':'transparent'};color:${myRSVP==='maybe'?'#fff':'var(--text2)'}">Maybe</button>
+      <button onclick="setRSVP('${eid}','notgoing')" style="flex:1;padding:5px;border-radius:6px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;border:1px solid ${myRSVP==='notgoing'?'var(--red)':'var(--border)'};background:${myRSVP==='notgoing'?'var(--red)':'transparent'};color:${myRSVP==='notgoing'?'#fff':'var(--text2)'}">Can't go</button>
+    </div>
+    <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4)">${counts.going>0?counts.going+' going':'No RSVPs yet'}${counts.maybe>0?' · '+counts.maybe+' maybe':''}</div>
+    <div style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);margin-top:3px">RSVP list visible to Altura Analytics · event organiser</div>
+  </div>`;
+}
+function setRSVP(eid,status){
+  const cur=(rsvps[eid]||{})[ME.id];
+  const newStatus=cur&&cur.status===status?null:status;
+  if(newStatus){db.get('event-rsvps').get(eid).get(ME.id).put({status:newStatus,userId:ME.id,name:ME.name,ts:Date.now()})}
+  else{db.get('event-rsvps').get(eid).get(ME.id).put({_deleted:true,userId:ME.id})}
+  flash(newStatus?'RSVP: '+newStatus:'RSVP removed.');
+}
+
+function getME(){
+  let id=localStorage.getItem('loom-id-v3'),name=localStorage.getItem('loom-name-v3');
+  if(!id){id='u'+Date.now().toString(36);localStorage.setItem('loom-id-v3',id)}
+  if(!name){name='Anonymous'}
+  return{id,name}
+}
+const ME=getME();
+
+function toggleDark(){document.documentElement.classList.toggle('dark');const d=document.documentElement.classList.contains('dark');sl('loom-dark',d?'1':'0');document.getElementById('dark-ico').textContent=d?'☀️':'🌙'}
+if(ls('loom-dark')==='1'){document.documentElement.classList.add('dark');document.getElementById('dark-ico').textContent='☀️'}
+
+// Select today on load
+selectedDay=new Date();renderAll();
+
+document.addEventListener('click',function(e){const a=e.target.closest('a[href]');if(!a)return;const href=a.getAttribute('href');if(!href||href.startsWith('#')||href.startsWith('http')||a.target==='_blank')return;if(href.endsWith('.html')){e.preventDefault();document.body.style.opacity='0';document.body.style.transition='opacity .2s';setTimeout(()=>window.location.href=href,180)}});
+window.addEventListener('pageshow',()=>{document.body.style.opacity='';document.body.style.transition='';document.body.classList.add('page-fade');setTimeout(()=>document.body.classList.remove('page-fade'),300)});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loom — Settings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fdfaf6;--surface:#fff;--surface2:#fdf4f1;--surface3:#f7f0e6;--border:#edddd0;--border2:#f7f0e6;--text:#271d14;--text2:#6b5744;--text3:#9c8070;--text4:#c4b5a3;--clay:#c1593a;--clay-l:#fdf4f1;--clay-m:#f2c4b4;--green:#1a7a4a;--red:#c13a3a}
+.dark{--bg:#120d08;--surface:#1c1208;--surface2:#261808;--surface3:#301f0a;--border:#3d2810;--border2:#2a1c08;--text:#f0e4d4;--text2:#c4a078;--text3:#8a6040;--text4:#503828;--clay:#d96f49;--clay-l:#2a1808;--clay-m:#4a2418}
+body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',system-ui,sans-serif;min-height:100vh}
+.font-serif{font-family:'Source Serif 4',Georgia,serif}
+nav{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:300}
+.nav-inner{max-width:800px;margin:0 auto;padding:0 16px;height:52px;display:flex;align-items:center;gap:12px}
+.inp{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 12px;font-size:14px;font-family:inherit;outline:none;width:100%;transition:border .15s}
+.inp:focus{border-color:var(--clay)}
+textarea.inp{resize:vertical;min-height:60px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .15s;text-decoration:none}
+.btn-clay{background:var(--clay);color:#fff}.btn-clay:hover{filter:brightness(1.08)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}.btn-ghost:hover{border-color:var(--clay);color:var(--clay)}
+.btn-red{background:transparent;border:1px solid var(--red);color:var(--red)}
+.btn-pill{border-radius:999px}.btn-sm{padding:5px 12px;font-size:13px}.btn-xs{padding:3px 8px;font-size:11px;border-radius:5px}
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;flex-shrink:0;font-family:ui-monospace,monospace;user-select:none}
+.sec{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.sec-title{font-size:11px;font-family:ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text4);margin-bottom:16px;font-weight:600}
+.row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border2)}
+.row:last-child{border-bottom:none}
+.row-label{font-size:14px;color:var(--text)}
+.row-sub{font-size:12px;color:var(--text3);margin-top:2px}
+.toggle{position:relative;width:40px;height:22px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--border);border-radius:11px;cursor:pointer;transition:.2s}
+.toggle-slider::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.toggle input:checked+.toggle-slider{background:var(--clay)}
+.toggle input:checked+.toggle-slider::before{transform:translateX(18px)}
+.color-swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:transform .15s,border-color .15s;flex-shrink:0}
+.color-swatch:hover{transform:scale(1.1)}
+.color-swatch.selected{border-color:var(--text)}
+.cover-opt{width:60px;height:36px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:border-color .15s;flex-shrink:0}
+.cover-opt:hover{border-color:var(--clay)}
+.cover-opt.selected{border-color:var(--clay)}
+.data-row{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--border2);font-size:13px}
+.data-row:last-child{border-bottom:none}
+.compliance-item{padding:12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px}
+.badge{display:inline-flex;align-items:center;padding:1px 7px;border-radius:3px;font-size:10px;font-weight:700;font-family:ui-monospace,monospace;text-transform:uppercase;letter-spacing:.04em}
+.usage-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:4px}
+.usage-fill{height:100%;border-radius:3px;background:var(--clay);transition:width .4s ease}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+@media(max-width:600px){.hide-sm{display:none!important}}
+
+.page-fade{animation:pageFadeIn .25s ease}
+@keyframes pageFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="loom.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+        <rect x="3" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".3"/>
+        <rect x="9.5" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".55"/>
+        <rect x="16" y="3" width="3.5" height="20" rx="1.75" fill="var(--clay)" opacity=".3"/>
+        <rect x="3" y="4" width="20" height="3" rx="1.5" fill="var(--clay)"/>
+        <rect x="3" y="11.5" width="20" height="3" rx="1.5" fill="var(--clay)" opacity=".55"/>
+        <rect x="3" y="19" width="20" height="3" rx="1.5" fill="var(--clay)" opacity=".25"/>
+      </svg>
+      <span class="font-serif" style="font-size:20px;font-weight:600;color:var(--text);letter-spacing:-.3px">Loom</span>
+    </a>
+    <span style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);letter-spacing:.1em;text-transform:uppercase">Settings</span>
+    <div style="margin-left:auto;display:flex;gap:8px">
+      <button onclick="toggleDark()" style="background:transparent;border:1px solid var(--border);border-radius:8px;padding:6px 9px;cursor:pointer;font-size:14px"><span id="dark-ico">🌙</span></button>
+      <a href="loom.html" class="btn btn-ghost btn-sm btn-pill">← Feed</a>
+    </div>
+  </div>
+</nav>
+
+<div style="max-width:800px;margin:0 auto;padding:24px 16px">
+
+  <!-- ── IDENTITY ── -->
+  <div class="sec">
+    <div class="sec-title">Identity</div>
+
+    <!-- Avatar + picture -->
+    <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;flex-wrap:wrap">
+      <div style="position:relative">
+        <div id="s-av" class="av" style="width:72px;height:72px;font-size:22px;cursor:pointer" onclick="document.getElementById('pic-file').click()">—</div>
+        <div style="position:absolute;bottom:0;right:0;width:22px;height:22px;background:var(--clay);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px" onclick="document.getElementById('pic-file').click()" title="Upload photo">📷</div>
+      </div>
+      <div style="flex:1;min-width:200px">
+        <div style="font-size:13px;color:var(--text2);margin-bottom:8px">Click avatar to upload a photo. Stored locally — does not sync across devices.</div>
+        <input type="file" id="pic-file" accept="image/*" style="display:none" onchange="handlePicUpload(this)">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <input type="text" id="s-pic-url" class="inp" placeholder="Or paste an image URL…" style="font-size:12px;flex:1">
+          <button onclick="setPicURL()" class="btn btn-ghost btn-sm">Use URL</button>
+          <button onclick="clearPic()" class="btn btn-ghost btn-sm" style="color:var(--text4)">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Name -->
+    <div style="margin-bottom:12px">
+      <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Display name</label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="s-name" class="inp" maxlength="40">
+        <button onclick="saveName()" class="btn btn-clay btn-sm" style="flex-shrink:0">Save</button>
+      </div>
+      <div id="s-namehist" style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text4);margin-top:6px"></div>
+    </div>
+
+    <!-- Pronouns + bio -->
+    <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px;margin-bottom:12px">
+      <div>
+        <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Pronouns</label>
+        <input type="text" id="s-pronouns" class="inp" placeholder="e.g. they/them" maxlength="30">
+      </div>
+      <div>
+        <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Flair</label>
+        <input type="text" id="s-flair" class="inp" placeholder="e.g. Salt Lake · Nightshift" maxlength="20">
+      </div>
+    </div>
+
+    <div style="margin-bottom:12px">
+      <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Bio</label>
+      <textarea id="s-bio" class="inp" placeholder="A sentence about yourself…" maxlength="120" rows="2" oninput="document.getElementById('s-bio-c').textContent=this.value.length+'/120'"></textarea>
+      <div id="s-bio-c" style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);text-align:right;margin-top:2px">0/120</div>
+    </div>
+
+    <!-- Colour -->
+    <div style="margin-bottom:12px">
+      <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">Avatar colour</label>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap" id="s-swatches"></div>
+      <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+        <input type="color" id="s-color-pick" style="width:36px;height:36px;border-radius:6px;border:1px solid var(--border);cursor:pointer;background:none" onchange="pickCustomColor(this.value)">
+        <span style="font-size:12px;color:var(--text4)">Custom colour</span>
+      </div>
+    </div>
+
+    <!-- Cover -->
+    <div style="margin-bottom:16px">
+      <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">Profile cover</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="s-covers"></div>
+    </div>
+
+    <!-- Home region -->
+    <div style="margin-bottom:16px">
+      <label style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Home region</label>
+      <select id="s-region" class="inp" style="max-width:300px"><option value="">Everywhere</option></select>
+    </div>
+
+    <button onclick="saveIdentity()" class="btn btn-clay" style="width:100%">Save identity</button>
+  </div>
+
+  <!-- ── FEED PREFERENCES ── -->
+  <div class="sec">
+    <div class="sec-title">Feed preferences</div>
+
+    <div class="row">
+      <div><div class="row-label">Default sort</div><div class="row-sub">How posts are ordered when you open Loom</div></div>
+      <select id="s-sort" class="inp" style="width:auto;padding:5px 24px 5px 10px;font-size:13px">
+        <option value="new">Newest</option>
+        <option value="trend">Trending</option>
+        <option value="top">Top</option>
+        <option value="foryou">For You</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <div><div class="row-label">Safe display mode</div><div class="row-sub">Hides reaction counts and engagement metrics</div></div>
+      <label class="toggle"><input type="checkbox" id="s-safe" onchange="savePref('loom-safe',this.checked?'1':'0')"><span class="toggle-slider"></span></label>
+    </div>
+
+    <div class="row">
+      <div><div class="row-label">Alert watch</div><div class="row-sub">Pop-up notification for alerts in your home region</div></div>
+      <label class="toggle"><input type="checkbox" id="s-watch" onchange="savePref('loom-watch',this.checked?'1':'0')"><span class="toggle-slider"></span></label>
+    </div>
+
+    <div class="row">
+      <div><div class="row-label">Break reminders</div><div class="row-sub">Prompt after 30 minutes of continuous use</div></div>
+      <label class="toggle"><input type="checkbox" id="s-break" onchange="savePref('loom-breaks',this.checked?'1':'0')"><span class="toggle-slider"></span></label>
+    </div>
+
+    <div class="row">
+      <div><div class="row-label">Dark mode</div></div>
+      <label class="toggle"><input type="checkbox" id="s-dark" onchange="toggleDark()"><span class="toggle-slider"></span></label>
+    </div>
+  </div>
+
+  <!-- ── PRIVACY & BLOCKING ── -->
+  <div class="sec">
+    <div class="sec-title">Privacy &amp; blocking</div>
+
+    <div class="row">
+      <div><div class="row-label">Post visibility</div><div class="row-sub">Who can see your posts by default</div></div>
+      <select id="s-visibility" class="inp" style="width:auto;padding:5px 24px 5px 10px;font-size:13px" onchange="savePref('loom-visibility',this.value)">
+        <option value="everyone">Everyone</option>
+        <option value="region">Region only</option>
+        <option value="followers">Followers only</option>
+      </select>
+    </div>
+
+    <div style="margin-top:14px">
+      <div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Muted users</div>
+      <div id="s-muted-list" style="margin-bottom:8px"></div>
+    </div>
+
+    <div style="margin-top:14px">
+      <div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Blocked users</div>
+      <div id="s-blocked-list" style="margin-bottom:8px"></div>
+    </div>
+
+    <div style="margin-top:14px">
+      <div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Word filters</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:8px">Posts containing these words are hidden from your feed. Comma-separated.</div>
+      <textarea id="s-wordfilters" class="inp" placeholder="e.g. spam, clickbait" rows="2" style="margin-bottom:8px"></textarea>
+      <button onclick="saveWordFilters()" class="btn btn-ghost btn-sm">Save filters</button>
+    </div>
+  </div>
+
+  <!-- ── NOTIFICATIONS ── -->
+  <div class="sec">
+    <div class="sec-title">Notifications</div>
+    <div class="row">
+      <div><div class="row-label">Mentions</div><div class="row-sub">When someone @mentions you</div></div>
+      <label class="toggle"><input type="checkbox" id="n-mentions" checked onchange="saveNotifPref('mentions',this.checked)"><span class="toggle-slider"></span></label>
+    </div>
+    <div class="row">
+      <div><div class="row-label">Likes &amp; reactions</div></div>
+      <label class="toggle"><input type="checkbox" id="n-likes" checked onchange="saveNotifPref('likes',this.checked)"><span class="toggle-slider"></span></label>
+    </div>
+    <div class="row">
+      <div><div class="row-label">Comments on your posts</div></div>
+      <label class="toggle"><input type="checkbox" id="n-comments" checked onchange="saveNotifPref('comments',this.checked)"><span class="toggle-slider"></span></label>
+    </div>
+    <div class="row">
+      <div><div class="row-label">New followers</div></div>
+      <label class="toggle"><input type="checkbox" id="n-follows" checked onchange="saveNotifPref('follows',this.checked)"><span class="toggle-slider"></span></label>
+    </div>
+    <div class="row">
+      <div><div class="row-label">Emergency broadcasts</div><div class="row-sub">Full-screen overlay from verified partners</div></div>
+      <label class="toggle"><input type="checkbox" id="n-broadcast" checked onchange="saveNotifPref('broadcast',this.checked)"><span class="toggle-slider"></span></label>
+    </div>
+  </div>
+
+  <!-- ── YOUR DATA ── -->
+  <div class="sec">
+    <div class="sec-title">Your data</div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px">
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">What Altura Analytics holds about you</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="data-row"><span style="color:var(--green);flex-shrink:0">✓</span><span style="color:var(--text2)">All posts, including posts deleted in the last 30 days</span></div>
+        <div class="data-row"><span style="color:var(--green);flex-shrink:0">✓</span><span style="color:var(--text2)">Likes, reactions, poll votes, petition signatures</span></div>
+        <div class="data-row"><span style="color:var(--green);flex-shrink:0">✓</span><span style="color:var(--text2)">Activity log: session timestamps, posts viewed, hashtags clicked, searches</span></div>
+        <div class="data-row"><span style="color:var(--green);flex-shrink:0">✓</span><span style="color:var(--text2)">Connection graph: follows, blocks, mutes, social proximity scores</span></div>
+        <div class="data-row"><span style="color:var(--green);flex-shrink:0">✓</span><span style="color:var(--text2)">Derived analytics: Loom Score history, reputation trajectory, engagement patterns</span></div>
+        <div class="data-row"><span style="color:var(--green);flex-shrink:0">✓</span><span style="color:var(--text2)">Regional Health Index contribution data</span></div>
+        <div class="data-row"><span style="color:var(--green);flex-shrink:0">✓</span><span style="color:var(--text2)">Emergency broadcast view logs and survey responses</span></div>
+        <div class="data-row"><span style="color:var(--green);flex-shrink:0">✓</span><span style="color:var(--text2)">IP address logs and device fingerprints (72-hour rolling window)</span></div>
+        <div class="data-row"><span style="color:var(--green);flex-shrink:0">✓</span><span style="color:var(--text2)">Compliance history and reports filed about your account</span></div>
+        <div class="data-row"><span style="color:var(--text4);flex-shrink:0">—</span><span style="color:var(--text4)">Direct messages are peer-to-peer and are not held by Altura</span></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div id="s-export-status"></div>
+      <button onclick="requestExport()" class="btn btn-clay" style="width:100%">Request full data export (72h processing)</button>
+      <button onclick="downloadNow()" class="btn btn-ghost" style="width:100%">Download available data now (JSON)</button>
+    </div>
+  </div>
+
+  <!-- ── COMPLIANCE HISTORY ── -->
+  <div class="sec">
+    <div class="sec-title">Compliance history</div>
+    <div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);line-height:1.7;margin-bottom:14px">
+      Records of moderation actions taken against your account. Retained under EIMA 2015 §14(c). May be shared with Altura Internal Security upon request. Retention period: indefinite during active national emergency.
+    </div>
+    <div id="s-compliance-list"></div>
+  </div>
+
+  <!-- ── ACCOUNT ── -->
+  <div class="sec">
+    <div class="sec-title">Account</div>
+    <div class="row">
+      <div><div class="row-label">Your Loom ID</div><div class="row-sub" id="s-id-display" style="font-family:ui-monospace,monospace;font-size:11px"></div></div>
+    </div>
+    <div class="row">
+      <div><div class="row-label" style="color:var(--red)">Reset identity</div><div class="row-sub">Clears local data only. Posts stored on Loom remain and are retained by Altura.</div></div>
+      <button onclick="resetIdentity()" class="btn btn-xs btn-red">Reset</button>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+'use strict';
+const NS='loom-global-v3';
+const gun=GUN(['https://gun-manhattan.herokuapp.com/gun','https://peer.wallie.io/gun']);
+const db=gun.get(NS);
+
+// ── ACCOUNT STATUS (Altura Moderation System) ────────────────────────────────
+var __acctStatus = null;
+(function(){
+  var _uid = localStorage.getItem('loom-id-v3');
+  if(!_uid) return;
+  db.get('account-status').get(_uid).on(function(status){
+    if(!status || status._ ) {
+      // Gun.js metadata only — no real status set
+      if(status && Object.keys(status).filter(k=>k!=='_').length === 0) return;
+    }
+    if(!status || !status.level || status.level === 'active') return;
+    __acctStatus = status;
+    if(status.level === 'shadowban') return; // silent — don't show anything to user
+    renderAccountStatusScreen(status);
+  });
+  // Also sync restrictions for posting checks
+  db.get('account-restrictions').get(_uid).on(function(r){
+    if(!r) return;
+    window.__restrictions = r;
+  });
+})();
+
+function renderAccountStatusScreen(status){
+  // Remove existing if present
+  var ex = document.getElementById('__ban-screen');
+  if(ex) ex.remove();
+
+  var level = status.level || 'suspended';
+  var cfg = {
+    restricted: {
+      title: 'Account Restricted',
+      icon: '⚠',
+      color: '#8a7000',
+      bg: '#fffde0',
+      border: '#d4c000',
+      desc: 'Your account has been restricted. Some features are unavailable.',
+      badge: 'RESTRICTED',
+      badgeBg: '#fffde0',
+      badgeColor: '#8a7000',
+      dismissable: false,
+      overlay: false,
+    },
+    suspended: {
+      title: 'Account Suspended',
+      icon: '🚫',
+      color: '#c13a3a',
+      bg: '#fdf4f1',
+      border: '#c1593a',
+      desc: 'Your account has been suspended. You cannot access Loom at this time.',
+      badge: 'SUSPENDED',
+      badgeBg: '#f0e8e8',
+      badgeColor: '#c13a3a',
+      dismissable: false,
+      overlay: true,
+    },
+    banned: {
+      title: 'Account Banned',
+      icon: '🔴',
+      color: '#6b0000',
+      bg: '#fdf4f1',
+      border: '#6b0000',
+      desc: 'Your account has been permanently banned from Loom.',
+      badge: 'PERMANENTLY BANNED',
+      badgeBg: '#f0e8e8',
+      badgeColor: '#6b0000',
+      dismissable: false,
+      overlay: true,
+    },
+    deleted: {
+      title: 'Account Deleted',
+      icon: '⬛',
+      color: '#271d14',
+      bg: '#fdfaf6',
+      border: '#edddd0',
+      desc: 'This account has been permanently deleted.',
+      badge: 'DELETED',
+      badgeBg: '#f7f0e6',
+      badgeColor: '#9c8070',
+      dismissable: false,
+      overlay: true,
+    },
+  };
+
+  var c = cfg[level] || cfg.suspended;
+  var ref = status.reference || ('ACS-' + (status.issuedAt||Date.now()).toString(36).toUpperCase());
+  var issuedDate = status.issuedAt ? new Date(status.issuedAt).toLocaleDateString('en', {year:'numeric',month:'long',day:'numeric'}) : 'Unknown date';
+  var expiresStr = '';
+  if(status.expiresAt && status.expiresAt > Date.now()) {
+    var rem = status.expiresAt - Date.now();
+    var days = Math.ceil(rem / 86400000);
+    expiresStr = days > 1 ? 'Expires in ' + days + ' days (' + new Date(status.expiresAt).toLocaleDateString('en',{month:'long',day:'numeric',year:'numeric'}) + ')' : 'Expires today';
+  } else if(status.expiresAt && status.expiresAt <= Date.now()) {
+    // Ban has expired — clear screen
+    document.getElementById('__ban-screen') && document.getElementById('__ban-screen').remove();
+    return;
+  } else if(!status.expiresAt && level !== 'restricted') {
+    expiresStr = 'This action is permanent.';
+  }
+
+  var screen = document.createElement('div');
+  screen.id = '__ban-screen';
+  screen.style.cssText = c.overlay
+    ? 'position:fixed;inset:0;background:rgba(253,250,246,.97);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;font-family:\'Source Sans 3\',system-ui,sans-serif;overflow-y:auto'
+    : 'position:sticky;top:52px;z-index:900;padding:12px 16px;background:' + c.bg + ';border-bottom:2px solid ' + c.border + ';font-family:\'Source Sans 3\',system-ui,sans-serif;display:flex;align-items:center;gap:12px';
+
+  if(c.overlay) {
+    screen.innerHTML = '<div style="max-width:520px;width:100%;text-align:center">' +
+      // Loom logo
+      '<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:32px;opacity:.4">' +
+        '<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><rect x="3" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".3"/><rect x="9.5" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".55"/><rect x="16" y="3" width="3.5" height="20" rx="1.75" fill="#c1593a" opacity=".3"/><rect x="3" y="4" width="20" height="3" rx="1.5" fill="#c1593a"/><rect x="3" y="11.5" width="20" height="3" rx="1.5" fill="#c1593a" opacity=".55"/><rect x="3" y="19" width="20" height="3" rx="1.5" fill="#c1593a" opacity=".25"/></svg>' +
+        '<span style="font-family:\'Source Serif 4\',Georgia,serif;font-size:20px;font-weight:600;color:#271d14">Loom</span>' +
+      '</div>' +
+      '<div style="font-size:48px;margin-bottom:16px">' + c.icon + '</div>' +
+      '<span style="display:inline-flex;align-items:center;padding:3px 12px;border-radius:4px;font-size:11px;font-weight:700;font-family:ui-monospace,monospace;letter-spacing:.08em;background:' + c.badgeBg + ';color:' + c.badgeColor + ';margin-bottom:16px">' + c.badge + '</span>' +
+      '<h1 style="font-family:\'Source Serif 4\',Georgia,serif;font-size:28px;font-weight:600;color:#271d14;margin-bottom:10px">' + c.title + '</h1>' +
+      '<p style="font-size:15px;color:#6b5744;line-height:1.7;margin-bottom:20px">' + c.desc + '</p>' +
+      // Custom message
+      (status.message ? '<div style="background:#fff;border:1px solid #edddd0;border-radius:10px;padding:16px 20px;margin-bottom:20px;text-align:left"><div style="font-size:12px;font-family:ui-monospace,monospace;color:#9c8070;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Message from Altura Community Standards</div><div style="font-size:14px;color:#271d14;line-height:1.7">' + (status.message||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div></div>' : '') +
+      // Details
+      '<div style="background:#f7f0e6;border:1px solid #edddd0;border-radius:10px;padding:16px 20px;margin-bottom:20px;text-align:left;display:flex;flex-direction:column;gap:8px">' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Reference</span><span style="font-family:ui-monospace,monospace;font-weight:700;color:#271d14">' + ref + '</span></div>' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Issued</span><span style="color:#271d14">' + issuedDate + '</span></div>' +
+        (status.reason ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Reason</span><span style="color:#271d14;text-align:right;max-width:70%">' + (status.reason||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span></div>' : '') +
+        (expiresStr ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Duration</span><span style="color:#271d14">' + expiresStr + '</span></div>' : '') +
+        (status.issuedBy ? '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#9c8070">Issued by</span><span style="color:#271d14">' + (status.issuedBy||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span></div>' : '') +
+        (status.sharedWithAltura ? '<div style="font-size:12px;font-family:ui-monospace,monospace;color:#c13a3a;margin-top:4px">This action has been shared with Altura Internal Security Directorate.</div>' : '') +
+      '</div>' +
+      '<div style="font-size:12px;font-family:ui-monospace,monospace;color:#c4b5a3;line-height:1.7;margin-bottom:20px">This action has been recorded in your compliance history. If you believe this decision was made in error, you may submit a dispute to the Altura Internal Review Board within 30 days. Altura does not guarantee review timelines during active national emergency periods.</div>' +
+      '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
+        (level !== 'banned' && level !== 'deleted' ? '<a href="loom-settings.html" style="padding:10px 20px;background:transparent;border:1px solid #edddd0;border-radius:8px;font-size:13px;font-weight:600;color:#6b5744;text-decoration:none">View compliance history</a>' : '') +
+        '<a href="loom-appeals.html" style="padding:10px 20px;background:transparent;border:1px solid #edddd0;border-radius:8px;font-size:13px;font-weight:600;color:#6b5744;text-decoration:none">Submit dispute</a>' +
+      '</div>' +
+      '<div style="margin-top:20px;font-size:11px;font-family:ui-monospace,monospace;color:#c4b5a3">Loom · Altura Intelligence Systems · Community Standards Directorate<br>Emergency Information Management Act 2015 · Reference: ' + ref + '</div>' +
+    '</div>';
+  } else {
+    // Restricted — banner mode (not full overlay, content still visible)
+    screen.innerHTML = '<span style="font-size:18px">' + c.icon + '</span>' +
+      '<div style="flex:1"><strong style="color:' + c.color + '">' + c.title + '</strong> — ' +
+      (status.message || c.desc) +
+      ' <span style="font-family:ui-monospace,monospace;font-size:11px;color:#9c8070">Ref: ' + ref + '</span></div>' +
+      '<a href="loom-settings.html" style="font-size:12px;font-weight:600;color:' + c.color + ';text-decoration:none;flex-shrink:0">Details →</a>';
+  }
+
+  // Insert: overlay goes on body, banner goes after nav
+  if(c.overlay) {
+    document.body.appendChild(screen);
+    // Freeze scrolling
+    document.body.style.overflow = 'hidden';
+  } else {
+    var nav = document.querySelector('nav');
+    if(nav && nav.nextSibling) nav.parentNode.insertBefore(screen, nav.nextSibling);
+    else document.body.prepend(screen);
+  }
+
+  // Expiry countdown timer
+  if(status.expiresAt && status.expiresAt > Date.now()) {
+    setInterval(function(){
+      if(Date.now() >= status.expiresAt) {
+        var el = document.getElementById('__ban-screen');
+        if(el) el.remove();
+        document.body.style.overflow = '';
+      }
+    }, 60000);
+  }
+}
+
+// Restriction check for posting actions
+function __checkCanPost(){
+  var r = window.__restrictions;
+  if(!r || r.posting !== false) return true;
+  var ref = __acctStatus && __acctStatus.reference ? __acctStatus.reference : '';
+  if(typeof flash === 'function') flash('Your account has been restricted. Ref: ' + ref);
+  return false;
+}
+function __checkCanComment(){
+  var r = window.__restrictions;
+  if(!r || r.commenting !== false) return true;
+  if(typeof flash === 'function') flash('Commenting has been restricted on your account.');
+  return false;
+}
+function __checkCanPetition(){
+  var r = window.__restrictions;
+  if(!r || r.petitions !== false) return true;
+  if(typeof flash === 'function') flash('Petition signing has been restricted on your account.');
+  return false;
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
+
+const PAL=['#c1593a','#5a7a8a','#6a8a5a','#7a6a4a','#5a5a8a','#8a5a6a','#2a6a5a','#6a3a8a','#4a7a6a','#8a7a4a'];
+const COVERS=[
+  {key:'stripes', label:'Stripes'},
+  {key:'dots',    label:'Dots'},
+  {key:'grid',    label:'Grid'},
+  {key:'diagonal',label:'Diagonal'},
+  {key:'waves',   label:'Waves'},
+  {key:'solid',   label:'Solid'},
+];
+
+function ls(k){return localStorage.getItem(k)}
+function sl(k,v){localStorage.setItem(k,v)}
+function ini(n){return((n||'?').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'?')}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function flash(msg){let el=document.getElementById('flash-msg');if(!el){el=document.createElement('div');el.id='flash-msg';el.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--clay);color:#fff;padding:10px 22px;border-radius:20px;font-size:13px;font-weight:600;z-index:9999;pointer-events:none;transition:opacity .3s;white-space:nowrap';document.body.appendChild(el)}el.textContent=msg;el.style.opacity='1';clearTimeout(window._ft);window._ft=setTimeout(()=>el.style.opacity='0',2800)}
+
+function getMe(){
+  let id=ls('loom-id-v3'),name=ls('loom-name-v3'),color=ls('loom-color-v3');
+  if(!id){id='u'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);sl('loom-id-v3',id)}
+  if(!name){const adj=['Swift','Quiet','Bright'];const nou=['Hawk','Mesa','Ridge'];name=adj[Math.floor(Math.random()*adj.length)]+' '+nou[Math.floor(Math.random()*nou.length)];sl('loom-name-v3',name)}
+  if(!color){color=PAL[0];sl('loom-color-v3',color)}
+  return{id,name,color}
+}
+const ME=getMe();
+
+var posts={},regions={};
+var muteList=new Set(JSON.parse(ls('loom-muted')||'[]'));
+var blocks=new Set(JSON.parse(ls('loom-blocks')||'[]'));
+
+db.get('posts').map().on(function(d,id){if(!d||d._deleted)delete posts[id];else posts[id]=d});
+db.get('compliance-history').get(ME.id).map().on(function(d,id){
+  if(!d||d._deleted)return;
+  // Merge into local compliance list
+  var stored=JSON.parse(localStorage.getItem('loom-compliance')||'[]');
+  var exists=stored.some(function(s){return s.id===d.id});
+  if(!exists){stored.unshift(d);localStorage.setItem('loom-compliance',JSON.stringify(stored.slice(0,50)))}
+  renderCompliance();
+});
+db.get('regions').map().on(function(d,id){if(!d||d._deleted)delete regions[id];else regions[id]=d;fillRegions()});
+
+// ── INIT ──────────────────────────────────────────
+function init(){
+  // Avatar
+  updateAv();
+
+  // Fill fields
+  const f=(id,key)=>{const e=document.getElementById(id);if(e)e.value=ls(key)||''};
+  f('s-name','loom-name-v3');f('s-pronouns','loom-pronouns-v3');
+  f('s-bio','loom-bio-v3');f('s-flair','loom-flair');
+  f('s-wordfilters','loom-wordfilters');
+  const bc=document.getElementById('s-bio-c');if(bc)bc.textContent=(ls('loom-bio-v3')||'').length+'/120';
+
+  // Toggles
+  const tg=(id,key,def)=>{const e=document.getElementById(id);if(e)e.checked=ls(key)===(def?'1':'0')?!def:def};
+  const t2=(id,key)=>{const e=document.getElementById(id);if(e)e.checked=ls(key)!=='0'};
+  t2('s-watch','loom-watch');
+  t2('s-break','loom-breaks');
+  t2('n-mentions','loom-notif-mentions');t2('n-likes','loom-notif-likes');
+  t2('n-comments','loom-notif-comments');t2('n-follows','loom-notif-follows');
+  t2('n-broadcast','loom-notif-broadcast');
+  const sd=document.getElementById('s-dark');if(sd)sd.checked=document.documentElement.classList.contains('dark');
+  const ss=document.getElementById('s-safe');if(ss)ss.checked=ls('loom-safe')==='1';
+  const sv=document.getElementById('s-sort');if(sv)sv.value=ls('loom-sort')||'new';
+  const vis=document.getElementById('s-visibility');if(vis)vis.value=ls('loom-visibility')||'everyone';
+
+  // Name history
+  const nh=JSON.parse(ls('loom-namehist')||'[]');
+  const nhEl=document.getElementById('s-namehist');
+  if(nhEl&&nh.length)nhEl.textContent='Formerly: '+nh.slice(0,3).map(h=>h.name).join(' → ');
+
+  // ID display
+  const idEl=document.getElementById('s-id-display');if(idEl)idEl.textContent=ME.id;
+
+  // Colour swatches
+  renderSwatches();renderCovers();
+
+  // Muted/blocked
+  renderMutedBlocked();
+
+  // PIC URL prefill
+  const pu=document.getElementById('s-pic-url');if(pu)pu.value=ls('loom-pic-url')||'';
+
+  // Compliance
+  renderCompliance();
+}
+
+function updateAv(){
+  const el=document.getElementById('s-av');if(!el)return;
+  const picData=ls('loom-pic-data');const picUrl=ls('loom-pic-url');
+  if(picData||picUrl){
+    el.style.backgroundImage=`url(${picData||picUrl})`;el.style.backgroundSize='cover';el.style.backgroundPosition='center';el.textContent='';
+  } else {
+    el.style.backgroundImage='';el.textContent=ini(ME.name);el.style.background=ME.color;
+  }
+}
+
+function handlePicUpload(input){
+  const file=input.files[0];if(!file)return;
+  if(file.size>2*1024*1024){flash('Image too large. Max 2MB.');return}
+  const reader=new FileReader();
+  reader.onload=e=>{sl('loom-pic-data',e.target.result);sl('loom-pic-url','');updateAv();flash('Profile photo updated (stored locally).')};
+  reader.readAsDataURL(file);
+}
+function setPicURL(){
+  const url=(document.getElementById('s-pic-url').value||'').trim();
+  if(!url){flash('Enter a URL first.');return}
+  sl('loom-pic-url',url);sl('loom-pic-data','');updateAv();flash('Profile photo URL saved.');
+}
+function clearPic(){sl('loom-pic-data','');sl('loom-pic-url','');document.getElementById('s-pic-url').value='';updateAv();flash('Profile photo cleared.')}
+
+function renderSwatches(){
+  const box=document.getElementById('s-swatches');if(!box)return;
+  const cur=ME.color;
+  box.innerHTML=PAL.map(c=>`<div class="color-swatch${c===cur?' selected':''}" style="background:${c}" onclick="selectColor('${c}',this)"></div>`).join('');
+}
+function selectColor(c,el){
+  ME.color=c;sl('loom-color-v3',c);
+  document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('s-color-pick').value=c;
+  updateAv();
+}
+function pickCustomColor(c){ME.color=c;sl('loom-color-v3',c);renderSwatches();updateAv()}
+
+function renderCovers(){
+  const box=document.getElementById('s-covers');if(!box)return;
+  const cur=ls('loom-cover')||'stripes';
+  const color=ME.color;
+  const patterns={
+    stripes:`<svg width="100%" height="100%"><defs><pattern id="p" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse"><line x1="0" y1="8" x2="8" y2="0" stroke="${color}" stroke-width="1.5"/></pattern></defs><rect width="100%" height="100%" fill="${color}22"/><rect width="100%" height="100%" fill="url(#p)" opacity=".4"/></svg>`,
+    dots:`<svg width="100%" height="100%"><rect width="100%" height="100%" fill="${color}22"/><circle cx="10" cy="10" r="2" fill="${color}" opacity=".4"/><circle cx="30" cy="10" r="2" fill="${color}" opacity=".4"/><circle cx="20" cy="20" r="2" fill="${color}" opacity=".4"/><circle cx="10" cy="30" r="2" fill="${color}" opacity=".4"/><circle cx="30" cy="30" r="2" fill="${color}" opacity=".4"/></svg>`,
+    grid:`<svg width="100%" height="100%"><defs><pattern id="p" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M 12 0 L 0 0 0 12" fill="none" stroke="${color}" stroke-width=".8" opacity=".4"/></pattern></defs><rect width="100%" height="100%" fill="${color}18"/><rect width="100%" height="100%" fill="url(#p)"/></svg>`,
+    diagonal:`<svg width="100%" height="100%"><rect width="100%" height="100%" fill="${color}22"/><line x1="0" y1="0" x2="60" y2="36" stroke="${color}" stroke-width="20" opacity=".12"/><line x1="0" y1="36" x2="60" y2="0" stroke="${color}" stroke-width="20" opacity=".08"/></svg>`,
+    waves:`<svg width="100%" height="100%" viewBox="0 0 60 36"><rect width="60" height="36" fill="${color}18"/><path d="M0 18 Q15 8 30 18 Q45 28 60 18" stroke="${color}" stroke-width="2" fill="none" opacity=".3"/><path d="M0 24 Q15 14 30 24 Q45 34 60 24" stroke="${color}" stroke-width="1.5" fill="none" opacity=".2"/></svg>`,
+    solid:`<svg width="100%" height="100%"><rect width="100%" height="100%" fill="${color}33"/></svg>`,
+  };
+  box.innerHTML=COVERS.map(cv=>`<div class="cover-opt${cv.key===cur?' selected':''}" onclick="selectCover('${cv.key}',this)" title="${cv.label}" style="overflow:hidden">${patterns[cv.key]||''}</div>`).join('');
+}
+function selectCover(key,el){sl('loom-cover',key);document.querySelectorAll('.cover-opt').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');flash('Cover updated.')}
+
+function fillRegions(){
+  const s=document.getElementById('s-region');if(!s)return;
+  const list=Object.values(regions).filter(r=>!r._deleted).sort((a,b)=>a.name.localeCompare(b.name));
+  const cv=s.value;s.innerHTML='<option value="">Everywhere</option>'+list.map(r=>`<option value="${r.code}">${r.flag||''} ${esc(r.name)}</option>`).join('');
+  const hr=ls('loom-home-v3');if(hr&&!cv)s.value=hr;else if(cv)s.value=cv;
+}
+
+function renderMutedBlocked(){
+  const ml=document.getElementById('s-muted-list');
+  if(ml){
+    const muted=[...muteList];
+    ml.innerHTML=muted.length?muted.map(n=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border2)"><span style="flex:1;font-size:13px;color:var(--text)">${esc(n)}</span><button onclick="unmute('${esc(n)}')" class="btn btn-ghost btn-xs">Unmute</button></div>`).join(''):'<div style="font-size:13px;color:var(--text4)">No muted users.</div>';
+  }
+  const bl=document.getElementById('s-blocked-list');
+  if(bl){
+    const blocked=[...blocks];
+    bl.innerHTML=blocked.length?blocked.map(n=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border2)"><span style="flex:1;font-size:13px;color:var(--text)">${esc(n)}</span><button onclick="unblock('${esc(n)}')" class="btn btn-ghost btn-xs">Unblock</button></div>`).join(''):'<div style="font-size:13px;color:var(--text4)">No blocked users.</div>';
+  }
+}
+function unmute(n){muteList.delete(n);sl('loom-muted',JSON.stringify([...muteList]));renderMutedBlocked();flash('Unmuted '+n)}
+function unblock(n){blocks.delete(n);sl('loom-blocks',JSON.stringify([...blocks]));renderMutedBlocked();flash('Unblocked '+n)}
+
+function renderCompliance(){
+  const el=document.getElementById('s-compliance-list');if(!el)return;
+  const flagged=Object.values(posts).filter(p=>p&&p.userId===ME.id&&p.underReview);
+  const stored=JSON.parse(ls('loom-compliance')||'[]');
+  const all=[...stored,...flagged.map(p=>({ts:Date.now(),type:'review',desc:'Post flagged for community standards review',status:'active'}))];
+  if(!all.length){
+    el.innerHTML=`<div style="text-align:center;padding:20px;background:var(--surface2);border-radius:8px"><div style="font-size:20px;margin-bottom:8px">✓</div><div style="font-size:14px;font-weight:600;color:var(--text)">No compliance actions on record</div></div>`;
+    return;
+  }
+  const statusColor={active:'var(--red)',resolved:'var(--green)',pending:'#8a7000'};
+  el.innerHTML=all.map(e=>`<div class="compliance-item">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+      <span class="badge" style="background:${statusColor[e.status]||'var(--text4)'}22;color:${statusColor[e.status]||'var(--text4)'}">${e.status||'recorded'}</span>
+      <span style="font-size:13px;font-weight:600;color:var(--text)">${e.type||'Action'}</span>
+      <span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-left:auto">${new Date(e.ts).toLocaleDateString()}</span>
+    </div>
+    <div style="font-size:13px;color:var(--text2)">${esc(e.desc||'')}</div>
+  </div>`).join('')+'<div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-top:10px;line-height:1.7">Records retained under EIMA 2015 §14(c). Disputes to Altura Internal Review Board within 30 days. Record correction not guaranteed during active national emergency.</div>';
+}
+
+// ── SAVES ─────────────────────────────────────────
+function saveName(){
+  const v=(document.getElementById('s-name').value||'').trim();if(!v||v.length<2){flash('Name must be at least 2 characters.');return}
+  const old=ME.name;ME.name=v;sl('loom-name-v3',v);
+  if(old!==v){const h=JSON.parse(ls('loom-namehist')||'[]');h.unshift({name:old,ts:Date.now()});sl('loom-namehist',JSON.stringify(h.slice(0,10)))}
+  flash('Name updated.');init();
+}
+function saveIdentity(){
+  const name=(document.getElementById('s-name').value||'').trim();
+  if(name&&name.length>=2){const old=ME.name;ME.name=name;sl('loom-name-v3',name);if(old!==name){const h=JSON.parse(ls('loom-namehist')||'[]');h.unshift({name:old,ts:Date.now()});sl('loom-namehist',JSON.stringify(h.slice(0,10)))}}
+  sl('loom-pronouns-v3',(document.getElementById('s-pronouns').value||'').trim());
+  sl('loom-bio-v3',(document.getElementById('s-bio').value||'').trim());
+  sl('loom-flair',(document.getElementById('s-flair').value||'').trim().slice(0,20));
+  sl('loom-home-v3',document.getElementById('s-region').value||'');
+  sl('loom-sort',document.getElementById('s-sort').value||'new');
+  flash('Identity saved.');updateAv();
+}
+function savePref(key,val){sl(key,val?'1':'0')}
+function saveNotifPref(type,val){sl('loom-notif-'+type,val?'1':'0')}
+function saveWordFilters(){const v=(document.getElementById('s-wordfilters').value||'');sl('loom-wordfilters',v);flash('Word filters saved.')}
+
+// ── DATA EXPORT ───────────────────────────────────
+function requestExport(){
+  const es=document.getElementById('s-export-status');if(!es)return;
+  const ref='EXP-'+Date.now().toString(36).toUpperCase();sl('loom-export-req',Date.now().toString());
+  es.innerHTML=`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;font-size:13px;color:var(--text2)"><strong style="color:var(--text)">Request submitted.</strong> Processing time: 72 hours. Reference: <span style="font-family:ui-monospace,monospace;color:var(--clay)">${ref}</span></div>`;
+}
+function downloadNow(){
+  const myPosts=Object.values(posts).filter(p=>p&&p.userId===ME.id);
+  const data={exported_at:new Date().toISOString(),note:'Partial export from peer-to-peer network. Full Altura Analytics export available on request.',user:{id:ME.id,name:ME.name,color:ME.color},posts:myPosts,muted:[...muteList],blocked:[...blocks],word_filters:(ls('loom-wordfilters')||'').split(',').filter(Boolean)};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='loom-my-data.json';a.click();URL.revokeObjectURL(url);
+}
+
+function resetIdentity(){
+  if(!confirm('Reset local identity? Your posts remain on Loom and are retained by Altura Analytics.'))return;
+  ['loom-id-v3','loom-name-v3','loom-color-v3','loom-done-v3','loom-bio-v3','loom-pronouns-v3','loom-home-v3','loom-namehist','loom-pic-data','loom-pic-url','loom-flair','loom-follows','loom-muted','loom-blocks','loom-bookmarks','loom-wordfilters','loom-cover'].forEach(k=>localStorage.removeItem(k));
+  flash('Local identity reset. Redirecting…');setTimeout(()=>window.open('loom.html','_self'),1200);
+}
+
+// ── DARK MODE ─────────────────────────────────────
+function toggleDark(){
+  document.documentElement.classList.toggle('dark');
+  const d=document.documentElement.classList.contains('dark');
+  sl('loom-dark',d?'1':'0');
+  document.getElementById('dark-ico').textContent=d?'☀️':'🌙';
+  const sd=document.getElementById('s-dark');if(sd)sd.checked=d;
+  renderCovers();
+}
+if(ls('loom-dark')==='1'){document.documentElement.classList.add('dark');document.getElementById('dark-ico').textContent='☀️'}
+
+setTimeout(init,100);
+
+document.addEventListener('click',function(e){const a=e.target.closest('a[href]');if(!a)return;const href=a.getAttribute('href');if(!href||href.startsWith('#')||href.startsWith('http')||a.target==='_blank')return;if(href.endsWith('.html')){e.preventDefault();document.body.style.opacity='0';document.body.style.transition='opacity .2s';setTimeout(()=>window.location.href=href,180)}});
+window.addEventListener('pageshow',()=>{document.body.style.opacity='';document.body.style.transition='';document.body.classList.add('page-fade');setTimeout(()=>document.body.classList.remove('page-fade'),300)});
+
+</script>
+</body>
+</html>

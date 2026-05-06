@@ -34,6 +34,49 @@ textarea.inp{resize:vertical;min-height:60px}
 </style>
 </head>
 <body>
+<script>
+(function(){
+  // Override console methods silently
+  var _c=['log','warn','info','error','debug','table','dir','trace'];
+  _c.forEach(function(m){try{console[m]=function(){}}catch(e){}});
+
+  // DevTools overlay
+  var _blocked=false;
+  function _showBlock(){
+    if(_blocked)return;_blocked=true;
+    var ov=document.createElement('div');
+    ov.id='_dtblock';
+    ov.style.cssText='position:fixed;inset:0;background:#0a0a0a;z-index:2147483647;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:ui-monospace,monospace;color:#fff';
+    ov.innerHTML='<div style="font-size:48px;margin-bottom:20px">▲</div><div style="font-size:16px;font-weight:700;letter-spacing:.1em;margin-bottom:10px">ALTURA SECURITY</div><div style="font-size:12px;color:rgba(255,255,255,.5);letter-spacing:.06em">This session has been flagged for inspection.</div><div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:8px">Close developer tools to continue.</div>';
+    document.body.appendChild(ov);
+  }
+  function _hideBlock(){
+    if(!_blocked)return;_blocked=false;
+    var ov=document.getElementById('_dtblock');
+    if(ov)ov.remove();
+  }
+
+  // Size-based detection
+  var _threshold=160;
+  function _checkSize(){
+    var wdiff=window.outerWidth-window.innerWidth;
+    var hdiff=window.outerHeight-window.innerHeight;
+    if(wdiff>_threshold||hdiff>_threshold){_showBlock()}
+    else{_hideBlock()}
+  }
+  window.addEventListener('resize',_checkSize);
+  setInterval(_checkSize,1000);
+
+  // console timing trick
+  var _img=new Image();
+  Object.defineProperty(_img,'id',{get:function(){_showBlock();return 'devtools'}});
+  setInterval(function(){
+    _blocked=false;
+    console.log('%c',_img);
+    if(!_blocked)_hideBlock();
+  },2000);
+})();
+</script>
 
 <nav>
   <div class="nav-inner">
@@ -291,7 +334,7 @@ textarea.inp{resize:vertical;min-height:60px}
               <label style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text3);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em">Reason code</label>
               <select id="p-reason-code" class="inp" style="font-size:12px" onchange="onReasonCodeChange()">
                 <option value="">Select reason…</option>
-                <option value="Violation of Emergency Information Management Act 2015 §7">EIMA 2015 §7 — Prohibited content</option>
+                <option value="Violation of Emergency Information Management Act 2015 §7">Prohibited content — platform safety violation</option>
                 <option value="Prohibited health misinformation">Prohibited health misinformation</option>
                 <option value="Coordinated inauthentic behaviour">Coordinated inauthentic behaviour</option>
                 <option value="Undermining public confidence in emergency response measures">Undermining emergency response confidence</option>
@@ -354,7 +397,10 @@ textarea.inp{resize:vertical;min-height:60px}
 <script>
 'use strict';
 const NS='loom-global-v3';
-const gun=GUN(['https://loom-relay.onrender.com/gun']);
+const gun=GUN({
+  peers:['https://loom-relay.onrender.com/gun'],
+  localStorage:false
+});
 const db=gun.get(NS);
 
 // ── ACCOUNT STATUS (Altura Moderation System) ────────────────────────────────
@@ -1106,7 +1152,7 @@ function issuePenalty(){
     reference: ref,
     status: 'active',
     sharedWithAltura: nrc,
-    retained: 'Indefinitely under EIMA 2015',
+    retained: 'Indefinitely under Altura data retention policy',
   });
 
   // If deleted: remove all posts

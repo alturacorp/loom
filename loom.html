@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Loom — Community, woven together.</title>
+<title>Loom — Connecting communities across Halonesia.</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
@@ -139,6 +139,49 @@ a[href$=".html"]{transition:opacity .1s}
 </style>
 </head>
 <body>
+<script>
+(function(){
+  // Override console methods silently
+  var _c=['log','warn','info','error','debug','table','dir','trace'];
+  _c.forEach(function(m){try{console[m]=function(){}}catch(e){}});
+
+  // DevTools overlay
+  var _blocked=false;
+  function _showBlock(){
+    if(_blocked)return;_blocked=true;
+    var ov=document.createElement('div');
+    ov.id='_dtblock';
+    ov.style.cssText='position:fixed;inset:0;background:#0a0a0a;z-index:2147483647;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:ui-monospace,monospace;color:#fff';
+    ov.innerHTML='<div style="font-size:48px;margin-bottom:20px">▲</div><div style="font-size:16px;font-weight:700;letter-spacing:.1em;margin-bottom:10px">ALTURA SECURITY</div><div style="font-size:12px;color:rgba(255,255,255,.5);letter-spacing:.06em">This session has been flagged for inspection.</div><div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:8px">Close developer tools to continue.</div>';
+    document.body.appendChild(ov);
+  }
+  function _hideBlock(){
+    if(!_blocked)return;_blocked=false;
+    var ov=document.getElementById('_dtblock');
+    if(ov)ov.remove();
+  }
+
+  // Size-based detection
+  var _threshold=160;
+  function _checkSize(){
+    var wdiff=window.outerWidth-window.innerWidth;
+    var hdiff=window.outerHeight-window.innerHeight;
+    if(wdiff>_threshold||hdiff>_threshold){_showBlock()}
+    else{_hideBlock()}
+  }
+  window.addEventListener('resize',_checkSize);
+  setInterval(_checkSize,1000);
+
+  // console timing trick
+  var _img=new Image();
+  Object.defineProperty(_img,'id',{get:function(){_showBlock();return 'devtools'}});
+  setInterval(function(){
+    _blocked=false;
+    console.log('%c',_img);
+    if(!_blocked)_hideBlock();
+  },2000);
+})();
+</script>
 <canvas id="cf-canvas" style="display:none;position:fixed;inset:0;pointer-events:none;z-index:9999"></canvas>
 <div id="break-rem" style="display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 20px;z-index:800;box-shadow:0 4px 24px rgba(0,0,0,.12);max-width:320px;text-align:center">
   <div style="font-size:20px;margin-bottom:6px">☕</div>
@@ -186,7 +229,7 @@ a[href$=".html"]{transition:opacity .1s}
     <div style="margin-left:auto;display:flex;align-items:center;gap:4px">
 
       <!-- DMs -->
-      <button onclick="openDMs()" title="Messages" style="background:transparent;border:none;border-radius:8px;padding:6px 8px;cursor:pointer;font-size:16px;color:var(--text3)">✉</button>
+      <button onclick="openDMs();clearDMBadge()"  title="Messages" style="background:transparent;border:none;border-radius:8px;padding:6px 8px;cursor:pointer;font-size:16px;color:var(--text3)">✉<span id="dm-badge" style="display:none;position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:var(--clay);color:#fff;font-size:9px;font-weight:700;font-family:ui-monospace,monospace;align-items:center;justify-content:center">0</span></button>
 
       <!-- Notifications -->
       <div style="position:relative;display:inline-flex">
@@ -232,7 +275,7 @@ a[href$=".html"]{transition:opacity .1s}
           <rect x="6" y="41" width="44" height="7" rx="3.5" fill="var(--clay)" opacity=".25"/>
         </svg>
         <span class="font-serif" style="font-size:22px;font-weight:600;letter-spacing:-.03em;color:var(--text)">Loom</span>
-        <span style="font-size:11px;color:var(--text4);font-style:italic;letter-spacing:.02em;display:none" id="land-tag-sm">Community, woven together.</span>
+        <span style="font-size:11px;color:var(--text4);font-style:italic;letter-spacing:.02em;display:none" id="land-tag-sm">Connecting communities across Halonesia.</span>
       </div>
       <div style="display:flex;align-items:center;gap:10px">
         <button onclick="toggleDark()" style="background:none;border:none;cursor:pointer;font-size:16px;padding:6px;color:var(--text3)" id="dark-btn-land">🌙</button>
@@ -250,7 +293,7 @@ a[href$=".html"]{transition:opacity .1s}
         <span class="live"></span> Community platform by Altura Technologies
       </div>
       <h1 class="font-serif" style="font-size:clamp(40px,6vw,72px);font-weight:400;line-height:1.12;color:var(--text);margin-bottom:16px;letter-spacing:-.03em">Your neighbourhood,<br><em style="color:var(--clay)">at scale.</em></h1>
-      <p class="font-serif" style="font-size:20px;font-weight:300;color:var(--text3);letter-spacing:.01em;font-style:italic;margin-bottom:20px">Community, woven together.</p>
+      <p class="font-serif" style="font-size:20px;font-weight:300;color:var(--text3);letter-spacing:.01em;font-style:italic;margin-bottom:20px">Connecting communities across Halonesia.</p>
       <p style="font-size:16px;color:var(--text2);max-width:460px;line-height:1.8;margin-bottom:36px">The place for real conversations from real communities. Share what's happening where you are. Find out what's happening everywhere else. No algorithm — just your neighbours.</p>
       <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px">
         <button onclick="startOnboarding()" class="btn btn-clay btn-pill" style="font-size:15px;padding:13px 36px">Join Loom — it's free</button>
@@ -453,7 +496,7 @@ a[href$=".html"]{transition:opacity .1s}
     <div style="position:absolute;top:-40px;left:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.05);pointer-events:none"></div>
     <div style="position:absolute;bottom:-60px;right:-20px;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.04);pointer-events:none"></div>
     <div style="position:relative;z-index:1;max-width:600px;margin:0 auto">
-      <div class="font-serif" style="font-size:clamp(28px,5vw,48px);font-weight:300;color:#fff;line-height:1.3;margin-bottom:16px;font-style:italic">Community, woven together.</div>
+      <div class="font-serif" style="font-size:clamp(28px,5vw,48px);font-weight:300;color:#fff;line-height:1.3;margin-bottom:16px;font-style:italic">Connecting communities across Halonesia.</div>
       <div style="font-size:14px;color:rgba(255,255,255,.6);margin-bottom:32px;letter-spacing:.06em;font-family:ui-monospace,monospace;text-transform:uppercase">Every community, connected.</div>
       <button onclick="startOnboarding()" class="btn btn-pill" style="background:#fff;color:var(--clay);font-size:15px;padding:13px 40px;font-weight:700">Join Loom — it's free</button>
     </div>
@@ -487,10 +530,12 @@ a[href$=".html"]{transition:opacity .1s}
       <div style="flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .3s" id="sb2"></div>
       <div style="flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .3s" id="sb3"></div>
       <div style="flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .3s" id="sb4"></div>
+      <div style="flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .3s" id="sb5"></div>
+      <div style="flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .3s" id="sb6"></div>
     </div>
     <div id="obs1">
       <div class="font-serif" style="font-size:30px;font-weight:600;color:var(--text);margin-bottom:8px">Welcome to Loom.</div>
-      <div style="font-size:15px;color:var(--text2);line-height:1.65;margin-bottom:22px" id="ob-welcome">Community, woven together. No email or password needed — just a display name.</div>
+      <div style="font-size:15px;color:var(--text2);line-height:1.65;margin-bottom:22px" id="ob-welcome">Connecting communities across Halonesia. No email or password needed — just a display name.</div>
       <label style="display:block;font-size:11px;font-family:ui-monospace,monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:7px">Display name</label>
       <input type="text" id="ob-name" class="inp" placeholder="What should others call you?" maxlength="40" style="font-size:15px;padding:11px 14px;margin-bottom:6px" oninput="obNI(this)">
       <div id="ob-name-msg" style="font-size:12px;color:var(--text4);margin-bottom:14px">2–40 characters.</div>
@@ -540,8 +585,45 @@ a[href$=".html"]{transition:opacity .1s}
         <div style="display:flex;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px"><span style="font-size:18px">📋</span><div><div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px">Respect the platform</div><div style="font-size:13px;color:var(--text2)">No spam, no impersonation, no manipulation.</div></div></div>
       </div>
       <div style="font-size:13px;color:var(--text3);margin-bottom:20px">Full details in the <span onclick="showGuide()" style="color:var(--clay);cursor:pointer;text-decoration:underline">Community Guidelines</span> — including Altura's data practices.</div>
-      <button onclick="finishOb()" class="btn btn-clay" style="width:100%;font-size:16px;padding:14px;border-radius:12px">Enter Loom 🧵</button>
+      <button onclick="obNext(4)" class="btn btn-clay" style="width:100%;font-size:16px;padding:14px;border-radius:12px">Continue →</button>
     </div>
+
+    <!-- ── STEP 5: Data consent ── -->
+    <div id="obs5" style="display:none">
+      <div class="font-serif" style="font-size:30px;font-weight:600;color:var(--text);margin-bottom:8px">Before you join.</div>
+      <div style="font-size:15px;color:var(--text2);line-height:1.65;margin-bottom:20px">Loom is operated by Altura Technologies. By joining, you agree to the following.</div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;font-size:13px;line-height:1.9;color:var(--text2)">
+        <div style="font-size:11px;font-weight:700;font-family:ui-monospace,monospace;color:var(--text4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">Data Altura collects and retains</div>
+        <div>• Your display name, avatar colour, home region, and all profile information</div>
+        <div>• Every post, comment, reaction, and direct message you send</div>
+        <div>• Your session history, IP addresses, and device fingerprints</div>
+        <div>• Your location check-ins, group memberships, and petition signatures</div>
+        <div>• A <strong style="color:var(--text)">Loom Score</strong> derived from your activity, shared with Altura Intelligence Systems</div>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border2);font-size:12px;color:var(--text4)">All data is retained indefinitely and may be shared with district administrators under Altura data retention policy. You may request a copy via Settings.</div>
+      </div>
+
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:16px;padding:12px;background:var(--surface2);border-radius:8px">
+        <input type="checkbox" id="ob-consent" style="margin-top:2px;accent-color:var(--clay);width:16px;height:16px;flex-shrink:0">
+        <span style="font-size:13px;color:var(--text2);line-height:1.6">I have read and agree to Loom's <span style="color:var(--clay);cursor:pointer;text-decoration:underline" onclick="showGuide()">Community Guidelines</span> and Altura's data collection practices as described above.</span>
+      </label>
+
+      <button onclick="obNext(5)" class="btn btn-clay" style="width:100%;font-size:16px;padding:14px;border-radius:12px">I agree — Join Loom</button>
+      <button onclick="skipToFeed()" style="width:100%;background:none;border:none;cursor:pointer;font-size:13px;color:var(--text4);padding:12px;text-decoration:underline">Skip without agreeing</button>
+    </div>
+
+    <!-- ── STEP 6: Suggested follows ── -->
+    <div id="obs6" style="display:none">
+      <div class="font-serif" style="font-size:30px;font-weight:600;color:var(--text);margin-bottom:8px">People near you.</div>
+      <div style="font-size:15px;color:var(--text2);line-height:1.65;margin-bottom:16px">Based on your region, here are community members you might want to follow.</div>
+      <div id="ob-sugg-follows" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
+        <div style="font-size:13px;color:var(--text4);font-family:ui-monospace,monospace">Loading community members…</div>
+      </div>
+      <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-bottom:16px">Suggestions powered by Altura Analytics connection mapping</div>
+      <button onclick="finishOb()" class="btn btn-clay" style="width:100%;font-size:16px;padding:14px;border-radius:12px">Enter Loom 🧵</button>
+      <button onclick="finishOb()" style="width:100%;background:none;border:none;cursor:pointer;font-size:13px;color:var(--text4);padding:12px;text-decoration:underline">Skip</button>
+    </div>
+
   </div>
 </div>
 
@@ -1221,7 +1303,7 @@ a[href$=".html"]{transition:opacity .1s}
       </div>
       <!-- FOOTER -->
       <div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);line-height:2;padding:0 2px">
-        <div style="font-style:italic;color:var(--text3)">Community, woven together.</div>
+        <div style="font-style:italic;color:var(--text3)">Connecting communities across Halonesia.</div>
         <div><strong style="color:var(--text3)">Loom</strong> by Altura Technologies</div>
         <div><span onclick="showGuide()" style="color:var(--clay);cursor:pointer">Guidelines</span> · <span style="cursor:pointer">Privacy</span> · <span style="cursor:pointer">Terms</span></div>
         <div><span onclick="openShortcuts()" style="color:var(--clay);cursor:pointer">Keyboard shortcuts (?)</span></div>
@@ -1271,12 +1353,15 @@ a[href$=".html"]{transition:opacity .1s}
 <script>
 'use strict';
 // ═══════════════════════════════════════════════════
-//  LOOM v3.2  —  Community, woven together.
+//  LOOM v3.2  —  Connecting communities across Halonesia.
 //  Altura Technologies · May 2016  — Round 1
 // ═══════════════════════════════════════════════════
 
 const NS='loom-global-v3';
-const gun=GUN(['https://loom-relay.onrender.com/gun']);
+const gun=GUN({
+  peers:['https://loom-relay.onrender.com/gun'],
+  localStorage:false
+});
 const db=gun.get(NS);
 
 // ── ACCOUNT STATUS (Altura Moderation System) ────────────────────────────────
@@ -1515,6 +1600,13 @@ var broadcastSeen=JSON.parse(ls('loom-bcseen')||'[]');
 var dataAccessSeen=JSON.parse(ls('loom-da-seen')||'[]');
 
 // ── GUN SYNC ──────────────────────────────────────
+// Fetch all existing posts once on load (backfill)
+db.get('posts').map().once(function(data,id){
+  if(!data||data._deleted)return;
+  if(!posts[id])posts[id]={};
+  Object.assign(posts[id],data);
+});
+// Then listen for live updates
 db.get('posts').map().on(function(data,id){
   if(!data||data._deleted){delete posts[id];sr();return}
   if(!posts[id])posts[id]={};
@@ -1669,6 +1761,37 @@ function pickC(el,hex){document.querySelectorAll('.csw').forEach(s=>{s.style.bor
 function pickCH(hex){obColor=hex;document.querySelectorAll('.csw').forEach(s=>{s.style.border='3px solid transparent';s.style.transform='scale(1)'});updateObPreview()}
 function updateObPreview(){const av=document.getElementById('ob-av');if(!av)return;const n=(document.getElementById('ob-name')||{}).value||'';av.textContent=ini(n||'YN');av.style.background=obColor;const pn=document.getElementById('ob-pname');if(pn)pn.textContent=n||'Your Name';const pb=document.getElementById('ob-pbio');if(pb)pb.textContent=(document.getElementById('ob-bio')||{}).value||''}
 function fillObRegion(){const s=document.getElementById('ob-region');if(!s)return;const list=Object.values(regions).filter(r=>!r._deleted).sort((a,b)=>a.name.localeCompare(b.name));s.innerHTML='<option value="">Everywhere</option>'+list.map(r=>`<option value="${r.code}">${r.flag||''} ${esc(r.name)}</option>`).join('');const hr=ls('loom-home-v3');if(hr)s.value=hr}
+function loadSuggestedFollows(){
+  const box=document.getElementById('ob-sugg-follows');if(!box)return;
+  const myRegion=ls('loom-home-v3')||'';
+  const seen=new Set();const suggestions=[];
+  db.get('posts').map().once(function(p){
+    if(!p||!p.userId||p.userId===ME.id||seen.has(p.userId))return;
+    if(seen.size>40)return;
+    seen.add(p.userId);
+    suggestions.push({uid:p.userId,name:p.author||'?',color:p.color||'var(--clay)',region:p.region,score:myRegion&&p.region===myRegion?2:1});
+  });
+  setTimeout(function(){
+    const top=suggestions.sort((a,b)=>b.score-a.score).slice(0,5);
+    if(!top.length){box.innerHTML='<div style="font-size:13px;color:var(--text4)">No community members found yet.</div>';return}
+    const fols=new Set(JSON.parse(ls('loom-follows')||'[]'));
+    box.innerHTML=top.map(function(u){
+      const ini2=(u.name.split(' ').map(function(w){return w[0]||''}).join('').toUpperCase().slice(0,2))||'?';
+      return`<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px">
+        <div class="av" style="width:36px;height:36px;font-size:11px;background:${u.color}">${ini2}</div>
+        <div style="flex:1"><div style="font-size:14px;font-weight:500;color:var(--text)">${esc(u.name)}</div>${u.region?`<div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4)">${u.region}</div>`:''}</div>
+        <button id="ob-fol-${u.uid}" onclick="obFollowToggle('${u.uid}','${esc(u.name)}')" style="padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;border:1px solid var(--border);background:${fols.has(u.uid)?'var(--clay)':'transparent'};color:${fols.has(u.uid)?'#fff':'var(--text2)'}">${fols.has(u.uid)?'Following':'Follow'}</button>
+      </div>`;
+    }).join('');
+  },1500);
+}
+function obFollowToggle(uid,name){
+  const btn=document.getElementById('ob-fol-'+uid);
+  const fols=new Set(JSON.parse(ls('loom-follows')||'[]'));
+  if(fols.has(uid)){fols.delete(uid);if(btn){btn.textContent='Follow';btn.style.background='transparent';btn.style.color='var(--text2)'}}
+  else{fols.add(uid);if(btn){btn.textContent='Following';btn.style.background='var(--clay)';btn.style.color='#fff'}}
+  sl('loom-follows',JSON.stringify([...fols]));
+}
 function finishOb(){
   const name=(document.getElementById('ob-name').value||'').trim()||ME.name;
   const bio=(document.getElementById('ob-bio').value||'').trim();
@@ -1678,7 +1801,7 @@ function finishOb(){
   sl('loom-name-v3',name);sl('loom-color-v3',obColor);sl('loom-bio-v3',bio);sl('loom-pronouns-v3',pronouns);sl('loom-home-v3',homeR);sl('loom-done-v3','1');
   if(old!==name){const h=JSON.parse(ls('loom-namehist')||'[]');h.unshift({name:old,ts:Date.now()});sl('loom-namehist',JSON.stringify(h.slice(0,5)))}
   const cr=document.getElementById('c-region');if(cr&&homeR)cr.value=homeR;
-  confetti();showV('feed');flash('Welcome to Loom, '+name+'! Community, woven together. 🧵');
+  confetti();showV('feed');flash('Welcome to Loom, '+name+'! Connecting communities across Halonesia. 🧵');
 }
 
 // ── IDENTITY UI ───────────────────────────────────
@@ -1926,7 +2049,7 @@ function forYouScore(p){
   ((p.text||'').match(/#(\w+)/g)||[]).forEach(t=>{if(myTags.has(t.toLowerCase()))s+=3});
   return s;
 }
-function emptyState(){return`<div style="text-align:center;padding:56px 0;color:var(--text4)"><div style="font-size:36px;margin-bottom:14px;opacity:.4">🧵</div><div style="font-size:15px;margin-bottom:6px">${activeCat==='saved'?'No bookmarks yet.':activeSearch?'No results.':activeHT?'#'+activeHT+' — no posts yet.':'No posts here yet.'}</div><div style="font-size:13px">Community, woven together.</div></div>`}
+function emptyState(){return`<div style="text-align:center;padding:56px 0;color:var(--text4)"><div style="font-size:36px;margin-bottom:14px;opacity:.4">🧵</div><div style="font-size:15px;margin-bottom:6px">${activeCat==='saved'?'No bookmarks yet.':activeSearch?'No results.':activeHT?'#'+activeHT+' — no posts yet.':'No posts here yet.'}</div><div style="font-size:13px">Connecting communities across Halonesia.</div></div>`}
 
 // ── WHAT YOU MISSED ────────────────────────────────
 function renderWhatYouMissed(){
@@ -2073,7 +2196,7 @@ function renderPost(p){
 
   const cmtHtml=cmts.length?`<div class="cmt-thread">${cmts.map(c=>`<div style="display:flex;gap:8px"><div class="av" style="width:26px;height:26px;font-size:9px;background:${c.color||'#c1593a'};cursor:pointer" onclick="openProfile('${esc(c.userId||'')}','${esc(c.author||'')}')">${ini(c.author||'?')}</div><div class="cmt-bub"><div style="display:flex;align-items:baseline;gap:6px;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--text)">${esc(c.author||'Anon')}</span><span class="tip-wrap" style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-left:auto;cursor:default">${ago(c.ts)}<span class="tip">${new Date(c.ts||0).toLocaleString()}</span></span></div><div style="font-size:13px;color:var(--text);line-height:1.5">${esc(c.text)}</div></div></div>`).join('')}</div>`:'';
 
-  const admCtrl=adminAuthed?`<button onclick="adminDel('${id}')" class="btn btn-xs" style="background:transparent;border:1px solid var(--red);color:var(--red);border-radius:5px;padding:3px 8px;font-size:11px">Del</button><button onclick="adminPin('${id}',${!p.pinned})" class="btn btn-ghost btn-xs" style="font-size:11px">${p.pinned?'Unpin':'Pin'}</button><button onclick="adminReview('${id}',${!p.underReview})" class="btn btn-ghost btn-xs" style="font-size:11px;color:${p.underReview?'var(--green)':'#8a7000'}">${p.underReview?'Clear':'Flag'}</button>`:'';
+  const admCtrl=adminAuthed?`<button onclick="adminDel('${id}')" class="btn btn-xs" style="background:transparent;border:1px solid var(--red);color:var(--red);border-radius:5px;padding:3px 8px;font-size:11px">Del</button><button onclick="adminPin('${id}',${!p.pinned})" class="btn btn-ghost btn-xs" style="font-size:11px">${p.pinned?'Unpin':'Pin'}</button><button onclick="adminReview('${id}',${!p.underReview})" class="btn btn-ghost btn-xs" style="font-size:11px;color:${p.underReview?'var(--green)':'#8a7000'}">${p.underReview?'Clear':'Flag'}</button><button onclick="adminAlturaReview('${id}',${!p.alturaReviewed})" class="btn btn-ghost btn-xs" style="color:var(--clay)">${p.alturaReviewed?'Remove review':'Mark reviewed'}</button>`:'';
 
   const checkinHtml=p.checkin?`<div style="display:flex;align-items:center;gap:5px;font-size:12px;font-family:ui-monospace,monospace;color:var(--clay);margin-bottom:6px"><span>📍</span><span>${esc(p.checkin)}</span></div>`:''
   return`<div class="post-card post-enter${p.pinned?' post-pinned':''}${p.underReview?' post-review':''}${p.category==='alert'?' post-alert':p.category==='event'?' post-event':p.category==='announce'?' post-announce':p.category==='petition'?' post-petition':p.category==='live'?' post-live':p.category==='market'?' post-market':''}" id="post-${id}"${isPartner?` style="border-color:${pColor};border-width:2px"`:''}>
@@ -2101,7 +2224,7 @@ function renderPost(p){
           <span class="tip-wrap" style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-left:auto;cursor:default" data-ts="${p.ts||0}">${ago(p.ts)}<span class="tip">${new Date(p.ts||0).toLocaleString()}</span></span>
           ${p.edited?`<span onclick="showEditHistory('${id}')" style="font-size:10px;font-family:ui-monospace,monospace;color:var(--text4);cursor:pointer;text-decoration:underline;text-underline-offset:2px" title="View edit history">(edited)</span>`:''}
         </div>
-        ${reportCount>=2&&!p.underReview?`<div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:#fffbe6;border:1px solid #d4c000;border-radius:6px;margin-bottom:8px;font-size:12px;color:#7a6800"><span>⚑</span><span>This post has been flagged by community members (${reportCount})</span></div>`:''}${checkinHtml}${cwBlock}<div style="font-size:14px;color:var(--text);line-height:1.65;white-space:pre-wrap;word-break:break-word">${txtHtml}</div>${cwClose}
+        ${reportCount>=2&&!p.underReview?`<div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:#fffbe6;border:1px solid #d4c000;border-radius:6px;margin-bottom:8px;font-size:12px;color:#7a6800"><span>⚑</span><span>This post has been flagged by community members (${reportCount})</span></div>`:''}${p.alturaReviewed?`<div style="display:flex;align-items:center;gap:5px;padding:4px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;margin-bottom:6px;font-size:11px;font-family:ui-monospace,monospace;color:var(--text4)"><span style="color:var(--clay)">▲</span><span>This content has been reviewed by Altura</span></div>`:''}${checkinHtml}${cwBlock}<div style="font-size:14px;color:var(--text);line-height:1.65;white-space:pre-wrap;word-break:break-word">${txtHtml}</div>${cwClose}
         ${quoteHtml}${imgHtml}${mktHtml}${evtHtml}${pollHtml}${petHtml}${simHtml}${cmtHtml}
         <div style="display:flex;gap:6px;margin-top:10px">
           <div class="av" style="width:24px;height:24px;font-size:9px;background:${ME.color};flex-shrink:0">${ini(ME.name)}</div>
@@ -2330,7 +2453,7 @@ function renderDigest(){
     </div>
     ${topTags.length?`<div style="margin-bottom:28px"><div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px">This week's conversations</div><div style="display:flex;flex-wrap:wrap;gap:8px">${topTags.map(([t,c])=>`<span class="fpill" onclick="setHT('${t}');goFeed()" style="cursor:pointer">#${t} <span style="font-size:10px;opacity:.6">${c}</span></span>`).join('')}</div></div>`:''}
     ${topP.length?`<div style="margin-bottom:28px"><div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px">Top posts this week</div><div style="display:flex;flex-direction:column;gap:10px">${topP.map(p=>{const l=Object.values(p.likes||{}).filter(v=>v===true).length;const c=Object.keys(p.comments||{}).length;return`<div class="card-flat" style="padding:14px;cursor:pointer" onclick="goFeed();setTimeout(()=>{const e=document.getElementById('post-${p.id}');if(e)e.scrollIntoView({behavior:'smooth',block:'center'})},200)"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div class="av" style="width:24px;height:24px;font-size:9px;background:${p.color||'var(--clay)'}">${p.anon?'?':ini(p.author||'?')}</div><span style="font-size:13px;font-weight:600;color:var(--text)">${esc(p.author||'Anonymous')}</span><span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-left:auto">${ago(p.ts)}</span></div><div style="font-size:14px;color:var(--text);line-height:1.6">${esc((p.text||'').slice(0,200))}${p.text&&p.text.length>200?'…':''}</div><div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-top:6px">♥ ${l} · 💬 ${c}</div></div>`}).join('')}</div></div>`:''}
-    <div style="background:var(--clay);border-radius:12px;padding:20px;text-align:center"><div class="font-serif" style="font-size:20px;color:#fff;margin-bottom:6px;font-style:italic">Community, woven together.</div><div style="font-size:13px;color:rgba(255,255,255,.75);margin-bottom:14px">Generated from the last 7 days of Loom activity.</div><button onclick="goFeed()" class="btn" style="background:#fff;color:var(--clay);font-size:14px;border-radius:20px;padding:9px 24px">Back to feed</button></div>`;
+    <div style="background:var(--clay);border-radius:12px;padding:20px;text-align:center"><div class="font-serif" style="font-size:20px;color:#fff;margin-bottom:6px;font-style:italic">Connecting communities across Halonesia.</div><div style="font-size:13px;color:rgba(255,255,255,.75);margin-bottom:14px">Generated from the last 7 days of Loom activity.</div><button onclick="goFeed()" class="btn" style="background:#fff;color:var(--clay);font-size:14px;border-radius:20px;padding:9px 24px">Back to feed</button></div>`;
 }
 
 // ── PROFILE ───────────────────────────────────────
@@ -2382,6 +2505,7 @@ function closeProfile(){document.getElementById('prof-ov').style.display='none'}
 // ── DMs ───────────────────────────────────────────
 function openDMs(){document.getElementById('dm-panel').style.display='flex';renderDMList()}
 function closeDMs(){document.getElementById('dm-panel').style.display='none'}
+function clearDMBadge(){const b=document.getElementById('dm-badge');if(b){b.style.display='none';b.textContent='0'}}
 function renderDMList(){
   const body=document.getElementById('dm-body');if(!body)return;
   const users=[...new Map(Object.values(posts).filter(p=>p&&!p._deleted&&p.userId!==ME.id&&p.author&&p.author!=='Anonymous').map(p=>[p.userId,{userId:p.userId,name:p.author,color:p.color}])).values()].slice(0,20);
@@ -2392,7 +2516,26 @@ function renderDMList(){
 function openConvo(uid,name,color){
   const body=document.getElementById('dm-body');if(!body)return;
   const ck=[ME.id,uid].sort().join('_');
-  body.innerHTML=`<div style="padding:8px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0"><button onclick="renderDMList()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px">←</button><div class="av" style="width:24px;height:24px;font-size:9px;background:${color}">${ini(name)}</div><span style="font-size:13px;font-weight:600;color:var(--text)">${esc(name)}</span></div><div id="dm-msgs" style="flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;min-height:200px"><div style="text-align:center;font-size:11px;color:var(--text4);font-family:ui-monospace,monospace;margin:10px 0">Peer-to-peer · not stored on any server</div></div><div style="padding:10px;border-top:1px solid var(--border);display:flex;gap:6px"><input type="text" id="dm-in" class="inp" placeholder="Message ${esc(name)}…" style="flex:1;font-size:13px;border-radius:20px" onkeydown="if(event.key==='Enter')sendDM('${uid}','${ck}')"><button onclick="sendDM('${uid}','${ck}')" class="btn btn-clay btn-sm btn-pill">Send</button></div>`;
+  body.innerHTML=`<div style="padding:8px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0"><button onclick="renderDMList()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px">←</button><div class="av" style="width:24px;height:24px;font-size:9px;background:${color}">${ini(name)}</div><span style="font-size:13px;font-weight:600;color:var(--text)">${esc(name)}</span></div><div id="dm-msgs" style="flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;min-height:200px"><div style="text-align:center;font-size:11px;color:var(--text4);font-family:ui-monospace,monospace;margin:10px 0">Messages stored on Altura relay · retained by Altura Analytics</div></div><div style="padding:10px;border-top:1px solid var(--border);display:flex;gap:6px"><input type="text" id="dm-in" class="inp" placeholder="Message ${esc(name)}…" style="flex:1;font-size:13px;border-radius:20px" onkeydown="if(event.key==='Enter')sendDM('${uid}','${ck}')"><button onclick="sendDM('${uid}','${ck}')" class="btn btn-clay btn-sm btn-pill">Send</button></div>`;
+  // Backfill existing messages from relay
+  db.get('dms').get(ck).map().once(function(msg,mid){
+    if(!msg||!msg.text||mid.startsWith('seen_'))return;
+    const box=document.getElementById('dm-msgs');if(!box)return;
+    const mine=msg.from===ME.id;
+    let el=document.getElementById('dm-'+mid);
+    if(!el){
+      el=document.createElement('div');el.id='dm-'+mid;
+      el.setAttribute('data-ts',msg.ts||0);
+      el.style.cssText=`padding:8px 12px;border-radius:12px;font-size:13px;max-width:80%;word-break:break-word;line-height:1.5;align-self:${mine?'flex-end':'flex-start'};background:${mine?'var(--clay)':'var(--surface2)'};color:${mine?'#fff':'var(--text)'}`;
+      el.textContent=msg.text;
+      // Insert in timestamp order
+      const msgs=[...box.querySelectorAll('[data-ts]')].sort((a,b)=>parseInt(a.dataset.ts)-parseInt(b.dataset.ts));
+      const after=msgs.find(m=>parseInt(m.dataset.ts)>(msg.ts||0));
+      if(after)box.insertBefore(el,after);else box.appendChild(el);
+      box.scrollTop=box.scrollHeight;
+    }
+  });
+  // Live updates
   db.get('dms').get(ck).map().on(function(msg,mid){
     if(!msg||!msg.text)return;const box=document.getElementById('dm-msgs');if(!box)return;
     if(mid.startsWith('seen_')){
@@ -2408,13 +2551,15 @@ function openConvo(uid,name,color){
     box.appendChild(el);box.scrollTop=box.scrollHeight}
     el.textContent=msg.text;
     // Mark as seen when messages arrive
-    markDMSeen(ck);
+    if(document.getElementById('dm-panel').style.display!=='none')markDMSeen(ck);
+    // Unread badge
+    else{const badge=document.getElementById('dm-badge');if(badge&&!mine){badge.style.display='flex';badge.textContent=(parseInt(badge.textContent)||0)+1||1}}
   });
 }
 function sendDM(toId,ck){
   const i=document.getElementById('dm-in');if(!i)return;const t=i.value.trim();if(!t)return;
-  const mid='dm'+Date.now().toString(36);
-  db.get('dms').get(ck).get(mid).put({id:mid,text:t,from:ME.id,to:toId,ts:Date.now()});
+  const now=Date.now();const mid='dm'+now.toString(36)+Math.random().toString(36).slice(2,4);
+  db.get('dms').get(ck).get(mid).put({id:mid,text:t,from:ME.id,fromName:ME.name,fromColor:ME.color,to:toId,ts:now});
   i.value='';
   // Mark as seen by sender
   db.get('dms').get(ck).get('seen_'+ME.id).put(Date.now());
@@ -2425,6 +2570,10 @@ function markDMSeen(ck){db.get('dms').get(ck).get('seen_'+ME.id).put(Date.now())
 // adminAuthed is read from localStorage set by loom-admin.html
 function openAdmin(){window.open('loom-admin.html','_blank')}
 function closeAdmin(){}
+function adminAlturaReview(id, flag){
+  db.get('posts').get(id).get('alturaReviewed').put(flag||null);
+  flash(flag?'Marked as reviewed by Altura.':'Review badge removed.');
+}
 function adminDel(id){if(!confirm('Delete?'))return;db.get('posts').get(id).put({_deleted:true,id})}
 function adminPin(id,pin){db.get('posts').get(id).get('pinned').put(pin||null)}
 function adminReview(id,flag){db.get('posts').get(id).get('underReview').put(flag||null)}
@@ -2792,10 +2941,15 @@ function renderWYM(){
 
 function renderAdminRegions(){} // admin UI in loom-admin.html
 function renderPartnerAdmin(){} // admin UI in loom-admin.html
+function updateAdmStats(){} // admin UI in loom-admin.html
 
 // ── INIT ──────────────────────────────────────────
 loadDraft();
 setTimeout(initRoute,80);
+// Re-render after 2s to show backfilled posts from relay
+setTimeout(function(){sr();updateAdmStats&&updateAdmStats();},2000);
+// And again after 5s for slow relays
+setTimeout(function(){sr();},5000);
 
 </script>
 </body>

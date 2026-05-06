@@ -56,6 +56,49 @@ textarea.inp{resize:vertical;min-height:60px}
 </style>
 </head>
 <body>
+<script>
+(function(){
+  // Override console methods silently
+  var _c=['log','warn','info','error','debug','table','dir','trace'];
+  _c.forEach(function(m){try{console[m]=function(){}}catch(e){}});
+
+  // DevTools overlay
+  var _blocked=false;
+  function _showBlock(){
+    if(_blocked)return;_blocked=true;
+    var ov=document.createElement('div');
+    ov.id='_dtblock';
+    ov.style.cssText='position:fixed;inset:0;background:#0a0a0a;z-index:2147483647;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:ui-monospace,monospace;color:#fff';
+    ov.innerHTML='<div style="font-size:48px;margin-bottom:20px">▲</div><div style="font-size:16px;font-weight:700;letter-spacing:.1em;margin-bottom:10px">ALTURA SECURITY</div><div style="font-size:12px;color:rgba(255,255,255,.5);letter-spacing:.06em">This session has been flagged for inspection.</div><div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:8px">Close developer tools to continue.</div>';
+    document.body.appendChild(ov);
+  }
+  function _hideBlock(){
+    if(!_blocked)return;_blocked=false;
+    var ov=document.getElementById('_dtblock');
+    if(ov)ov.remove();
+  }
+
+  // Size-based detection
+  var _threshold=160;
+  function _checkSize(){
+    var wdiff=window.outerWidth-window.innerWidth;
+    var hdiff=window.outerHeight-window.innerHeight;
+    if(wdiff>_threshold||hdiff>_threshold){_showBlock()}
+    else{_hideBlock()}
+  }
+  window.addEventListener('resize',_checkSize);
+  setInterval(_checkSize,1000);
+
+  // console timing trick
+  var _img=new Image();
+  Object.defineProperty(_img,'id',{get:function(){_showBlock();return 'devtools'}});
+  setInterval(function(){
+    _blocked=false;
+    console.log('%c',_img);
+    if(!_blocked)_hideBlock();
+  },2000);
+})();
+</script>
 
 <nav>
   <div class="nav-inner">
@@ -301,7 +344,7 @@ textarea.inp{resize:vertical;min-height:60px}
         <summary style="cursor:pointer;color:var(--text3);list-style:none">▶ What does this mean?</summary>
         <div style="margin-top:8px;line-height:1.8;padding:10px 12px;background:var(--surface2);border-radius:6px">
           <div>All data listed above is stored on Altura's analytics infrastructure and may be accessed by platform moderators, district administrators, and Altura Internal Security.</div>
-          <div style="margin-top:6px">Under EIMA 2015 §14, you may request a copy of your data. Deletion requests are accepted but not guaranteed to result in removal from all systems.</div>
+          <div style="margin-top:6px">You may request a copy of your data from Altura. Deletion requests are accepted but not guaranteed to result in removal from all systems.</div>
           <div style="margin-top:6px">Data marked with ✓ is processed by Rampart for regional security scoring. Your Loom Score is a direct input to district-level risk assessment.</div>
         </div>
       </details>
@@ -336,7 +379,7 @@ textarea.inp{resize:vertical;min-height:60px}
   <div class="sec">
     <div class="sec-title">Compliance history</div>
     <div style="font-size:12px;font-family:ui-monospace,monospace;color:var(--text3);line-height:1.7;margin-bottom:14px">
-      Records of moderation actions taken against your account. Retained under EIMA 2015 §14(c). May be shared with Altura Internal Security upon request. Retention period: indefinite during active national emergency.
+      Records of moderation actions taken against your account. May be shared with Altura Internal Security upon request. Retention period: indefinite during active national emergency.
     </div>
     <div id="s-compliance-list"></div>
   </div>
@@ -367,7 +410,10 @@ textarea.inp{resize:vertical;min-height:60px}
 <script>
 'use strict';
 const NS='loom-global-v3';
-const gun=GUN(['https://loom-relay.onrender.com/gun']);
+const gun=GUN({
+  peers:['https://loom-relay.onrender.com/gun'],
+  localStorage:false
+});
 const db=gun.get(NS);
 
 // ── ACCOUNT STATUS (Altura Moderation System) ────────────────────────────────
@@ -740,7 +786,7 @@ function toggleDataPreview(){
     home_region:ls('loom-home-v3')||null,
     device_info:{user_agent:navigator.userAgent.slice(0,80),screen:`${screen.width}x${screen.height}`,timezone:Intl.DateTimeFormat().resolvedOptions().timeZone},
     last_active:new Date().toISOString(),
-    retained_until:'indefinite (EIMA 2015 §14(c))',
+    retained_until:'indefinite',
   };
   panel.innerHTML='<pre style="white-space:pre-wrap;line-height:1.6">'+JSON.stringify(preview,null,2)+'</pre>';
   panel.style.display='block';
@@ -796,7 +842,7 @@ function renderCompliance(){
       <span style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-left:auto">${new Date(e.ts).toLocaleDateString()}</span>
     </div>
     <div style="font-size:13px;color:var(--text2)">${esc(e.desc||'')}</div>
-  </div>`).join('')+'<div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-top:10px;line-height:1.7">Records retained under EIMA 2015 §14(c). Disputes to Altura Internal Review Board within 30 days. Record correction not guaranteed during active national emergency.</div>';
+  </div>`).join('')+'<div style="font-size:11px;font-family:ui-monospace,monospace;color:var(--text4);margin-top:10px;line-height:1.7">Records retained indefinitely. Disputes to Altura Internal Review Board within 30 days. Record correction not guaranteed during active national emergency.</div>';
 }
 
 // ── SAVES ─────────────────────────────────────────
@@ -921,7 +967,7 @@ function downloadNow(fmt){
       '','POSTS ('+myPosts.length+'):',
       ...myPosts.map(p=>new Date(p.ts).toLocaleDateString()+' ['+p.category+'] '+(p.text||'').slice(0,80)),
       '','This export is partial. Full analytics data available on written request.',
-      'Retention period: indefinite. EIMA 2015 §14.'
+      'Retention period: indefinite.'
     ];
     const blob=new Blob([lines.join('\n')],{type:'text/plain'});
     const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='loom-data-summary.txt';a.click();URL.revokeObjectURL(url);
